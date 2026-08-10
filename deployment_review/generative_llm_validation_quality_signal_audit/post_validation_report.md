@@ -33,16 +33,17 @@
 - Local evaluator available: yes
 - qwen3 answer-emission repair: passed by sending Ollama `think: false`
 - Evaluator mapping result class: `CRAG_GENERATED_QUALITY_LOCAL_EVALUATOR_ACTIVE`
-- CRAG generative validation result: `GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG`
-- Non-empty generated answers: 88
-- Unique answer hashes: 32
-- Governed winner: `expanded_retrieval_multi_endpoint`
+- CRAG generative validation result: `GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY_CRAG`
+- Sample size: 12 examples / 132 policy-generation rows
+- Non-empty generated answers: 132
+- Unique answer hashes: 48
+- Governed winner: `pareto_frontier_selector`
 - Quality-only winner: `expanded_retrieval_multi_endpoint`
 - RAG Compass rank: 8
 
 ## Synthesis
 
-- Result class: `GEN_LLM_SYNTHESIS_INCONCLUSIVE`
-- Interpretation: HotpotQA and CRAG both have usable nonconstant generated-answer quality signals, but neither supported a governance improvement under the bounded samples.
+- Result class: `GEN_LLM_SYNTHESIS_DIRECTIONAL`
+- Interpretation: CRAG produced bounded local generative support for reduced measured cost at equivalent generated-answer quality, while HotpotQA remained inconclusive.
 
 No raw prompts, raw generated answers, raw CRAG text, raw HotpotQA questions/context, raw API responses, secrets, or private paths are committed.

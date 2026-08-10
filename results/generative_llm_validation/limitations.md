@@ -1,3 +1,3 @@
 # Generative LLM Validation Limitations
 
-Generative validation remains blocked or inconclusive unless a pinned local or hosted generator actually runs and produces a usable generated-answer quality signal. Local generator validation is not official platform benchmarking. No human validation or production readiness is claimed.
+Generative validation is currently bounded local evidence. One dataset produced generative support while the other did not. This is not broad generative validation, not official platform benchmarking, not human validation, and not production readiness.

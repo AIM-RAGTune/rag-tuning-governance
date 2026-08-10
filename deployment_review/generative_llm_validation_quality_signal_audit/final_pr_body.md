@@ -1,6 +1,6 @@
 ## Summary
 
-Repairs qwen3:8b CRAG answer emission by disabling Ollama thinking mode for qwen3 generators, reruns the bounded CRAG generative validation, and preserves the resulting inconclusive governance outcome with sanitized generated-answer metrics.
+Increases the CRAG generative validation sample after the qwen3:8b answer-emission repair, reruns the local Ollama CRAG generated-answer evaluation, and updates synthesis to reflect bounded directional CRAG evidence with HotpotQA still inconclusive.
 
 ## HotpotQA quality-signal audit
 
@@ -32,21 +32,22 @@ Repairs qwen3:8b CRAG answer emission by disabling Ollama thinking mode for qwen
 - Local evaluator available: yes
 - qwen3 answer-emission repair: passed with Ollama `think: false`
 - Evaluator mapping result class: `CRAG_GENERATED_QUALITY_LOCAL_EVALUATOR_ACTIVE`
-- CRAG generative result class: `GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG`
-- Non-empty generated answers: 88
-- Unique answer hashes: 32
-- Governed winner: `expanded_retrieval_multi_endpoint`
+- CRAG generative result class: `GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY_CRAG`
+- Sample size: 12 examples / 132 policy-generation rows
+- Non-empty generated answers: 132
+- Unique answer hashes: 48
+- Governed winner: `pareto_frontier_selector`
 - Quality-only winner: `expanded_retrieval_multi_endpoint`
 - RAG Compass rank: 8
-- Generated-quality delta: 0.0 [0.0, 0.0]
+- Generated-quality delta: +0.0166533759 [-0.0363636364, +0.0362838915]
 - Evidence-support delta: 0.0 [0.0, 0.0]
-- Cost delta: 0.0 [0.0, 0.0]
-- Latency delta: 0.0 [0.0, 0.0]
+- Cost delta: -3.7790000000 [-3.8808000000, -3.7257000000]
+- Latency delta: -5971.8510413853 ms [-8768.2858742774, -5159.1000836343]
 
 ## Synthesis
 
-- Result class: `GEN_LLM_SYNTHESIS_INCONCLUSIVE`
-- Interpretation: HotpotQA and CRAG both have usable nonconstant generated-answer quality signals, but neither supported a governance improvement under the bounded samples.
+- Result class: `GEN_LLM_SYNTHESIS_DIRECTIONAL`
+- Interpretation: CRAG produced bounded local generative support for reduced measured cost at equivalent generated-answer quality, while HotpotQA remained inconclusive.
 
 ## Validation
 

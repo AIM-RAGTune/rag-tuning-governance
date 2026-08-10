@@ -101,12 +101,29 @@ No raw prompts, raw generated answers, raw dataset questions, raw source documen
 """
     for filename in ["synthesis_report.md", "paper_ready_summary.md", "executive_summary.md"]:
         write_md(output_root / filename, report)
+    if result_class == "GEN_LLM_SYNTHESIS_DIRECTIONAL":
+        limitation_text = (
+            "Generative validation is currently bounded local evidence. One dataset produced generative "
+            "support while the other did not. This is not broad generative validation, not official "
+            "platform benchmarking, not human validation, and not production readiness."
+        )
+    elif result_class == "GEN_LLM_SYNTHESIS_GENERATIVE_VALIDATION_SUPPORTED":
+        limitation_text = (
+            "Generative validation is supported for the bounded configured datasets and generator path. "
+            "This is not official platform benchmarking, not human validation, and not production readiness."
+        )
+    else:
+        limitation_text = (
+            "Generative validation remains blocked or inconclusive unless a pinned local or hosted generator "
+            "actually runs and produces a usable generated-answer quality signal. Local generator validation "
+            "is not official platform benchmarking. No human validation or production readiness is claimed."
+        )
     write_md(
         output_root / "limitations.md",
-        """
+        f"""
 # Generative LLM Validation Limitations
 
-Generative validation remains blocked or inconclusive unless a pinned local or hosted generator actually runs and produces a usable generated-answer quality signal. Local generator validation is not official platform benchmarking. No human validation or production readiness is claimed.
+{limitation_text}
 """,
     )
     return payload
