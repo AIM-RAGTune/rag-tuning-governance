@@ -102,28 +102,53 @@ def approved_deployment_remote() -> str | None:
     return report.get("remote_url")
 
 
+def publication_remote_mode() -> str:
+    explicit = os.environ.get("RAGTUNE_PUBLICATION_REMOTE_MODE")
+    if explicit:
+        return explicit
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        repository = os.environ.get("GITHUB_REPOSITORY", "")
+        if repository == "AIM-RAGTune/rag-tuning-governance-public":
+            return "github_actions_public_repo"
+        return "github_actions_unapproved_repo"
+    return "deployed_public_repo"
+
+
+def normalize_remote_line(line: str) -> str:
+    for suffix in (" (fetch)", " (push)"):
+        line = line.replace(suffix, "")
+    if "\t" in line:
+        line = line.split("\t", 1)[1]
+    return line.strip()
+
+
 def public_repository_remote_allowed(remotes: str) -> bool:
     """Allow the approved public clean-history repository in deployed mode.
 
     Local unpublished export packages still reject external remotes. The
     public repository is intentionally different: it is already deployed, has
-    a fresh one-commit history, and carries a public repository note.
+    a fresh one-commit history, and carries a public repository note. GitHub
+    Actions mode is allowed only for the expected public repository slug.
     """
 
-    mode = os.environ.get("RAGTUNE_PUBLICATION_REMOTE_MODE", "deployed_public_repo")
-    if mode == "local_unpublished":
+    mode = publication_remote_mode()
+    if mode in {"local_unpublished", "github_actions_unapproved_repo"}:
+        return False
+    if mode not in {"deployed_public_repo", "github_actions_public_repo"}:
         return False
     allowed_remotes = {
+        "https://github.com/AIM-RAGTune/rag-tuning-governance-public",
         "https://github.com/AIM-RAGTune/rag-tuning-governance-public.git",
+        "git@github.com:AIM-RAGTune/rag-tuning-governance-public",
         "git@github.com:AIM-RAGTune/rag-tuning-governance-public.git",
     }
-    remote_lines = [line for line in remotes.splitlines() if line.strip()]
+    remote_lines = [normalize_remote_line(line) for line in remotes.splitlines() if line.strip()]
     if not remote_lines:
         return False
     public_note = ROOT / "docs" / "public_repository_note.md"
     if not public_note.exists():
         return False
-    return all(any(remote in line for remote in allowed_remotes) for line in remote_lines)
+    return all(line in allowed_remotes for line in remote_lines)
 
 
 def validate_no_crag_raw_text_fields() -> None:

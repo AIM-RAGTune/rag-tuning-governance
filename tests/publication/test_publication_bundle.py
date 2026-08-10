@@ -57,7 +57,31 @@ def test_publication_validator_passes() -> None:
 def test_publication_validator_remote_modes(monkeypatch) -> None:
     validator = load_validator_module()
     remote = "origin\thttps://github.com/AIM-RAGTune/rag-tuning-governance-public.git (fetch)"
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_REPOSITORY", raising=False)
     monkeypatch.setenv("RAGTUNE_PUBLICATION_REMOTE_MODE", "local_unpublished")
     assert validator.public_repository_remote_allowed(remote) is False
     monkeypatch.setenv("RAGTUNE_PUBLICATION_REMOTE_MODE", "deployed_public_repo")
     assert validator.public_repository_remote_allowed(remote) is True
+    monkeypatch.setenv("RAGTUNE_PUBLICATION_REMOTE_MODE", "unexpected_mode")
+    assert validator.public_repository_remote_allowed(remote) is False
+
+
+def test_publication_validator_github_actions_public_mode(monkeypatch) -> None:
+    validator = load_validator_module()
+    remote_without_dot_git = "origin\thttps://github.com/AIM-RAGTune/rag-tuning-governance-public (fetch)"
+    monkeypatch.delenv("RAGTUNE_PUBLICATION_REMOTE_MODE", raising=False)
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "AIM-RAGTune/rag-tuning-governance-public")
+    assert validator.publication_remote_mode() == "github_actions_public_repo"
+    assert validator.public_repository_remote_allowed(remote_without_dot_git) is True
+
+
+def test_publication_validator_rejects_unexpected_github_actions_repo(monkeypatch) -> None:
+    validator = load_validator_module()
+    remote = "origin\thttps://github.com/other/repo.git (fetch)"
+    monkeypatch.delenv("RAGTUNE_PUBLICATION_REMOTE_MODE", raising=False)
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "other/repo")
+    assert validator.publication_remote_mode() == "github_actions_unapproved_repo"
+    assert validator.public_repository_remote_allowed(remote) is False
