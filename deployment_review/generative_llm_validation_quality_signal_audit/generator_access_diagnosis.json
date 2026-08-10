@@ -1,0 +1,21 @@
+{
+  "available": true,
+  "diagnosis_latency_ms": 4377.021416090429,
+  "error_type": "",
+  "finish_reason": "stop",
+  "instructions": "",
+  "local_openai_base_url_configured": false,
+  "local_or_hosted": "local",
+  "model": "qwen3:8b",
+  "ollama_base_url_configured": true,
+  "provider": "ollama",
+  "raw_answer_local_path_committed": false,
+  "raw_test_response_committed": false,
+  "status": "available",
+  "test_answer_char_count": 2,
+  "test_answer_hash": "565339bc4d33d72817b583024112eb7f5cdf3e5eef0252d6ec1b9c9a94e12bb3",
+  "test_answer_token_estimate": 1,
+  "test_generation_available": true,
+  "test_latency_ms": 4373.168999329209,
+  "test_prompt_hash_only": true
+}

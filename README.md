@@ -39,9 +39,9 @@ Raw CRAG data are not redistributed. CRAG remains noncommercial research-only. H
 
 ## Generative LLM Validation
 
-RAGTune Generative LLM Validation v1 adds a pinned-generator path for policy-specific generated answers. In this public artifact set, HotpotQA completed a bounded 8-example local Ollama run with `qwen3:8b`, and CRAG completed a bounded 4-example local Ollama run with the publication-safe generated-answer evaluator mapping. Both runs used sanitized generated-answer metrics only. The result class on both datasets was `GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY`.
+RAGTune Generative LLM Validation v1 adds a pinned-generator path for policy-specific generated answers. The v1.1 quality-signal audit reran HotpotQA with a bounded 12-example local Ollama `qwen3:8b` sample and confirmed that generated-answer quality scores were nonconstant, but the governed and quality-only selectors chose the same policy, so the generated-governance result is `GEN_LLM_GOVERNANCE_INCONCLUSIVE`. CRAG generator access was repaired in the approved local mock-API environment, but all CRAG generated answers were empty in the bounded 8-example rerun; CRAG is therefore `GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL_CRAG`, not a generative success claim.
 
-The synthesis is `GEN_LLM_SYNTHESIS_GENERATIVE_VALIDATION_SUPPORTED`, with a narrow small-sample boundary. HotpotQA governed selection chose `rag_compass_optional`; CRAG governed selection chose `static_default_policy`. Raw prompts, raw generated answers, raw dataset questions, raw contexts, raw evidence, raw API responses, and secrets are not committed. See `docs/generative_llm_validation.md`, `docs/generator_configuration.md`, and `results/generative_llm_validation/synthesis_report.md`.
+The synthesis is `GEN_LLM_SYNTHESIS_INCONCLUSIVE`. Raw prompts, raw generated answers, raw dataset questions, raw contexts, raw evidence, raw API responses, and secrets are not committed. See `docs/generative_llm_validation.md`, `docs/generator_configuration.md`, and `results/generative_llm_validation/synthesis_report.md`.
 
 ## What This Repository Contains
 
@@ -93,7 +93,7 @@ The ledger contains sanitized summaries only. It does not include raw datasets, 
 This repository does not claim:
 
 - RAG Compass superiority.
-- Broad generative LLM validation beyond the bounded local CRAG and HotpotQA runs.
+- Generative LLM governance validation beyond the current inconclusive HotpotQA audit and blocked CRAG generated-answer signal.
 - Human-evaluation validation.
 - Official LangSmith, Ragas, DeepEval, or RAGChecker benchmarking.
 - Production readiness.

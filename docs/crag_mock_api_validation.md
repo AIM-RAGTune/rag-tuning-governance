@@ -44,4 +44,4 @@ To run it in an approved environment, set `RAGTUNE_CRAG_APPROVED_NONCOMMERCIAL_R
 
 ## CRAG Generative LLM Status
 
-`ragtune_crag_generative_llm_validation_v1` now includes a publication-safe evaluator mapping that scores generated answers against CRAG answers/alternate answers locally and exports only hashes, counts, and metrics. A bounded 4-example local Ollama `qwen3:8b` run produced `GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY`. Raw CRAG question text, source documents, raw API responses, prompts, and generated answers are not committed.
+`ragtune_crag_generative_llm_validation_v1` now includes a publication-safe evaluator mapping that scores generated answers against CRAG answers/alternate answers locally and exports only hashes, counts, and metrics. The v1.1 rerun repaired local generator access, but the bounded 8-example local Ollama `qwen3:8b` run produced empty generated answers, so the CRAG result is `GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL_CRAG`. Raw CRAG question text, source documents, raw API responses, prompts, and generated answers are not committed.

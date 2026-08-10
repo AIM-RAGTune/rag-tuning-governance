@@ -33,6 +33,9 @@ REQUIRED = [
     "docs/generative_llm_validation.md",
     "docs/generator_configuration.md",
     "docs/platform_benchmarking_boundary.md",
+    "configs/experiments/ragtune_hotpotqa_generative_quality_signal_audit_v1.yaml",
+    "artifacts/generative_llm_validation/hotpotqa_quality_signal_audit/audit_manifest.json",
+    "deployment_review/generative_llm_validation_quality_signal_audit/generator_access_diagnosis.json",
 ]
 
 EXPORT_REQUIRED = [
@@ -225,6 +228,14 @@ def validate_generative_artifacts() -> None:
     root = ROOT / GENERATIVE_ARTIFACT_ROOT
     if not root.exists():
         fail("missing generative validation artifact root")
+    positive_result_classes = {
+        "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY",
+        "GEN_LLM_GOVERNANCE_REDUCES_LATENCY_AT_EQUIVALENT_GENERATED_QUALITY",
+        "GEN_LLM_GOVERNANCE_IMPROVES_GENERATED_QUALITY_UNDER_FIXED_BUDGET",
+        "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY_CRAG",
+        "GEN_LLM_GOVERNANCE_REDUCES_LATENCY_AT_EQUIVALENT_GENERATED_QUALITY_CRAG",
+        "GEN_LLM_GOVERNANCE_IMPROVES_GENERATED_QUALITY_UNDER_FIXED_BUDGET_CRAG",
+    }
     forbidden_keys = {"prompt_text", "generated_answer", "generated_answer_text", "answer_text", "raw_answer"}
     for path in root.rglob("*"):
         if not path.is_file() or path.suffix.lower() not in {".json", ".csv"}:
@@ -248,12 +259,26 @@ def validate_generative_artifacts() -> None:
             walk(payload)
             if hits:
                 fail(f"raw generative text key(s) in {rel}: {hits[:5]}")
+            if path.name == "primary_outcome_statistics.json":
+                result = str(payload.get("result_class", ""))
+                if result in positive_result_classes:
+                    if not payload.get("usable_quality_signal", False):
+                        fail(f"positive generated-governance result lacks usable quality signal in {rel}")
+                    if int(payload.get("non_empty_generated_answers", 0)) <= 0:
+                        fail(f"positive generated-governance result has no nonempty generated answers in {rel}")
+                    if int(payload.get("unique_answer_hash_count", 0)) <= 1:
+                        fail(f"positive generated-governance result lacks answer-hash diversity in {rel}")
         elif path.suffix.lower() == ".csv":
             with path.open(newline="", encoding="utf-8") as handle:
                 fieldnames = csv.DictReader(handle).fieldnames or []
             raw_fields = [field for field in fieldnames if field.lower() in forbidden_keys]
             if raw_fields:
                 fail(f"raw generated-answer field(s) in {rel}: {raw_fields}")
+    audit_manifest = ROOT / "artifacts/generative_llm_validation/hotpotqa_quality_signal_audit/audit_manifest.json"
+    if audit_manifest.exists():
+        audit = json.loads(audit_manifest.read_text(encoding="utf-8"))
+        if "zero" in str(audit.get("prior_zero_delta_explanation", "")).lower() and not audit.get("result_class"):
+            fail("HotpotQA quality-signal audit lacks a machine-readable result class")
     docs_text = "\n".join(
         path.read_text(encoding="utf-8").lower()
         for path in [

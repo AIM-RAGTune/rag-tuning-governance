@@ -14,7 +14,15 @@ from ragtune.fresh_live_behavioral_governance import (
 )
 from ragtune.generated_answer_quality import containment, exact_match, generated_quality_score, token_f1
 from ragtune.generative_prompts import build_rag_prompt
-from ragtune.generative_validation_common import GENERATION_FIELDNAMES, mean, write_csv, write_json, write_md, zero_ci
+from ragtune.generative_validation_common import (
+    GENERATION_FIELDNAMES,
+    mean,
+    quality_signal_diagnostics,
+    write_csv,
+    write_json,
+    write_md,
+    zero_ci,
+)
 from ragtune.generators.factory import discover_generator
 from ragtune.publication_sanitization import stable_hash
 
@@ -178,8 +186,8 @@ def run_hotpotqa_generation(root: Path, output_root: Path, discovery) -> dict[st
     latency_deltas = [float(governed_rows[idx]["total_latency_ms"]) - float(quality_rows[idx]["total_latency_ms"]) for idx in shared_ids]
     answer_deltas = [float(governed_rows[idx]["answer_correctness_f1"]) - float(quality_rows[idx]["answer_correctness_f1"]) for idx in shared_ids]
     evidence_deltas = [float(governed_rows[idx]["evidence_support_score"]) - float(quality_rows[idx]["evidence_support_score"]) for idx in shared_ids]
-    max_quality = max([float(row["final_generated_quality_score"]) for row in result_rows], default=0.0)
-    if max_quality <= 0.0 or len({round(float(row["final_generated_quality_score"]), 12) for row in result_rows}) <= 1:
+    diagnostics = quality_signal_diagnostics(result_rows)
+    if not diagnostics["usable_quality_signal"]:
         result_class = "GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL"
     elif quality_deltas and simple_ci(quality_deltas)["mean"] >= -0.01 and simple_ci(cost_deltas)["ci_high"] < 0:
         result_class = "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY"
@@ -208,6 +216,12 @@ def run_hotpotqa_generation(root: Path, output_root: Path, discovery) -> dict[st
         "latency_delta_ms": simple_ci(latency_deltas),
         "generation_rows": len(result_rows),
         "example_count": len(rows),
+        "quality_signal_audit_result_class": diagnostics["quality_signal_audit_result_class"],
+        "prior_zero_delta_explanation": diagnostics["prior_zero_delta_explanation"],
+        "non_empty_generated_answers": diagnostics["non_empty_generated_answers"],
+        "unique_answer_hash_count": diagnostics["unique_answer_hash_count"],
+        "quality_variance": diagnostics["quality_variance"],
+        "usable_quality_signal": diagnostics["usable_quality_signal"],
         "raw_prompts_committed": False,
         "raw_generated_answers_committed": False,
         "raw_questions_committed": False,
@@ -222,7 +236,68 @@ def run_hotpotqa_generation(root: Path, output_root: Path, discovery) -> dict[st
         {"selector": "quality_only_best_on_validation", "winner": quality_only, "reason": "highest generated quality"},
     ])
     write_csv(output_root / "pareto_frontier.csv", ["policy_id", "frontier_reason"], [{"policy_id": policy, "frontier_reason": "nondominated on generated quality, cost, and latency"} for policy in frontier])
+    write_csv(
+        output_root / "quality_signal_diagnostics.csv",
+        ["metric", "value"],
+        [{"metric": key, "value": value} for key, value in diagnostics.items()],
+    )
     return stats
+
+
+def run_hotpotqa_quality_signal_audit(root: Path, *, output_root: Path, dry_run: bool = False) -> dict[str, object]:
+    previous = os.environ.get("RAGTUNE_GEN_MAX_EXAMPLES")
+    os.environ.setdefault("RAGTUNE_GEN_MAX_EXAMPLES", "12")
+    try:
+        stats = run_hotpotqa_generative_validation(root, output_root=output_root, dry_run=dry_run)
+    finally:
+        if previous is None:
+            os.environ.pop("RAGTUNE_GEN_MAX_EXAMPLES", None)
+        else:
+            os.environ["RAGTUNE_GEN_MAX_EXAMPLES"] = previous
+    diagnostics_path = output_root / "quality_signal_diagnostics.csv"
+    audit_result_class = str(stats.get("quality_signal_audit_result_class", "HOTPOTQA_GEN_LLM_ZERO_DELTAS_INCONCLUSIVE"))
+    manifest = {
+        "suite": "ragtune_hotpotqa_generative_quality_signal_audit_v1",
+        "result_class": audit_result_class,
+        "primary_result_class": stats.get("result_class", ""),
+        "generator_provider": stats.get("generator_provider", ""),
+        "generator_model": stats.get("generator_model", ""),
+        "sample_size": stats.get("example_count", 0),
+        "generation_rows": stats.get("generation_rows", 0),
+        "unique_answer_hash_count": stats.get("unique_answer_hash_count", 0),
+        "non_empty_generated_answers": stats.get("non_empty_generated_answers", 0),
+        "quality_variance": stats.get("quality_variance", 0.0),
+        "prior_zero_delta_explanation": stats.get("prior_zero_delta_explanation", ""),
+        "diagnostics_path": diagnostics_path.relative_to(root).as_posix() if diagnostics_path.exists() else "",
+        "raw_prompts_committed": False,
+        "raw_generated_answers_committed": False,
+        "raw_questions_committed": False,
+        "raw_contexts_committed": False,
+        "raw_supporting_fact_text_committed": False,
+        "secrets_committed": False,
+    }
+    write_json(output_root / "audit_manifest.json", manifest)
+    write_md(
+        output_root / "quality_signal_audit_report.md",
+        f"""
+# HotpotQA Generative Quality-Signal Audit
+
+Result class: `{audit_result_class}`
+
+Primary generated-governance result class: `{stats.get('result_class', '')}`
+
+Sample size: {stats.get('example_count', 0)}
+Generation rows: {stats.get('generation_rows', 0)}
+Unique answer hashes: {stats.get('unique_answer_hash_count', 0)}
+Non-empty generated answers: {stats.get('non_empty_generated_answers', 0)}
+Quality variance: {stats.get('quality_variance', 0.0)}
+
+Zero-delta explanation: {stats.get('prior_zero_delta_explanation', '')}
+
+The audit stores only hashes, counts, and metrics. Raw HotpotQA questions, context paragraphs, supporting-fact sentences, prompts, and generated answers are not committed.
+""",
+    )
+    return {**stats, **manifest}
 
 
 def run_hotpotqa_generative_validation(root: Path, *, output_root: Path, dry_run: bool = False) -> dict[str, object]:

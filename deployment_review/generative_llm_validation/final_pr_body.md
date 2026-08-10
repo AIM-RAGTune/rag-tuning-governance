@@ -14,7 +14,7 @@ Adds RAGTune Generative LLM Validation v1. This validates policy-specific genera
 ## CRAG generative result
 
 - Evidence class: `crag_generative_validation_sanitized_bounded_sample`
-- Result class: `GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY`
+- Result class: superseded by v1.1 as `GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL_CRAG`
 - Generator: `ollama` / `qwen3:8b`
 - Quality metric class: `GENERATED_QUALITY_CRAG_LOCAL_EVALUATOR`
 - Governed winner: `static_default_policy`
@@ -31,7 +31,7 @@ Adds RAGTune Generative LLM Validation v1. This validates policy-specific genera
 ## HotpotQA generative result
 
 - Evidence class: `hotpotqa_local_generative_validation_sanitized_bounded_sample`
-- Result class: `GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY`
+- Result class: superseded by v1.1 as `GEN_LLM_GOVERNANCE_INCONCLUSIVE`
 - Generator: `ollama` / `qwen3:8b`
 - Quality metric class: `GENERATED_QUALITY_HOTPOTQA_ANSWER_LABELS_PLUS_SUPPORTING_FACTS`
 - Governed winner: `rag_compass_optional`
@@ -47,8 +47,8 @@ Adds RAGTune Generative LLM Validation v1. This validates policy-specific genera
 
 ## Synthesis
 
-- Result class: `GEN_LLM_SYNTHESIS_GENERATIVE_VALIDATION_SUPPORTED`
-- Interpretation: bounded local CRAG and HotpotQA generative evidence is present with small samples and zero-width CIs; broader validation remains future work.
+- Result class: superseded by v1.1 as `GEN_LLM_SYNTHESIS_INCONCLUSIVE`
+- Interpretation: the v1.1 audit confirmed HotpotQA quality variation but not governance improvement, and CRAG generated answers remained empty.
 
 ## Validation
 

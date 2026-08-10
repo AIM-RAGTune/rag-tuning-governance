@@ -9,7 +9,15 @@ from typing import Any
 from ragtune.fresh_live_behavioral_governance import CRAG_LIVE_POLICIES, inspect_crag_environment
 from ragtune.generated_answer_quality import containment, exact_match, generated_quality_score, token_f1
 from ragtune.generative_prompts import build_rag_prompt
-from ragtune.generative_validation_common import GENERATION_FIELDNAMES, mean, write_csv, write_json, write_md, zero_ci
+from ragtune.generative_validation_common import (
+    GENERATION_FIELDNAMES,
+    mean,
+    quality_signal_diagnostics,
+    write_csv,
+    write_json,
+    write_md,
+    zero_ci,
+)
 from ragtune.generators.factory import discover_generator
 from ragtune.publication_sanitization import stable_hash
 
@@ -216,15 +224,26 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
     cost_deltas = [float(governed_rows[idx]["total_cost_units"]) - float(quality_rows[idx]["total_cost_units"]) for idx in shared_ids]
     latency_deltas = [float(governed_rows[idx]["total_latency_ms"]) - float(quality_rows[idx]["total_latency_ms"]) for idx in shared_ids]
     api_deltas = [float(governed_rows[idx]["api_call_count"]) - float(quality_rows[idx]["api_call_count"]) for idx in shared_ids]
-    max_quality = max([float(row["final_generated_quality_score"]) for row in result_rows], default=0.0)
-    if max_quality <= 0.0 or len({round(float(row["final_generated_quality_score"]), 12) for row in result_rows}) <= 1:
-        result_class = "GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL"
+    diagnostics = quality_signal_diagnostics(result_rows)
+    if diagnostics["quality_signal_audit_result_class"] == "HOTPOTQA_GEN_LLM_BLOCKED_NO_USABLE_QUALITY_SIGNAL":
+        diagnostics["quality_signal_audit_result_class"] = "CRAG_GENERATED_QUALITY_BLOCKED_NO_USABLE_SIGNAL"
+    elif diagnostics["quality_signal_audit_result_class"] == "HOTPOTQA_GEN_LLM_QUALITY_SIGNAL_CONFIRMED":
+        diagnostics["quality_signal_audit_result_class"] = "CRAG_GENERATED_QUALITY_LOCAL_EVALUATOR_ACTIVE"
+    elif diagnostics["quality_signal_audit_result_class"] == "HOTPOTQA_GEN_LLM_ZERO_DELTAS_GENERATOR_INSENSITIVE":
+        diagnostics["quality_signal_audit_result_class"] = "CRAG_GENERATED_QUALITY_BLOCKED_NO_USABLE_SIGNAL"
+    if not diagnostics["usable_quality_signal"]:
+        result_class = "GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL_CRAG"
     elif quality_deltas and simple_ci(quality_deltas)["mean"] >= -0.01 and simple_ci(cost_deltas)["ci_high"] < 0:
-        result_class = "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY"
+        result_class = "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY_CRAG"
     elif quality_deltas and simple_ci(quality_deltas)["mean"] < -0.01 and simple_ci(cost_deltas)["mean"] < 0:
-        result_class = "GEN_LLM_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS"
+        result_class = "GEN_LLM_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS_CRAG"
     else:
-        result_class = "GEN_LLM_GOVERNANCE_INCONCLUSIVE"
+        result_class = "GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG"
+    mapping_class = (
+        "CRAG_GENERATED_QUALITY_LOCAL_EVALUATOR_ACTIVE"
+        if diagnostics["usable_quality_signal"]
+        else "CRAG_GENERATED_QUALITY_BLOCKED_NO_USABLE_SIGNAL"
+    )
     stats = {
         "suite": "ragtune_crag_generative_llm_validation_v1",
         "evidence_class": "crag_generative_validation_sanitized_bounded_sample",
@@ -234,6 +253,7 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
         "generator_available": True,
         "generator_local_or_hosted": discovery.local_or_hosted,
         "quality_metric_class": "GENERATED_QUALITY_CRAG_LOCAL_EVALUATOR",
+        "crag_evaluator_mapping_result_class": mapping_class,
         "governed_winner": governed,
         "quality_only_winner": quality_only,
         "constrained_optimizer_winner": governed,
@@ -246,6 +266,12 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
         "api_call_delta": simple_ci(api_deltas),
         "generation_rows": len(result_rows),
         "example_count": len(rows),
+        "quality_signal_audit_result_class": diagnostics["quality_signal_audit_result_class"],
+        "prior_zero_delta_explanation": diagnostics["prior_zero_delta_explanation"],
+        "non_empty_generated_answers": diagnostics["non_empty_generated_answers"],
+        "unique_answer_hash_count": diagnostics["unique_answer_hash_count"],
+        "quality_variance": diagnostics["quality_variance"],
+        "usable_quality_signal": diagnostics["usable_quality_signal"],
         "raw_prompts_committed": False,
         "raw_generated_answers_committed": False,
         "raw_questions_committed": False,
@@ -259,6 +285,11 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
         {"selector": "quality_only_best_on_validation", "winner": quality_only, "reason": "highest generated quality"},
     ])
     write_csv(output_root / "pareto_frontier.csv", ["policy_id", "frontier_reason"], [{"policy_id": policy, "frontier_reason": "nondominated on generated quality, cost, and latency"} for policy in frontier])
+    write_csv(
+        output_root / "quality_signal_diagnostics.csv",
+        ["metric", "value"],
+        [{"metric": key, "value": value} for key, value in diagnostics.items()],
+    )
     return stats
 
 
