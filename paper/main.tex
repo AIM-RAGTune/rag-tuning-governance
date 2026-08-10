@@ -9,7 +9,7 @@
 \maketitle
 
 \begin{abstract}
-This scaffold summarizes the RAGTune governance validation package. The strongest current result is CRAG mock-API governance superiority. Optimizer superiority for RAG Compass, generative LLM validation, human evaluation, official external-platform benchmarking, and production readiness are not claimed.
+This scaffold summarizes the RAGTune governance validation package. The strongest current result is CRAG mock-API governance superiority. A bounded local HotpotQA generative run adds directional generated-answer evidence, but broad generative validation, optimizer superiority for RAG Compass, human evaluation, official external-platform benchmarking, and production readiness are not claimed.
 \end{abstract}
 
 \section{Introduction}
@@ -40,10 +40,13 @@ Summarize the full held-out CRAG mock-API result, Docker decision reproduction, 
 The follow-up experiment reanalyzes sanitized CRAG mock-API frozen observations using candidate policies with different endpoint-routing and operating-cost behavior. The primary endpoint is not a scalar weighted utility difference: governed selection must either reduce measured cost or latency at equivalent proxy-plus-evidence quality, or improve quality under a fixed deployment budget. The current result is \texttt{GOVERNANCE\_REDUCES\_COST\_AT\_EQUIVALENT\_QUALITY}: governed selection chose \texttt{low\_retrieval\_single\_endpoint}, while quality-only selection chose \texttt{optuna\_tpe}. This remains frozen-observation source/retrieval evidence and does not establish human-calibrated, generative, production, or RAG Compass superiority claims.
 
 \section{Fresh Live CRAG and HotpotQA Extension}
-The next phase attempts to run the behaviorally distinct governance design against a fresh live CRAG mock-API collection and HotpotQA as an alternate public corpus with answer labels and supporting facts. In the current public repository execution, both fresh data paths are blocked because approved local CRAG and HotpotQA data are unavailable. This blocked result is reported directly and does not upgrade frozen-observation evidence to replicated evidence.
+The next phase attempts to run the behaviorally distinct governance design against a fresh live CRAG mock-API collection and HotpotQA as an alternate public corpus with answer labels and supporting facts. In the current public repository execution, fresh CRAG ran as a sanitized live sample but remained blocked because the quality signal was unusable. HotpotQA produced an operational-gain-with-quality-loss non-generative result. These results do not upgrade frozen-observation evidence to replicated evidence.
+
+\section{Generative LLM Validation}
+RAGTune Generative LLM Validation v1 adds pinned-generator answer generation with sanitized generated-answer metrics. The current public artifact set includes a bounded local Ollama \texttt{qwen3:8b} run on HotpotQA with no committed raw prompts or generated answers. The result is directional because CRAG generative validation remains blocked or incomplete.
 
 \section{Limitations}
-Generative LLM validation is unsupported. Human evaluation is not yet run. Official external-platform benchmarking is not yet run. Production readiness is not claimed.
+Broad generative LLM validation beyond the bounded local HotpotQA run is unsupported. Human evaluation is not yet run. Official external-platform benchmarking is not yet run. Production readiness is not claimed.
 
 \section{Reproducibility}
 Raw licensed datasets must be obtained separately. The repository includes configs, scripts, manifests, and processed summaries.

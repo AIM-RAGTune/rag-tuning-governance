@@ -1,0 +1,28 @@
+# Generative LLM Validation Post-Validation Report
+
+- Publication validator: passed
+- `pytest -q tests/publication`: 51 passed
+- `make validate-publication`: passed
+- `make test`: 51 passed
+- `python3 -m compileall src scripts`: passed
+- Large-file scan: passed for public tree; only untracked `.local_data` cache exceeds 50 MB
+- Raw prompt/generated-answer scan: passed with expected field-name, sanitizer, test, and sanitized-artifact references only
+- Secret scan: passed with expected scanner/config variable-name references only
+- Private-path scan: passed
+- Overclaim scan: passed with expected unsupported-claim statements only
+
+## Generator Status
+
+- Local generator provider: `ollama`
+- Model: `qwen3:8b`
+- Hosted generator: not used
+- Raw prompts committed: no
+- Raw generated answers committed: no
+
+## Results
+
+- CRAG generative result: `GEN_LLM_VALIDATION_BLOCKED_NO_GENERATOR`
+- HotpotQA generative result: `GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY`
+- Synthesis result: `GEN_LLM_SYNTHESIS_DIRECTIONAL`
+
+The HotpotQA result is a bounded 4-example local-generator run. It is not official platform benchmarking, human validation, production validation, broad governance superiority, or RAG Compass superiority.

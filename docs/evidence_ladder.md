@@ -41,5 +41,6 @@ This level would require stronger independent reproduction and validation layers
 - RAGTune governance: Level 6 in a bounded CRAG mock-API source/retrieval governance setting.
 - RAGTune governance has not reached Level 7.
 - Fresh live CRAG replication remains blocked in the current public-repository execution environment. HotpotQA alternate-corpus validation ran with sanitized answer-label/supporting-fact metrics and returned `HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS`, a negative/mixed result rather than a Level 7 replication.
+- Generative LLM Validation v1 adds a bounded local HotpotQA generated-answer run with Ollama `qwen3:8b` and sanitized metrics. This is directional evidence, not Level 7, because CRAG generative validation and human/platform validation remain incomplete.
 - RAG Compass has not reached optimizer-superiority support.
-- Human, generative, official platform, production, broad-generalization, and hardware/quantum claims remain unsupported.
+- Human, official platform, production, broad-generalization, and hardware/quantum claims remain unsupported.

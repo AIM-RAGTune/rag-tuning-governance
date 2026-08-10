@@ -37,6 +37,12 @@ Current execution status in this public repository environment: approved local C
 
 Raw CRAG data are not redistributed. CRAG remains noncommercial research-only. HotpotQA raw data are not committed to this repository. See `docs/fresh_live_crag_hotpotqa_behavioral_governance_plan.md`, `docs/dataset_acquisition.md`, and `results/multi_dataset_behavioral_governance/paper_ready_summary.md`.
 
+## Generative LLM Validation
+
+RAGTune Generative LLM Validation v1 adds a pinned-generator path for policy-specific generated answers. In this public artifact set, HotpotQA completed a bounded local Ollama run with `qwen3:8b` and sanitized generated-answer metrics. The result was `GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY` on a 4-example bounded sample: governed selection chose `rag_compass_optional`, quality-only chose `expanded_retrieval_multi_context`, generated-quality delta was 0.0, cost delta was -1.0943 cost units, and latency delta was about -302 ms.
+
+The synthesis is `GEN_LLM_SYNTHESIS_DIRECTIONAL`, not replicated or production evidence, because CRAG generative validation did not complete a usable generated-answer quality run. Raw prompts, raw generated answers, raw dataset questions, raw contexts, and secrets are not committed. See `docs/generative_llm_validation.md`, `docs/generator_configuration.md`, and `results/generative_llm_validation/synthesis_report.md`.
+
 ## What This Repository Contains
 
 - `src/ragtune/`: RAGTune implementation code.
@@ -87,7 +93,7 @@ The ledger contains sanitized summaries only. It does not include raw datasets, 
 This repository does not claim:
 
 - RAG Compass superiority.
-- Generative LLM validation.
+- Broad generative LLM validation beyond the bounded local HotpotQA run.
 - Human-evaluation validation.
 - Official LangSmith, Ragas, DeepEval, or RAGChecker benchmarking.
 - Production readiness.

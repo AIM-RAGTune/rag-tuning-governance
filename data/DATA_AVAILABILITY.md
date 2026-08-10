@@ -50,3 +50,7 @@ Fresh live CRAG requires approved noncommercial research-only local access to CR
 The latest fresh-live attempt configured approved local CRAG root/data paths, restored readable mock-API KG data, and ran a sanitized 50-example live sample. The result is `FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY`: raw data stayed local, but the exported live sample did not produce a usable answer/evidence quality signal for a positive governance claim.
 
 HotpotQA is the preferred alternate public corpus for stronger answer-label and supporting-fact evaluation. This repository does not include raw HotpotQA questions, context paragraphs, or supporting-fact sentences. Reviewers should acquire HotpotQA from the original approved source or Hugging Face into a local data cache, then run the scripts documented in `docs/dataset_acquisition.md`.
+
+## Generative Validation Data Handling
+
+When generative validation runs, raw prompts and raw generated answers are written only to gitignored local paths under `.local_data/`. Committed artifacts contain hashes, counts, model identifiers, policy identifiers, and metrics only. Raw CRAG and HotpotQA text remains governed by the original dataset licenses and is not redistributed here.

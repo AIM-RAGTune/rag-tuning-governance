@@ -1,0 +1,13 @@
+# Platform Benchmarking Boundary
+
+Local or hosted generative validation is not official platform benchmarking.
+
+This repository distinguishes:
+
+- local generative validation: a locally served model produces answers under a pinned model identifier;
+- hosted-model generative validation: a hosted API produces answers under a pinned model identifier;
+- official platform benchmarking: platform-native evaluation services run and produce platform-native artifacts.
+
+The current generative validation uses local Ollama for HotpotQA. It is not an official LangSmith, Ragas, DeepEval, RAGChecker, Azure, AWS, GCP, or OpenAI platform benchmark.
+
+Human validation and production validation also remain separate unsupported claims unless real annotations or production evidence are added.
