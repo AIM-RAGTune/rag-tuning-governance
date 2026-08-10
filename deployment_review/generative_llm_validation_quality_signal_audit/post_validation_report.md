@@ -1,9 +1,9 @@
 # Generative LLM Validation v1.1 Post-Validation Report
 
 - Publication validator: passed
-- `pytest -q tests/publication`: 69 passed
+- `pytest -q tests/publication`: 70 passed
 - `make validate-publication`: passed
-- `make test`: 69 passed
+- `make test`: 70 passed
 - `python3 -m compileall src scripts`: passed
 - Large-file scan: passed for tracked/public tree with `.local_data` excluded
 - Raw prompt/generated-answer scan: passed with expected sanitizer, test, field-name, and sanitized-artifact references only
@@ -43,7 +43,8 @@
 
 ## Synthesis
 
-- Result class: `GEN_LLM_SYNTHESIS_DIRECTIONAL`
-- Interpretation: CRAG produced bounded local generative support for reduced measured cost at equivalent generated-answer quality, while HotpotQA remained inconclusive.
+- CRAG repeat comparison: `CRAG_GEN_LLM_COST_RESULT_NOT_REPLICATED`
+- Result class: `GEN_LLM_SYNTHESIS_MIXED`
+- Interpretation: The primary CRAG slice produced generative support, but an independent deterministic CRAG repeat did not reproduce the cost result; HotpotQA remained inconclusive.
 
 No raw prompts, raw generated answers, raw CRAG text, raw HotpotQA questions/context, raw API responses, secrets, or private paths are committed.

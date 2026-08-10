@@ -9,7 +9,7 @@
 \maketitle
 
 \begin{abstract}
-This scaffold summarizes the RAGTune governance validation package. The strongest current result is CRAG mock-API governance superiority. A bounded local generative LLM quality-signal audit produced directional evidence: CRAG reduced measured cost at equivalent generated-answer quality in a 12-example local qwen3 run, while HotpotQA remained inconclusive. Broad generative validation, optimizer superiority for RAG Compass, human evaluation, official external-platform benchmarking, and production readiness are not claimed.
+This scaffold summarizes the RAGTune governance validation package. The strongest current result is CRAG mock-API governance superiority. A bounded local generative LLM quality-signal audit produced mixed evidence: one CRAG slice reduced measured cost at equivalent generated-answer quality in a 12-example local qwen3 run, but an independent deterministic CRAG repeat did not reproduce the cost result and HotpotQA remained inconclusive. Broad generative validation, optimizer superiority for RAG Compass, human evaluation, official external-platform benchmarking, and production readiness are not claimed.
 \end{abstract}
 
 \section{Introduction}
@@ -43,10 +43,10 @@ The follow-up experiment reanalyzes sanitized CRAG mock-API frozen observations 
 The next phase attempts to run the behaviorally distinct governance design against a fresh live CRAG mock-API collection and HotpotQA as an alternate public corpus with answer labels and supporting facts. In the current public repository execution, fresh CRAG ran as a sanitized live sample but remained blocked because the quality signal was unusable. HotpotQA produced an operational-gain-with-quality-loss non-generative result. These results do not upgrade frozen-observation evidence to replicated evidence.
 
 \section{Generative LLM Validation}
-RAGTune Generative LLM Validation v1.1 adds pinned-generator answer generation with sanitized generated-answer metrics, a HotpotQA quality-signal audit, and CRAG generator/evaluator repair. The HotpotQA audit used a bounded 12-example local Ollama \texttt{qwen3:8b} run and found a nonconstant generated-answer quality signal, but governed and quality-only selection chose the same policy. The CRAG rerun used the restored local CRAG mock-API path and local evaluator mapping after disabling Ollama thinking output for \texttt{qwen3:8b}; the larger bounded 12-example sample produced 132 nonempty generated answers and reduced measured cost at equivalent generated-answer quality. The synthesis is \texttt{GEN\_LLM\_SYNTHESIS\_DIRECTIONAL}.
+RAGTune Generative LLM Validation v1.1 adds pinned-generator answer generation with sanitized generated-answer metrics, a HotpotQA quality-signal audit, and CRAG generator/evaluator repair. The HotpotQA audit used a bounded 12-example local Ollama \texttt{qwen3:8b} run and found a nonconstant generated-answer quality signal, but governed and quality-only selection chose the same policy. The CRAG primary slice used the restored local CRAG mock-API path and local evaluator mapping after disabling Ollama thinking output for \texttt{qwen3:8b}; the larger bounded 12-example primary sample produced 132 nonempty generated answers and reduced measured cost at equivalent generated-answer quality. An independent deterministic CRAG repeat did not reproduce the cost result. The synthesis is \texttt{GEN\_LLM\_SYNTHESIS\_MIXED}.
 
 \section{Limitations}
-Broad generative LLM governance validation beyond the current bounded local CRAG directional result and inconclusive HotpotQA audit is unsupported. Human evaluation is not yet run. Official external-platform benchmarking is not yet run. Production readiness is not claimed.
+Broad generative LLM governance validation beyond the current mixed bounded local CRAG/HotpotQA evidence is unsupported. Human evaluation is not yet run. Official external-platform benchmarking is not yet run. Production readiness is not claimed.
 
 \section{Reproducibility}
 Raw licensed datasets must be obtained separately. The repository includes configs, scripts, manifests, and processed summaries.
