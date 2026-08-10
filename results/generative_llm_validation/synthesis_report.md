@@ -6,6 +6,6 @@ CRAG generative result: `GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED
 
 HotpotQA generative result: `GEN_LLM_GOVERNANCE_INCONCLUSIVE`
 
-Interpretation: The primary CRAG slice produced generative support, but an independent deterministic CRAG repeat did not reproduce the cost result.
+Interpretation: CRAG generative cost reduction was not stable across independent deterministic repeats.
 
 No raw prompts, raw generated answers, raw dataset questions, raw source documents, secrets, or private local paths are included.

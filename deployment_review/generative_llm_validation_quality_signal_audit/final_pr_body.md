@@ -61,7 +61,7 @@ Adds an independent deterministic CRAG generative repeat after the larger qwen3:
 ## Synthesis
 
 - Result class: `GEN_LLM_SYNTHESIS_MIXED`
-- Interpretation: The primary CRAG slice produced generative support, but an independent deterministic CRAG repeat did not reproduce the cost result; HotpotQA remained inconclusive.
+- Interpretation: Superseded by `results/generative_llm_validation/crag_stability_comparison.json`; the primary CRAG slice produced generative support, but independent deterministic CRAG repeats did not reproduce the cost result and HotpotQA remained inconclusive.
 
 ## Validation
 
