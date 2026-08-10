@@ -1,6 +1,6 @@
 ## Summary
 
-Reruns HotpotQA generative validation at a larger bounded sample size, audits why the initial generated-quality deltas were all zero, repairs CRAG generator access, and attempts CRAG generated-answer evaluator mapping.
+Repairs qwen3:8b CRAG answer emission by disabling Ollama thinking mode for qwen3 generators, reruns the bounded CRAG generative validation, and preserves the resulting inconclusive governance outcome with sanitized generated-answer metrics.
 
 ## HotpotQA quality-signal audit
 
@@ -30,28 +30,31 @@ Reruns HotpotQA generative validation at a larger bounded sample size, audits wh
 - Mock API available: yes
 - Generator reachable from CRAG script: yes
 - Local evaluator available: yes
-- Evaluator mapping result class: `CRAG_GENERATED_QUALITY_BLOCKED_NO_USABLE_SIGNAL`
-- CRAG generative result class: `GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL_CRAG`
-- Governed winner: `governed_selection`
-- Quality-only winner: `adaptive_routing_on_insufficient_evidence`
+- qwen3 answer-emission repair: passed with Ollama `think: false`
+- Evaluator mapping result class: `CRAG_GENERATED_QUALITY_LOCAL_EVALUATOR_ACTIVE`
+- CRAG generative result class: `GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG`
+- Non-empty generated answers: 88
+- Unique answer hashes: 32
+- Governed winner: `expanded_retrieval_multi_endpoint`
+- Quality-only winner: `expanded_retrieval_multi_endpoint`
 - RAG Compass rank: 8
 - Generated-quality delta: 0.0 [0.0, 0.0]
 - Evidence-support delta: 0.0 [0.0, 0.0]
-- Cost delta: -1.242 [-1.3106, -1.2904]
-- Latency delta: -37.26543020457029 [-126.12729147076607, 3.849375993013382]
+- Cost delta: 0.0 [0.0, 0.0]
+- Latency delta: 0.0 [0.0, 0.0]
 
 ## Synthesis
 
 - Result class: `GEN_LLM_SYNTHESIS_INCONCLUSIVE`
-- Interpretation: HotpotQA confirmed a usable nonconstant generated-answer quality signal but did not show governance improvement; CRAG generator access was repaired but generated answers remained empty, so CRAG generative validation remains blocked.
+- Interpretation: HotpotQA and CRAG both have usable nonconstant generated-answer quality signals, but neither supported a governance improvement under the bounded samples.
 
 ## Validation
 
-- publication validator: see post-validation report
-- pytest: see post-validation report
-- make validate-publication: see post-validation report
-- make test: see post-validation report
-- compile: see post-validation report
+- publication validator: passed
+- pytest: 69 passed
+- make validate-publication: passed
+- make test: 69 passed
+- compile: passed
 - raw prompt/generated-answer scan: expected sanitizer/test/field-name references only
 - raw dataset text scan: expected sanitizer/test/field-name references only
 - secret scan: expected scanner/config variable-name references only

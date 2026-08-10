@@ -10,6 +10,12 @@ export RAGTUNE_OLLAMA_BASE_URL=http://localhost:11434
 export RAGTUNE_GENERATOR_MODEL=qwen3:8b
 ```
 
+For `qwen3*` models, the Ollama adapter sends `think: false` by default so final answers are emitted into the response field instead of spending the generation budget in hidden reasoning output. Override only for local debugging:
+
+```bash
+export RAGTUNE_OLLAMA_THINK=true
+```
+
 Run:
 
 ```bash

@@ -1,5 +1,5 @@
 {
-  "crag_result_class": "GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL_CRAG",
+  "crag_result_class": "GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG",
   "fresh_live_crag_proxy_result": "FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY",
   "hotpotqa_non_generative_result": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS",
   "hotpotqa_result_class": "GEN_LLM_GOVERNANCE_INCONCLUSIVE",
