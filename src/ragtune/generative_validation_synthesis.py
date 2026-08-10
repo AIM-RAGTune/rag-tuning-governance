@@ -10,6 +10,9 @@ POSITIVE = {
     "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY",
     "GEN_LLM_GOVERNANCE_REDUCES_LATENCY_AT_EQUIVALENT_GENERATED_QUALITY",
     "GEN_LLM_GOVERNANCE_IMPROVES_GENERATED_QUALITY_UNDER_FIXED_BUDGET",
+    "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY_CRAG",
+    "GEN_LLM_GOVERNANCE_REDUCES_LATENCY_AT_EQUIVALENT_GENERATED_QUALITY_CRAG",
+    "GEN_LLM_GOVERNANCE_IMPROVES_GENERATED_QUALITY_UNDER_FIXED_BUDGET_CRAG",
     "GEN_LLM_VALIDATION_LOCAL_OPEN_MODEL_COMPLETED",
     "GEN_LLM_VALIDATION_HOSTED_MODEL_COMPLETED",
     "GEN_LLM_VALIDATION_CRAG_GENERATED_ANSWER_SIGNAL",
@@ -30,16 +33,24 @@ def load_result(path: Path, default: str) -> dict[str, object]:
 
 def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[str, object]:
     crag = load_result(root / "artifacts/generative_llm_validation/crag/primary_outcome_statistics.json", "GEN_LLM_VALIDATION_BLOCKED_CRAG_UNAVAILABLE")
-    hotpotqa = load_result(root / "artifacts/generative_llm_validation/hotpotqa/primary_outcome_statistics.json", "GEN_LLM_VALIDATION_BLOCKED_HOTPOTQA_UNAVAILABLE")
+    audit_hotpotqa = root / "artifacts/generative_llm_validation/hotpotqa_quality_signal_audit/primary_outcome_statistics.json"
+    hotpotqa = load_result(
+        audit_hotpotqa if audit_hotpotqa.exists() else root / "artifacts/generative_llm_validation/hotpotqa/primary_outcome_statistics.json",
+        "GEN_LLM_VALIDATION_BLOCKED_HOTPOTQA_UNAVAILABLE",
+    )
     crag_class = str(crag.get("result_class", ""))
     hotpotqa_class = str(hotpotqa.get("result_class", ""))
+    crag_usable = bool(crag.get("usable_quality_signal", crag_class in POSITIVE))
+    hotpotqa_usable = bool(hotpotqa.get("usable_quality_signal", hotpotqa_class in POSITIVE))
+    crag_positive = crag_class in POSITIVE and crag_usable
+    hotpotqa_positive = hotpotqa_class in POSITIVE and hotpotqa_usable
     if "NO_GENERATOR" in crag_class and "NO_GENERATOR" in hotpotqa_class:
         result_class = "GEN_LLM_SYNTHESIS_BLOCKED"
         interpretation = "No pinned local or hosted generator was available, so generative validation remains blocked."
-    elif crag_class in POSITIVE and hotpotqa_class in POSITIVE:
+    elif crag_positive and hotpotqa_positive:
         result_class = "GEN_LLM_SYNTHESIS_GENERATIVE_VALIDATION_SUPPORTED"
         interpretation = "Both datasets produced generative validation support."
-    elif crag_class in POSITIVE or hotpotqa_class in POSITIVE:
+    elif crag_positive or hotpotqa_positive:
         result_class = "GEN_LLM_SYNTHESIS_DIRECTIONAL"
         interpretation = "One dataset produced generative support while the other did not."
     elif crag_class in NEGATIVE and hotpotqa_class in NEGATIVE:

@@ -1,0 +1,13 @@
+{
+  "starting_branch": "main",
+  "requested_source_branch_present": true,
+  "requested_source_commit_present": true,
+  "requested_source_commit": "47bd6713774f019497ef40da26bd831f04fe8457",
+  "continuation_branch": "generative-llm-validation-v1-quality-signal-audit",
+  "starting_commit": "10418d7df9618c3732f4677dbebe4298c35b073c",
+  "working_tree_status_at_branch_creation": "clean",
+  "publication_validator": "passed",
+  "pytest_publication": "51 passed",
+  "compileall": "passed",
+  "branch_note": "prior generative branch was already squash-merged to main as PR #2; continuation branch was created from main to avoid duplicate PR diffs"
+}

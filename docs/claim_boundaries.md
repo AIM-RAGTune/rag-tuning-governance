@@ -17,7 +17,7 @@ Unsupported:
 
 - RAG Compass superiority.
 - Broad universal governance superiority across all RAG settings.
-- Broad generative LLM validation beyond the bounded local CRAG and HotpotQA runs.
+- Generative LLM governance validation beyond the current inconclusive HotpotQA audit and blocked CRAG generated-answer signal.
 - Human-evaluation validation.
 - Official external platform benchmarking.
 - Production readiness.
@@ -30,4 +30,4 @@ This repository does not grant CRAG redistribution rights. The CRAG mock-API res
 
 ## Generative LLM Boundary
 
-`ragtune_generative_llm_validation_v1` adds bounded local generative validation using Ollama `qwen3:8b` on HotpotQA and CRAG. The synthesis is `GEN_LLM_SYNTHESIS_GENERATIVE_VALIDATION_SUPPORTED`: both bounded runs produced sanitized generated-answer cost-at-equivalent-quality signals. This is small-sample local generative validation, not official platform benchmarking, human validation, production validation, broad governance superiority, or RAG Compass superiority.
+`ragtune_generative_llm_validation_v1.1` adds a HotpotQA quality-signal audit and CRAG generator/evaluator repair using local Ollama `qwen3:8b`. The synthesis is `GEN_LLM_SYNTHESIS_INCONCLUSIVE`: HotpotQA produced a nonconstant generated-answer quality signal but no governance improvement, while CRAG generator access was repaired but generated answers remained empty. This is not official platform benchmarking, human validation, production validation, broad governance superiority, or RAG Compass superiority.

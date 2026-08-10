@@ -1,11 +1,11 @@
 {
-  "crag_result_class": "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY",
+  "crag_result_class": "GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL_CRAG",
   "fresh_live_crag_proxy_result": "FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY",
   "hotpotqa_non_generative_result": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS",
-  "hotpotqa_result_class": "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY",
-  "interpretation": "Both datasets produced generative validation support.",
+  "hotpotqa_result_class": "GEN_LLM_GOVERNANCE_INCONCLUSIVE",
+  "interpretation": "Generative validation did not produce enough usable evidence for a governance claim.",
   "prior_frozen_crag_behavioral_result": "GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY",
-  "result_class": "GEN_LLM_SYNTHESIS_GENERATIVE_VALIDATION_SUPPORTED",
+  "result_class": "GEN_LLM_SYNTHESIS_INCONCLUSIVE",
   "suite": "ragtune_generative_llm_validation_synthesis_v1",
   "unsupported_claims": [
     "official platform benchmarking",
