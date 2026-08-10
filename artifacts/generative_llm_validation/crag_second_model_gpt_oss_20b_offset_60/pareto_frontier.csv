@@ -1,0 +1,4 @@
+policy_id,frontier_reason
+constrained_quality_optimizer,"nondominated on generated quality, cost, and latency"
+measured_latency_minimizer_at_quality_floor,"nondominated on generated quality, cost, and latency"
+rag_compass_optional,"nondominated on generated quality, cost, and latency"

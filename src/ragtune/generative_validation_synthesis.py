@@ -50,6 +50,11 @@ def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[s
         "",
     )
     stability_comparison_class = str(stability_comparison.get("result_class", ""))
+    second_model_comparison = load_result(
+        root / "results/generative_llm_validation/crag_second_model_comparison.json",
+        "",
+    )
+    second_model_comparison_class = str(second_model_comparison.get("result_class", ""))
     crag_usable = bool(crag.get("usable_quality_signal", crag_class in POSITIVE))
     hotpotqa_usable = bool(hotpotqa.get("usable_quality_signal", hotpotqa_class in POSITIVE))
     crag_positive = crag_class in POSITIVE and crag_usable
@@ -69,7 +74,10 @@ def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[s
         "CRAG_GEN_LLM_COST_RESULT_DIRECTIONAL_BUT_UNSTABLE",
     }:
         result_class = "GEN_LLM_SYNTHESIS_MIXED"
-        interpretation = "CRAG generative cost reduction was not stable across independent deterministic repeats."
+        if second_model_comparison_class:
+            interpretation = "CRAG generative cost reduction was not stable across independent deterministic repeats and was not recovered by a second pinned local generator."
+        else:
+            interpretation = "CRAG generative cost reduction was not stable across independent deterministic repeats."
     elif repeat_comparison_class == "CRAG_GEN_LLM_COST_RESULT_NOT_REPLICATED":
         result_class = "GEN_LLM_SYNTHESIS_MIXED"
         interpretation = "The primary CRAG slice produced generative support, but an independent deterministic CRAG repeat did not reproduce the cost result."
@@ -95,6 +103,7 @@ def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[s
         "hotpotqa_non_generative_result": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS",
         "crag_repeat_comparison_result": repeat_comparison_class,
         "crag_stability_comparison_result": stability_comparison_class,
+        "crag_second_model_comparison_result": second_model_comparison_class,
         "interpretation": interpretation,
         "unsupported_claims": [
             "official platform benchmarking",
@@ -134,9 +143,10 @@ No raw prompts, raw generated answers, raw dataset questions, raw source documen
             limitation_text = (
                 "Generative validation is currently mixed bounded local evidence. The primary CRAG slice produced "
                 "a cost-reduction signal, but the CRAG stability comparison did not show stable cost reduction "
-                "across independent deterministic repeats, and HotpotQA remained inconclusive. This is not broad "
-                "generative validation, not official platform benchmarking, not human validation, and not "
-                "production readiness."
+                "across independent deterministic repeats"
+                + (", a second pinned local generator did not recover a stable cost result" if second_model_comparison_class else "")
+                + ", and HotpotQA remained inconclusive. This is not broad generative validation, not official "
+                "platform benchmarking, not human validation, and not production readiness."
             )
         else:
             limitation_text = (

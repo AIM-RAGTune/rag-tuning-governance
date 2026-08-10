@@ -145,6 +145,19 @@ def test_crag_stability_comparison_result_class_machine_readable() -> None:
     assert comparison["raw_generated_answers_committed"] is False
 
 
+def test_crag_second_model_comparison_result_class_machine_readable() -> None:
+    comparison = load_json("results/generative_llm_validation/crag_second_model_comparison.json")
+    assert comparison["result_class"] in {
+        "CRAG_GEN_LLM_COST_RESULT_STABLE_ACROSS_MODELS",
+        "CRAG_GEN_LLM_COST_RESULT_NOT_STABLE_ACROSS_MODELS",
+        "CRAG_GEN_LLM_COST_RESULT_SECOND_MODEL_ONLY",
+        "CRAG_GEN_LLM_COST_RESULT_PRIMARY_MODEL_ONLY",
+        "CRAG_GEN_LLM_COST_RESULT_MIXED_OR_INCONCLUSIVE_ACROSS_MODELS",
+    }
+    assert comparison["raw_prompts_committed"] is False
+    assert comparison["raw_generated_answers_committed"] is False
+
+
 def test_no_official_platform_benchmark_claim_from_local_generator() -> None:
     docs = (ROOT / "docs/generative_llm_validation.md").read_text(encoding="utf-8").lower()
     assert "official platform benchmarking completed" not in docs
