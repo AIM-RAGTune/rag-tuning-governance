@@ -1,9 +1,9 @@
 # Generative LLM Validation v1.1 Post-Validation Report
 
 - Publication validator: passed
-- `pytest -q tests/publication`: 68 passed
+- `pytest -q tests/publication`: 69 passed
 - `make validate-publication`: passed
-- `make test`: 68 passed
+- `make test`: 69 passed
 - `python3 -m compileall src scripts`: passed
 - Large-file scan: passed for tracked/public tree with `.local_data` excluded
 - Raw prompt/generated-answer scan: passed with expected sanitizer, test, field-name, and sanitized-artifact references only
@@ -31,17 +31,18 @@
 - CRAG root/data configured at runtime: yes
 - Mock API available: yes
 - Local evaluator available: yes
-- Evaluator mapping result class: `CRAG_GENERATED_QUALITY_BLOCKED_NO_USABLE_SIGNAL`
-- CRAG generative validation result: `GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL_CRAG`
-- Non-empty generated answers: 0
-- Unique answer hashes: 1
-- Governed winner: `governed_selection`
-- Quality-only winner: `adaptive_routing_on_insufficient_evidence`
+- qwen3 answer-emission repair: passed by sending Ollama `think: false`
+- Evaluator mapping result class: `CRAG_GENERATED_QUALITY_LOCAL_EVALUATOR_ACTIVE`
+- CRAG generative validation result: `GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG`
+- Non-empty generated answers: 88
+- Unique answer hashes: 32
+- Governed winner: `expanded_retrieval_multi_endpoint`
+- Quality-only winner: `expanded_retrieval_multi_endpoint`
 - RAG Compass rank: 8
 
 ## Synthesis
 
 - Result class: `GEN_LLM_SYNTHESIS_INCONCLUSIVE`
-- Interpretation: HotpotQA quality signal is nonconstant but did not support a governance improvement; CRAG generator access was repaired but generated answers remained empty.
+- Interpretation: HotpotQA and CRAG both have usable nonconstant generated-answer quality signals, but neither supported a governance improvement under the bounded samples.
 
 No raw prompts, raw generated answers, raw CRAG text, raw HotpotQA questions/context, raw API responses, secrets, or private paths are committed.

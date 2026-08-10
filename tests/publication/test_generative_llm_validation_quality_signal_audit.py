@@ -58,6 +58,13 @@ def test_crag_generator_uses_shared_generator_factory() -> None:
     assert "from ragtune.generators.factory import discover_generator" in source
 
 
+def test_qwen3_ollama_disables_thinking_by_default() -> None:
+    source = (ROOT / "src/ragtune/generators/ollama.py").read_text(encoding="utf-8")
+    assert "RAGTUNE_OLLAMA_THINK" in source
+    assert 'model.lower().startswith("qwen3")' in source
+    assert 'payload["think"] = think' in source
+
+
 def test_crag_evaluator_mapping_result_class_machine_readable() -> None:
     stats = load_json("artifacts/generative_llm_validation/crag/primary_outcome_statistics.json")
     assert stats["crag_evaluator_mapping_result_class"] in {

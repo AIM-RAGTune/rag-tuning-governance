@@ -1,8 +1,8 @@
 {
   "publication_validator": "passed",
-  "pytest_publication": "68 passed",
+  "pytest_publication": "69 passed",
   "make_validate_publication": "passed",
-  "make_test": "68 passed",
+  "make_test": "69 passed",
   "compileall": "passed",
   "large_file_scan": "passed_public_tree_local_data_excluded",
   "raw_prompt_generated_answer_scan": "passed_with_expected_sanitizer_test_field_name_and_sanitized_artifact_references",
@@ -18,9 +18,10 @@
   "hotpotqa_non_empty_generated_answers": 2,
   "hotpotqa_quality_variance": 0.024150548562885805,
   "crag_generator_access_result": "available",
-  "crag_evaluator_mapping_result": "CRAG_GENERATED_QUALITY_BLOCKED_NO_USABLE_SIGNAL",
-  "crag_generative_validation_result": "GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL_CRAG",
-  "crag_non_empty_generated_answers": 0,
-  "crag_unique_answer_hashes": 1,
+  "crag_qwen_answer_emission_repair": "passed_with_ollama_think_false",
+  "crag_evaluator_mapping_result": "CRAG_GENERATED_QUALITY_LOCAL_EVALUATOR_ACTIVE",
+  "crag_generative_validation_result": "GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG",
+  "crag_non_empty_generated_answers": 88,
+  "crag_unique_answer_hashes": 32,
   "synthesis_result": "GEN_LLM_SYNTHESIS_INCONCLUSIVE"
 }

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import time
 import urllib.error
 import urllib.request
@@ -23,6 +24,14 @@ class OllamaGenerator:
             raise GeneratorUnavailable(str(exc)) from exc
         return [model.get("name", "") for model in payload.get("models", []) if model.get("name")]
 
+    def thinking_enabled(self, model: str) -> bool | None:
+        configured = os.environ.get("RAGTUNE_OLLAMA_THINK")
+        if configured is not None:
+            return configured.strip().lower() in {"1", "true", "yes", "on"}
+        if model.lower().startswith("qwen3"):
+            return False
+        return None
+
     def generate(
         self,
         prompt: str,
@@ -40,6 +49,9 @@ class OllamaGenerator:
             "stream": False,
             "options": {"temperature": temperature, "num_predict": max_tokens},
         }
+        think = self.thinking_enabled(model)
+        if think is not None:
+            payload["think"] = think
         request = urllib.request.Request(
             f"{self.base_url}/api/generate",
             data=json.dumps(payload).encode("utf-8"),
