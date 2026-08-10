@@ -1,0 +1,16 @@
+{
+  "starting_commit": "e8e228820ed51d7e907bf25eccdefad4c41d797d",
+  "branch": "generative-llm-validation-v1",
+  "remote": "https://github.com/AIM-RAGTune/rag-tuning-governance-public.git",
+  "working_tree_status": "clean",
+  "publication_validator": "passed",
+  "pytest_publication": "34 passed",
+  "make_validate_publication": "passed",
+  "make_test": "34 passed",
+  "compileall": "passed",
+  "large_file_scan": "passed_with_untracked_local_data_cache",
+  "raw_text_scan": "passed_with_expected_references",
+  "secret_scan": "passed_with_expected_scanner_pattern_references",
+  "private_path_scan": "passed",
+  "overclaim_scan": "passed_with_expected_unsupported_claim_statements"
+}

@@ -32,3 +32,18 @@ python3 scripts/run_hotpotqa_behavioral_governance.py
 ```
 
 Raw HotpotQA questions, context paragraphs, and supporting-fact sentences must not be committed.
+
+## Generative Validation
+
+Generative validation uses the same local dataset caches but keeps prompts and generated answers out of Git:
+
+```bash
+export RAGTUNE_GENERATOR_PROVIDER=ollama
+export RAGTUNE_OLLAMA_BASE_URL=http://localhost:11434
+export RAGTUNE_GENERATOR_MODEL=qwen3:8b
+
+python3 scripts/run_hotpotqa_generative_llm_validation.py --force
+python3 scripts/run_generative_llm_validation_synthesis.py --force
+```
+
+Raw prompts and generated answers are local-only under `.local_data/`. Public artifacts include hashes, counts, model identifiers, policy identifiers, and metrics.

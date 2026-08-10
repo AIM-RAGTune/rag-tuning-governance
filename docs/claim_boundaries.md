@@ -17,7 +17,7 @@ Unsupported:
 
 - RAG Compass superiority.
 - Broad universal governance superiority across all RAG settings.
-- Generative LLM validation.
+- Broad generative LLM validation beyond the bounded local CRAG and HotpotQA runs.
 - Human-evaluation validation.
 - Official external platform benchmarking.
 - Production readiness.
@@ -26,4 +26,8 @@ Unsupported:
 
 Evidence classes must not be relabeled. Context-retrieval evidence is weaker than full corpus-backed evidence. Workflow simulation is not an official platform benchmark.
 
-This repository does not grant CRAG redistribution rights. The CRAG mock-API result and behaviorally distinct follow-up support source/retrieval governance evidence under bounded operating constraints; they are not generative LLM validation and are not human-calibrated answer-quality validation. Fresh CRAG replication remains blocked because the current live sample lacks a usable answer/evidence quality signal. HotpotQA provides stronger answer-label/supporting-fact evidence, but the current result is a quality-loss negative finding rather than a governance success claim.
+This repository does not grant CRAG redistribution rights. The CRAG mock-API result and behaviorally distinct follow-up support source/retrieval governance evidence under bounded operating constraints; they are not human-calibrated answer-quality validation. Fresh CRAG replication remains blocked because the current live sample lacks a usable answer/evidence quality signal. HotpotQA provides stronger answer-label/supporting-fact evidence, but the non-generative behavioral result is a quality-loss negative finding rather than a governance success claim.
+
+## Generative LLM Boundary
+
+`ragtune_generative_llm_validation_v1` adds bounded local generative validation using Ollama `qwen3:8b` on HotpotQA and CRAG. The synthesis is `GEN_LLM_SYNTHESIS_GENERATIVE_VALIDATION_SUPPORTED`: both bounded runs produced sanitized generated-answer cost-at-equivalent-quality signals. This is small-sample local generative validation, not official platform benchmarking, human validation, production validation, broad governance superiority, or RAG Compass superiority.

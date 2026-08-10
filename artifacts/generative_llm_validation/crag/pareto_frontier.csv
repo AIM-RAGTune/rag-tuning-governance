@@ -1,0 +1,3 @@
+policy_id,frontier_reason
+measured_latency_minimizer_at_quality_floor,"nondominated on generated quality, cost, and latency"
+static_default_policy,"nondominated on generated quality, cost, and latency"

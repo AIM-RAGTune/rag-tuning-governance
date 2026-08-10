@@ -27,6 +27,12 @@ REQUIRED = [
     "results/multi_dataset_behavioral_governance/synthesis_result.json",
     "docs/fresh_live_crag_hotpotqa_behavioral_governance_plan.md",
     "docs/dataset_acquisition.md",
+    "artifacts/generative_llm_validation/crag/generative_crag_manifest.json",
+    "artifacts/generative_llm_validation/hotpotqa/generative_hotpotqa_manifest.json",
+    "results/generative_llm_validation/synthesis_result.json",
+    "docs/generative_llm_validation.md",
+    "docs/generator_configuration.md",
+    "docs/platform_benchmarking_boundary.md",
 ]
 
 EXPORT_REQUIRED = [
@@ -70,7 +76,13 @@ RAW_TEXT_JSON_KEYS = {
     "document_text",
     "context_text",
     "snippet",
+    "generated_answer",
+    "generated_answer_text",
+    "answer_text",
+    "raw_answer",
+    "prompt_text",
 }
+GENERATIVE_ARTIFACT_ROOT = Path("artifacts/generative_llm_validation")
 
 
 def tracked_files() -> list[Path]:
@@ -194,6 +206,66 @@ def validate_no_crag_raw_text_fields() -> None:
                 fail(f"raw CRAG query line in {rel}")
 
 
+def validate_generative_artifacts() -> None:
+    synthesis_path = ROOT / "results/generative_llm_validation/synthesis_result.json"
+    if not synthesis_path.exists():
+        fail("missing generative validation synthesis result")
+    synthesis = json.loads(synthesis_path.read_text(encoding="utf-8"))
+    result_class = str(synthesis.get("result_class", ""))
+    allowed = {
+        "GEN_LLM_SYNTHESIS_GENERATIVE_VALIDATION_SUPPORTED",
+        "GEN_LLM_SYNTHESIS_DIRECTIONAL",
+        "GEN_LLM_SYNTHESIS_MIXED",
+        "GEN_LLM_SYNTHESIS_INCONCLUSIVE",
+        "GEN_LLM_SYNTHESIS_BLOCKED",
+        "GEN_LLM_SYNTHESIS_NEGATIVE",
+    }
+    if result_class not in allowed:
+        fail(f"unknown generative synthesis result class: {result_class}")
+    root = ROOT / GENERATIVE_ARTIFACT_ROOT
+    if not root.exists():
+        fail("missing generative validation artifact root")
+    forbidden_keys = {"prompt_text", "generated_answer", "generated_answer_text", "answer_text", "raw_answer"}
+    for path in root.rglob("*"):
+        if not path.is_file() or path.suffix.lower() not in {".json", ".csv"}:
+            continue
+        rel = path.relative_to(ROOT).as_posix()
+        if path.suffix.lower() == ".json":
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            hits: list[str] = []
+
+            def walk(value: object, prefix: str = "") -> None:
+                if isinstance(value, dict):
+                    for key, child in value.items():
+                        child_path = f"{prefix}.{key}" if prefix else key
+                        if key.lower() in forbidden_keys:
+                            hits.append(child_path)
+                        walk(child, child_path)
+                elif isinstance(value, list):
+                    for idx, child in enumerate(value):
+                        walk(child, f"{prefix}[{idx}]")
+
+            walk(payload)
+            if hits:
+                fail(f"raw generative text key(s) in {rel}: {hits[:5]}")
+        elif path.suffix.lower() == ".csv":
+            with path.open(newline="", encoding="utf-8") as handle:
+                fieldnames = csv.DictReader(handle).fieldnames or []
+            raw_fields = [field for field in fieldnames if field.lower() in forbidden_keys]
+            if raw_fields:
+                fail(f"raw generated-answer field(s) in {rel}: {raw_fields}")
+    docs_text = "\n".join(
+        path.read_text(encoding="utf-8").lower()
+        for path in [
+            ROOT / "docs/generative_llm_validation.md",
+            ROOT / "docs/platform_benchmarking_boundary.md",
+        ]
+        if path.exists()
+    )
+    if "official platform benchmarking completed" in docs_text:
+        fail("local or hosted generative validation is described as official platform benchmarking")
+
+
 def main() -> None:
     missing = [path for path in REQUIRED if not (ROOT / path).exists()]
     if missing:
@@ -236,6 +308,7 @@ def main() -> None:
         fail("evidence summary lacks unsupported_claims")
 
     validate_no_crag_raw_text_fields()
+    validate_generative_artifacts()
 
     try:
         remotes = subprocess.check_output(["git", "remote", "-v"], cwd=ROOT, text=True)

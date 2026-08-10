@@ -1,0 +1,16 @@
+{
+  "crag_result_class": "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY",
+  "fresh_live_crag_proxy_result": "FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY",
+  "hotpotqa_non_generative_result": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS",
+  "hotpotqa_result_class": "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY",
+  "interpretation": "Both datasets produced generative validation support.",
+  "prior_frozen_crag_behavioral_result": "GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY",
+  "result_class": "GEN_LLM_SYNTHESIS_GENERATIVE_VALIDATION_SUPPORTED",
+  "suite": "ragtune_generative_llm_validation_synthesis_v1",
+  "unsupported_claims": [
+    "official platform benchmarking",
+    "human validation",
+    "production readiness",
+    "RAG Compass superiority"
+  ]
+}

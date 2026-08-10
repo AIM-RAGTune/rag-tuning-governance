@@ -1,0 +1,13 @@
+local_open_model:
+  cost_unit_per_retrieval_call: 1.0
+  cost_unit_per_generation_call: 2.0
+  cost_unit_per_1000_input_tokens: 0.1
+  cost_unit_per_1000_output_tokens: 0.2
+
+openai:
+  use_provider_pricing_if_configured: true
+  fallback_cost_units_only: true
+
+azure_openai:
+  use_provider_pricing_if_configured: true
+  fallback_cost_units_only: true

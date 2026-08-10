@@ -1,0 +1,18 @@
+final_generated_quality_score:
+  answer_correctness_f1: 0.35
+  answer_exact_match: 0.15
+  answer_containment: 0.10
+  evidence_support_score: 0.20
+  citation_support_score: 0.10
+  abstention_correctness: 0.10
+
+crag_proxy_plus_evidence:
+  local_answer_evidence_score: 0.35
+  evidence_support_score: 0.25
+  citation_support_score: 0.15
+  abstention_correctness: 0.15
+  non_empty_supported_answer: 0.10
+
+blocked_conditions:
+  all_zero_quality_values: GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL
+  constant_quality_values: GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL

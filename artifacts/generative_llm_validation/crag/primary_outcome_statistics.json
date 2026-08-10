@@ -1,0 +1,50 @@
+{
+  "api_call_delta": {
+    "ci_high": -1.0,
+    "ci_low": -1.0,
+    "mean": -1.0
+  },
+  "constrained_optimizer_winner": "static_default_policy",
+  "cost_delta": {
+    "ci_high": -1.125,
+    "ci_low": -1.125,
+    "mean": -1.125
+  },
+  "evidence_class": "crag_generative_validation_sanitized_bounded_sample",
+  "evidence_support_delta": {
+    "ci_high": 0.0,
+    "ci_low": 0.0,
+    "mean": 0.0
+  },
+  "example_count": 4,
+  "generated_quality_delta": {
+    "ci_high": 0.0,
+    "ci_low": 0.0,
+    "mean": 0.0
+  },
+  "generation_rows": 44,
+  "generator_available": true,
+  "generator_local_or_hosted": "local",
+  "generator_model": "qwen3:8b",
+  "generator_provider": "ollama",
+  "governed_winner": "static_default_policy",
+  "latency_delta_ms": {
+    "ci_high": -119.38908230513334,
+    "ci_low": -119.38908230513334,
+    "mean": -119.38908230513334
+  },
+  "pareto_frontier": [
+    "measured_latency_minimizer_at_quality_floor",
+    "static_default_policy"
+  ],
+  "quality_metric_class": "GENERATED_QUALITY_CRAG_LOCAL_EVALUATOR",
+  "quality_only_winner": "adaptive_routing_on_insufficient_evidence",
+  "rag_compass_rank": 11,
+  "raw_evidence_committed": false,
+  "raw_generated_answers_committed": false,
+  "raw_prompts_committed": false,
+  "raw_questions_committed": false,
+  "result_class": "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY",
+  "secrets_committed": false,
+  "suite": "ragtune_crag_generative_llm_validation_v1"
+}
