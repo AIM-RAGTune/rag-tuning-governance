@@ -16,7 +16,7 @@
     "raw_generated_answers_committed": false
   },
   "hosted_generator_status": "not_used",
-  "crag_generative_result": "SUPERSEDED_BY_V1_1_GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL_CRAG",
+  "crag_generative_result": "SUPERSEDED_BY_V1_1_GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY_CRAG",
   "hotpotqa_generative_result": "SUPERSEDED_BY_V1_1_GEN_LLM_GOVERNANCE_INCONCLUSIVE",
-  "synthesis_result": "SUPERSEDED_BY_V1_1_GEN_LLM_SYNTHESIS_INCONCLUSIVE"
+  "synthesis_result": "SUPERSEDED_BY_V1_1_GEN_LLM_SYNTHESIS_DIRECTIONAL"
 }

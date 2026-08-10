@@ -21,8 +21,8 @@
 
 ## Results
 
-- CRAG generative result: superseded by v1.1 as `GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL_CRAG`
+- CRAG generative result: superseded by v1.1 as `GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY_CRAG`
 - HotpotQA generative result: superseded by v1.1 as `GEN_LLM_GOVERNANCE_INCONCLUSIVE`
-- Synthesis result: superseded by v1.1 as `GEN_LLM_SYNTHESIS_INCONCLUSIVE`
+- Synthesis result: superseded by v1.1 as `GEN_LLM_SYNTHESIS_DIRECTIONAL`
 
 The earlier bounded result is superseded by the HotpotQA quality-signal audit and CRAG generator/evaluator repair. These are not official platform benchmarking, human validation, production validation, broad governance superiority, or RAG Compass superiority.

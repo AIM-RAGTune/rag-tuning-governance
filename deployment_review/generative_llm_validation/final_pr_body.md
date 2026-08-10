@@ -47,8 +47,8 @@ Adds RAGTune Generative LLM Validation v1. This validates policy-specific genera
 
 ## Synthesis
 
-- Result class: superseded by v1.1 as `GEN_LLM_SYNTHESIS_INCONCLUSIVE`
-- Interpretation: the v1.1 audit confirmed HotpotQA quality variation but not governance improvement, and CRAG generated answers remained empty.
+- Result class: superseded by v1.1 as `GEN_LLM_SYNTHESIS_DIRECTIONAL`
+- Interpretation: the v1.1 audit confirmed HotpotQA quality variation without governance improvement, while the larger bounded CRAG generative sample produced reduced measured cost at equivalent generated-answer quality.
 
 ## Validation
 

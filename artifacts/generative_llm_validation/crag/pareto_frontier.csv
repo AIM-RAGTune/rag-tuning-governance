@@ -1,5 +1,5 @@
 policy_id,frontier_reason
-expanded_retrieval_multi_endpoint,"nondominated on generated quality, cost, and latency"
 measured_latency_minimizer_at_quality_floor,"nondominated on generated quality, cost, and latency"
 pareto_frontier_selector,"nondominated on generated quality, cost, and latency"
+quality_only_best_on_validation,"nondominated on generated quality, cost, and latency"
 static_default_policy,"nondominated on generated quality, cost, and latency"

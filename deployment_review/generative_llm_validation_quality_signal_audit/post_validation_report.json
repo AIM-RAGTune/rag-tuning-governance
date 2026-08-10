@@ -20,8 +20,15 @@
   "crag_generator_access_result": "available",
   "crag_qwen_answer_emission_repair": "passed_with_ollama_think_false",
   "crag_evaluator_mapping_result": "CRAG_GENERATED_QUALITY_LOCAL_EVALUATOR_ACTIVE",
-  "crag_generative_validation_result": "GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG",
-  "crag_non_empty_generated_answers": 88,
-  "crag_unique_answer_hashes": 32,
-  "synthesis_result": "GEN_LLM_SYNTHESIS_INCONCLUSIVE"
+  "crag_generative_validation_result": "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY_CRAG",
+  "crag_sample_size": 12,
+  "crag_generation_rows": 132,
+  "crag_non_empty_generated_answers": 132,
+  "crag_unique_answer_hashes": 48,
+  "crag_governed_winner": "pareto_frontier_selector",
+  "crag_quality_only_winner": "expanded_retrieval_multi_endpoint",
+  "crag_generated_quality_delta_mean": 0.016653375863902167,
+  "crag_cost_delta_mean": -3.7790000000000004,
+  "crag_latency_delta_ms_mean": -5971.851041385283,
+  "synthesis_result": "GEN_LLM_SYNTHESIS_DIRECTIONAL"
 }

@@ -1,6 +1,6 @@
 {
   "available": true,
-  "diagnosis_latency_ms": 4377.021416090429,
+  "diagnosis_latency_ms": 312.586790882051,
   "error_type": "",
   "finish_reason": "stop",
   "instructions": "",
@@ -16,6 +16,6 @@
   "test_answer_hash": "565339bc4d33d72817b583024112eb7f5cdf3e5eef0252d6ec1b9c9a94e12bb3",
   "test_answer_token_estimate": 1,
   "test_generation_available": true,
-  "test_latency_ms": 4373.168999329209,
+  "test_latency_ms": 309.1020006686449,
   "test_prompt_hash_only": true
 }
