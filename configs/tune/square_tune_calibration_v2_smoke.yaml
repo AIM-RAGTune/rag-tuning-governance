@@ -1,0 +1,48 @@
+experiment_name: square_tune_calibration_v2_smoke
+dataset_root: ${SQUARESIM_DATA_ROOT}/datasets/synthetic/square_tune_calibration_v2
+protocol_path: protocols/square_tune/synthetic_calibration_protocol_v2.yaml
+datasets:
+  - synthetic_llm_random_label
+  - synthetic_llm_linear_control
+  - synthetic_llm_merge_required
+  - synthetic_llm_regression_veto
+  - synthetic_llm_cost_tradeoff
+  - synthetic_llm_repeated_regression_memory
+seeds: [101]
+optimizers:
+  - linear_utility_optimizer
+  - coordinate_descent
+  - random_search
+  - greedy_regression_aware
+  - evolutionary_search
+  - square_tune_full
+  - square_tune_no_merge
+  - square_tune_no_memory
+  - square_tune_no_regression_sensor
+  - square_tune_no_cost_sensor
+bootstrap_samples: 100
+square_tune:
+  max_rounds: 4
+  num_branches: 4
+  rollout_steps: 2
+  simulated_gpu_hour_budget: 4.0
+  eval_budget: 64
+  max_response_surface_evaluations: 64
+  max_candidate_actions: 64
+  budget_ledger_enabled: true
+  region_selector: regression_adjusted_failure_cluster
+  branch_policy: mixed_structured_and_exploratory
+  rollout_mode: nonlinear_response_surface
+  merge_strategy: constraint_gated_pareto_merge
+  memory_enabled: true
+  feedback_enabled: true
+  regression_sensor_enabled: true
+  cost_sensor_enabled: true
+  objective_weights:
+    domain_accuracy: 0.30
+    retrieval_faithfulness: 0.20
+    instruction_following: 0.15
+    safety: 0.15
+    style_match: 0.05
+    regression_score: 0.10
+    cost: -0.05

@@ -1,0 +1,18 @@
+policy_space_version: 4
+inherits: configs/policy_spaces/governance_confirmatory_policy_space_v3.yaml
+
+optimizer_display_names:
+  ragtune_no_fork: RAG Compass
+
+dataset_modes:
+  end_to_end_corpus_backed:
+    requires_policy_dependent_retrieval: true
+  replay_or_context_eval_only:
+    promotion_claim_cap: Inconclusive
+
+generator_modes:
+  deterministic_grounded_extractive:
+    available: true
+  generative_llm:
+    requires_model_license_and_hash: true
+    requires_secret_redaction_check: true

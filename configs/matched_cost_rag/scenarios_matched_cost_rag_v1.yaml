@@ -1,0 +1,9 @@
+matrix_name: scenario_compile
+seeds:
+  - 101
+systems:
+  - static_default_rag_policy
+simulation:
+  max_rows: null
+real_data_required: true
+

@@ -1,0 +1,21 @@
+experiment_name: square_tune_external_v2_claim_level_faithfulness
+scenario_root: ${SQUARESIM_DATA_ROOT}/datasets/external/square_tune_v1_full/scenarios
+source_appropriate: true
+scenario_families:
+  - ragtruth_claim_level_faithfulness_optimization
+seeds: [101, 202, 303]
+optimizers:
+  - greedy_regression_aware
+  - square_tune_full
+  - square_tune_no_fork
+  - square_tune_adaptive_compute
+  - square_tune_adaptive_compute_never_fork
+square_tune:
+  max_rounds: 6
+  num_branches: 6
+  rollout_steps: 3
+  max_response_surface_evaluations: 144
+  max_candidate_actions: 144
+  simulated_gpu_hour_budget: 8.0
+  budget_ledger_enabled: true
+notes: "Prepared for claim-level scenarios when normalized span/claim annotations are compiled."

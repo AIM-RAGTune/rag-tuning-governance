@@ -1,0 +1,78 @@
+datasets:
+  ragbench:
+    display_name: "RAGBench"
+    source_type: "huggingface"
+    dataset_id: "galileo-ai/ragbench"
+    config_name: "covidqa"
+    split: "train"
+    required_for_minimal: true
+    license_required: true
+    license: "cc-by-4.0"
+    allowed_licenses: ["cc-by-4.0"]
+    scenario_families: ["rag_policy_optimization", "hallucination_faithfulness_reduction"]
+    acquisition: {preferred: "hf_datasets", allow_manual_import: true}
+    enabled: true
+    max_rows: 50000
+  ragtruth:
+    display_name: "RAGTruth"
+    source_type: "github_or_manual"
+    repository: "ParticleMedia/RAGTruth"
+    required_for_minimal: false
+    license_required: true
+    scenario_families: ["hallucination_faithfulness_reduction"]
+    acquisition: {preferred: "git_clone", allow_manual_import: true}
+    enabled: true
+    max_rows: 50000
+  ifeval:
+    display_name: "IFEval"
+    source_type: "huggingface"
+    dataset_id: "google/IFEval"
+    config_name: "default"
+    split: "train"
+    required_for_minimal: true
+    license_required: true
+    license: "apache-2.0"
+    scenario_families: ["prompt_regression_optimization"]
+    acquisition: {preferred: "hf_datasets", allow_manual_import: true}
+    enabled: true
+    max_rows: 50000
+  helpsteer2:
+    display_name: "HelpSteer2"
+    source_type: "huggingface"
+    dataset_id: "nvidia/HelpSteer2"
+    config_name: "default"
+    split: "train"
+    required_for_minimal: true
+    license_required: true
+    license: "cc-by-4.0"
+    allowed_licenses: ["cc-by-4.0"]
+    scenario_families: ["data_curation_preference_optimization", "adapter_planning_simulation"]
+    acquisition: {preferred: "hf_datasets", allow_manual_import: true}
+    enabled: true
+    max_rows: 50000
+  dolly15k:
+    display_name: "Databricks Dolly 15k"
+    source_type: "huggingface"
+    dataset_id: "databricks/databricks-dolly-15k"
+    config_name: "default"
+    split: "train"
+    required_for_minimal: true
+    license_required: true
+    license: "cc-by-sa-3.0"
+    allowed_licenses: ["cc-by-sa-3.0"]
+    scenario_families: ["data_curation_preference_optimization", "adapter_planning_simulation"]
+    acquisition: {preferred: "hf_datasets", allow_manual_import: true}
+    enabled: true
+    max_rows: 50000
+  bfcl:
+    display_name: "Berkeley Function Calling Leaderboard"
+    source_type: "huggingface_file"
+    dataset_id: "gorilla-llm/Berkeley-Function-Calling-Leaderboard"
+    data_file: "BFCL_v3_simple.json"
+    required_for_minimal: true
+    license_required: true
+    license: "apache-2.0"
+    scenario_families: ["tool_routing_policy_optimization"]
+    acquisition: {preferred: "hf_datasets", allow_manual_import: true}
+    enabled: true
+    max_rows: 50000

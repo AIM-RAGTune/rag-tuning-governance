@@ -1,0 +1,11 @@
+dataset_name: matched_cost_real_rag_v1
+preferred_sources:
+  - existing_local_ragtruth_enriched_artifacts
+  - existing_local_ragbench_hagrid_expertqa_normalized_artifacts
+  - existing_external_transfer_rag_scenarios
+real_data_required: true
+storage_policy:
+  append_only: true
+  raw_data_not_bundled: true
+  output_root: ${SQUARESIM_DATA_ROOT}/datasets/square_tune/matched_cost_rag/v1
+

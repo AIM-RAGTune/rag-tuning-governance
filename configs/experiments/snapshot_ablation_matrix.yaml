@@ -1,0 +1,44 @@
+experiment_name: snapshot_ablation_matrix
+dataset_version_policy:
+  mode: catalog_latest
+  allow_latest: true
+split:
+  mode: catalog_resolve
+  seed: 42
+  split_id_template: "default_target_{target}_seed_{seed}"
+  create_missing: false
+datasets: [energy, oilgas, maintenance, telecom]
+targets: [target, in_pocket]
+seed: 42
+models:
+  - squaresim_full
+  - squaresim_snapshot_rollout
+  - squaresim_snapshot_no_fork
+  - squaresim_snapshot_linear_rollout
+  - squaresim_snapshot_no_merge
+  - squaresim_snapshot_random_branch
+  - squaresim_snapshot_no_feedback
+  - squaresim_snapshot_whole_field
+  - squaresim_snapshot_local_only
+  - squaresim_snapshot_no_memory
+  - squaresim_snapshot_no_nonlinear
+  - squaresim_snapshot_no_phase
+feature_policy:
+  exclude_roles: [target, target_real, pocket_flag]
+  exclude_columns: []
+  exclude_patterns: []
+  leakage_warning_policy: warn_and_downgrade_certificate
+  acknowledged_leakage_warnings: []
+training:
+  max_epochs: 20
+  batch_size: 512
+  learning_rate: 0.001
+  bootstrap_samples: 1000
+resources:
+  device: cuda:0
+  num_workers: 8
+reporting:
+  generate_run_explanations: true
+  generate_comparison_reports: true
+  generate_certificates: true
+  bootstrap_samples: 1000

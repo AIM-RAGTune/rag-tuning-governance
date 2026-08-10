@@ -1,0 +1,14 @@
+{
+  "blocked": [],
+  "gate": "no_raw_data",
+  "large_files": [],
+  "raw_dir_matches": [
+    {
+      "allowed": true,
+      "path": "results/raw/README.md",
+      "reason": "documentation or selected manifest mentioning excluded raw data"
+    }
+  ],
+  "raw_like_matches": [],
+  "status": "PASS"
+}

@@ -1,0 +1,68 @@
+{
+  "levels": [
+    {
+      "level": 0,
+      "name": "simulated / synthetic exploration",
+      "examples": [
+        "SPECTRA / Quantum Fighter",
+        "synthetic mechanism matrix"
+      ]
+    },
+    {
+      "level": 1,
+      "name": "engineering smoke and fixture validation",
+      "examples": [
+        "fixture/smoke tests",
+        "readiness gates"
+      ]
+    },
+    {
+      "level": 2,
+      "name": "external-transfer development",
+      "examples": [
+        "external-transfer smoke",
+        "RAGTruth-enriched transfer"
+      ]
+    },
+    {
+      "level": 3,
+      "name": "public end-to-end development",
+      "examples": [
+        "T2-RAGBench v1/v2"
+      ]
+    },
+    {
+      "level": 4,
+      "name": "public confirmatory noninferiority",
+      "examples": [
+        "MultiHop-RAG confirmatory"
+      ]
+    },
+    {
+      "level": 5,
+      "name": "multi-corpus mixed evidence",
+      "examples": [
+        "HotpotQA context-retrieval plus MultiHop-RAG",
+        "CRAG web-document noninferiority"
+      ]
+    },
+    {
+      "level": 6,
+      "name": "beneficial natural governance divergence",
+      "examples": [
+        "CRAG mock-API governance superiority",
+        "1 beneficial natural divergence"
+      ]
+    },
+    {
+      "level": 7,
+      "name": "Docker-reproduced and human/generative/platform validated evidence",
+      "examples": []
+    }
+  ],
+  "current_position": {
+    "ragtune_governance": "Level 6 in a bounded CRAG mock-API source/retrieval governance setting",
+    "rag_compass": "No optimizer-superiority support",
+    "not_reached": "Level 7: no human-eval, generative LLM, or official platform validation"
+  }
+}

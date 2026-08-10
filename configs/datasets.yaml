@@ -1,0 +1,22 @@
+datasets:
+  energy:
+    display_name: "SPECTRA Energy"
+    kaggle_slug: "javierfalcondale/spectra-energy-quantum-ready-steel-plant-data"
+    expected_targets: ["target", "target_real", "in_pocket"]
+    preferred_first_target: "target"
+  oilgas:
+    display_name: "SPECTRA Oil & Gas"
+    kaggle_slug: "javierfalcondale/spectra-oil-and-gas-quantum-ready-gas-turbine-data"
+    expected_targets: ["target", "target_real", "in_pocket"]
+    preferred_first_target: "target"
+  maintenance:
+    display_name: "SPECTRA Maintenance"
+    kaggle_slug: "javierfalcondale/spectra-maintenance-quantum-ready-failure-data"
+    expected_targets: ["target", "target_real", "in_pocket"]
+    preferred_first_target: "target"
+  telecom:
+    display_name: "SPECTRA Telecom"
+    kaggle_slug: "javierfalcondale/spectra-telecom-quantum-ready-churn-data"
+    expected_targets: ["target", "target_real", "in_pocket"]
+    preferred_first_target: "target"
+

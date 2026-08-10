@@ -1,0 +1,10 @@
+matrix_name: architecture_evolution_optional
+tracks: [adaptive_arch]
+seeds: [101, 202, 303]
+simulation:
+  grid_size: 16
+  emitter_count: 8
+  steps: 24
+diagnostics:
+  save_large_tensors: false
+notes: "Optional architecture-evolution placeholder config; hand-designed baselines are never overwritten."

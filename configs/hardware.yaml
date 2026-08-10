@@ -1,0 +1,29 @@
+nodes:
+  mac_orchestrator:
+    role: orchestrator
+    cpu: "Apple M2 Pro"
+    ram_gb: 32
+    storage: "2 TB SSD"
+    heavy_gpu_runs: false
+  gpu_node:
+    role: gpu
+    os: "Ubuntu 24.04"
+    cpu: "Threadripper-class"
+    gpus: ["NVIDIA RTX 5090 32GB", "NVIDIA RTX 5090 32GB"]
+    ram_gb: 128
+    hot_scratch_default: "/srv/aim/squaresim/hot"
+    warm_scratch_default: "/srv/aim/squaresim/warm"
+  processing_node:
+    role: processing
+    os: "Ubuntu 24.04"
+    cpu: "Ryzen 7 7700X-class"
+    gpu: "NVIDIA RTX 4070 12GB"
+    ram_gb: 64
+    scratch_default: "/srv/aim/squaresim/processing"
+  nas:
+    model: "Synology DS923+"
+    share: "AIM"
+    internal_address_default: "192.168.213.103"
+    allowed: ["datasets", "processed corpora", "artifacts", "logs", "reports", "compact metadata"]
+    disallowed: ["Hugging Face model caches", "large active training checkpoints"]
+

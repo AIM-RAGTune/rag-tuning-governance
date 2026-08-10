@@ -1,0 +1,6 @@
+matrix_name: elastic_compute_scenarios
+tracks: [elastic_compute]
+seeds: [101]
+simulation:
+  rows_per_track: 2000
+  scenario_max_rows: 2000

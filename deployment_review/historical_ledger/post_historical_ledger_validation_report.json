@@ -1,0 +1,27 @@
+{
+  "commit": "e85c4915c5a3c99d762f2602626a6d1da5dbd583",
+  "files_scanned": 912,
+  "no_raw_data_query_text": {
+    "result": "PASS",
+    "findings": []
+  },
+  "no_secrets": {
+    "result": "PASS",
+    "findings": []
+  },
+  "no_private_paths": {
+    "result": "PASS",
+    "findings": []
+  },
+  "no_overclaims": {
+    "result": "PASS",
+    "findings": []
+  },
+  "overall": "PASS",
+  "publication_validator": "PASS",
+  "pytest": "PASS: 4 passed",
+  "compileall": "PASS",
+  "make_validate_publication": "PASS",
+  "make_test": "PASS: 4 passed",
+  "deployment_allowed": true
+}

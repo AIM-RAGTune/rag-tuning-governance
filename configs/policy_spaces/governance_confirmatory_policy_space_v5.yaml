@@ -1,0 +1,11 @@
+policy_space_version: 5
+inherits: configs/policy_spaces/governance_confirmatory_policy_space_v4.yaml
+
+ragbench_context_retrieval:
+  eligibility_class: END_TO_END_CONTEXT_RETRIEVAL_ELIGIBLE
+  claim_cap: Inconclusive
+  context_as_document_reconstruction_allowed: true
+  replay_only_disallowed_for_end_to_end_claims: true
+
+optimizer_display_names:
+  ragtune_no_fork: RAG Compass

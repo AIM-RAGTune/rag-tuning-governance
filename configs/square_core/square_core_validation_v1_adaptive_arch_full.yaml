@@ -1,0 +1,9 @@
+matrix_name: adaptive_arch_full
+tracks: [adaptive_arch]
+seeds: [101, 202, 303, 404, 505]
+simulation:
+  grid_size: 16
+  emitter_count: 8
+  steps: 24
+diagnostics:
+  save_large_tensors: false

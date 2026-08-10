@@ -1,0 +1,40 @@
+experiment_name: snapshot_synthetic_diagnostics
+dataset_version_policy:
+  mode: catalog_latest
+  allow_latest: true
+split:
+  mode: catalog_resolve
+  seed: 42
+  split_id_template: "default_target_{target}_seed_{seed}"
+  create_missing: false
+datasets:
+  - synthetic_snapshot_field_overlap_future
+  - synthetic_snapshot_nonlinear_branch_choice
+  - synthetic_snapshot_delayed_memory_zone
+  - synthetic_snapshot_local_counterfactual_delta
+  - synthetic_snapshot_merge_required
+  - synthetic_snapshot_linear_control
+targets: [target]
+seed: 42
+models:
+  - logistic_regression
+  - hist_gradient_boosting
+  - fourier_mlp
+  - squaresim_full
+  - squaresim_snapshot_rollout
+  - squaresim_snapshot_no_fork
+  - squaresim_snapshot_linear_rollout
+  - squaresim_snapshot_no_merge
+training:
+  max_epochs: 5
+  batch_size: 256
+  learning_rate: 0.001
+  bootstrap_samples: 100
+resources:
+  device: cpu
+  num_workers: 4
+reporting:
+  generate_run_explanations: true
+  generate_comparison_reports: true
+  generate_certificates: true
+  bootstrap_samples: 100

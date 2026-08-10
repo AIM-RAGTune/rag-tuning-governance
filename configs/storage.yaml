@@ -1,0 +1,29 @@
+defaults:
+  linux_nas_mount: "<approved-data-root>"
+  macos_nas_mount: "<approved-data-root>"
+  project_subdir: "<project-subdir>"
+  gpu_hot_scratch: "/srv/aim/squaresim/hot"
+  gpu_warm_scratch: "/srv/aim/squaresim/warm"
+  processing_scratch: "/srv/aim/squaresim/processing"
+
+layout:
+  - datasets/raw/kaggle
+  - datasets/staging
+  - datasets/processed
+  - datasets/splits
+  - runs
+  - reports/dataset_reports
+  - reports/comparison_reports
+  - reports/certificates
+  - artifacts/compact
+  - artifacts/exported_tables
+  - artifacts/figures
+  - logs/orchestrator
+  - logs/workers
+  - logs/audit
+  - workflows/submitted_jobs
+  - workflows/completed_jobs
+  - workflows/failed_jobs
+  - registry/exports
+  - registry/snapshots
+

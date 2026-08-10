@@ -1,0 +1,5 @@
+{
+  "findings": [],
+  "gate": "no_private_paths",
+  "status": "PASS"
+}

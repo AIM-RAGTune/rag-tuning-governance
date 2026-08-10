@@ -1,0 +1,15 @@
+{
+  "raw_text_scan": "PASS",
+  "secret_scan": "PASS",
+  "private_path_scan": "PASS",
+  "overclaim_scan": "PASS",
+  "sanitization_summary": "PASS",
+  "publication_validator": "PASS",
+  "pytest_publication": "PASS: 4 passed",
+  "compileall": "PASS",
+  "make_validate_publication": "PASS",
+  "make_test": "PASS: 4 passed",
+  "targeted_crag_hardening_test": "NOT_RUN_DEPENDENCY_MISSING_IN_LOCAL_EXPORT_ENV: PyYAML was not installed in the active pytest interpreter; PyYAML is declared in requirements.txt, pyproject.toml, and environment.yml.",
+  "deployment_allowed": true,
+  "overall_result": "PASS_WITH_DOCUMENTED_TARGETED_ENV_LIMITATION"
+}

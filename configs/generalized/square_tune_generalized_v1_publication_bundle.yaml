@@ -1,0 +1,12 @@
+bundle_name: square_tune_generalized_v1
+include:
+  aggregate_metrics: true
+  certificates: true
+  configs: true
+  scenario_cards: true
+exclude:
+  restricted_raw_data: true
+  credentialed_healthcare_rows: true
+  credentials: true
+  model_weights: true
+  large_tensors: true

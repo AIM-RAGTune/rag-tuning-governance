@@ -1,0 +1,21 @@
+{
+  "result": "PASS",
+  "files_scanned": 873,
+  "files_modified": 6,
+  "fields_removed": [
+    "query_text",
+    "Markdown Query raw text lines"
+  ],
+  "fields_added": [
+    "query_text_redacted",
+    "query_text_hash",
+    "sanitized_query_summary"
+  ],
+  "row_or_line_count_affected": 1910,
+  "case_packets_sanitized": true,
+  "notebooks_cleared": false,
+  "test_fixtures_sanitized": "CRAG hardening fake query fixture explicitly marked FAKE_SYNTHETIC_QUERY_FOR_TESTING",
+  "remaining_known_limitations": [
+    "Current-tree sanitization only; prior private Git history may still contain earlier artifact versions."
+  ]
+}

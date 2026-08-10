@@ -1,0 +1,10 @@
+matrix_name: elastic_compute_policy_v1_smoke
+smoke: true
+seeds: [101]
+tracks: [elastic_compute_policy_v1]
+systems_by_track:
+  elastic_compute_policy_v1:
+    - static_threshold_policy
+    - square_tune_no_fork
+    - square_tune_adaptive_compute
+

@@ -1,0 +1,7 @@
+policy_space_id: governance_confirmatory_policy_space_v8
+inherits_from: governance_confirmatory_policy_space_v7
+status: frozen_for_crag_mock_api_reproduction
+claim_change: false
+notes:
+  - No RAG Compass tuning changes.
+  - Preserves parent CRAG mock-API validation policy space for reproduction, ablation, repeat split analysis, and evidence synthesis.

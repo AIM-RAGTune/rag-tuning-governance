@@ -1,0 +1,10 @@
+name: rag-tuning-governance
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - pandas
+  - pyyaml
+  - pytest
+  - pip

@@ -1,0 +1,11 @@
+optimizers:
+  ragtune_no_fork:
+    canonical_display_name: RAG Compass
+    stable_internal_id: ragtune_no_fork
+    legacy_names:
+      - No-Fork
+      - RAGTune-No-Fork
+      - ragtune_no_fork
+      - square_tune_no_fork
+    status: active
+    schema_id_stable: true

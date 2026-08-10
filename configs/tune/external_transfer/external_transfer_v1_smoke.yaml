@@ -1,0 +1,27 @@
+experiment_name: square_tune_external_v1_smoke
+scenario_root: ${SQUARESIM_DATA_ROOT}/datasets/external/square_tune_v1/scenarios
+scenario_families:
+  - rag_policy_optimization
+  - prompt_regression_optimization
+  - data_curation_preference_optimization
+  - tool_routing_policy_optimization
+seeds: [101]
+optimizers:
+  - random_search
+  - greedy_regression_aware
+  - square_tune_full
+  - square_tune_no_snapshot
+  - square_tune_no_merge
+  - square_tune_no_cost_sensor
+square_tune:
+  max_rounds: 4
+  num_branches: 4
+  rollout_steps: 2
+  max_response_surface_evaluations: 64
+  max_candidate_actions: 64
+  simulated_gpu_hour_budget: 4.0
+  budget_ledger_enabled: true
+calibration_reference:
+  experiment_id: square_tune_calibration_v2_matrix_20260731-135458-7829d0a8bd
+  report_path: ${SQUARESIM_DATA_ROOT}/reports/square_tune/calibration/square_tune_calibration_v2_matrix_20260731-135458-7829d0a8bd/calibration_v2_summary.json
+  certificate_path: ${SQUARESIM_DATA_ROOT}/certificates/square_tune/calibration/square_tune_calibration_v2_matrix_20260731-135458-7829d0a8bd/certificate_index.json

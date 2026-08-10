@@ -1,0 +1,30 @@
+{
+  "strongest_result": {
+    "run_id": "ragtune_crag_mock_api_validation_v1_20260809-165415-92d8c0edd4",
+    "result_class": "MOCK_API_VALIDATION_GOVERNANCE_SUPERIOR",
+    "governed_winner": "top_k_low",
+    "quality_only_winner": "greedy_regression_aware_search",
+    "rag_compass_rank": 5,
+    "delta": 0.0010025405,
+    "ci": [0.0010022708, 0.0010028250],
+    "win_tie_loss": [571, 0, 0]
+  },
+  "supported_claims": [
+    "RAGTune governance produced a CRAG mock-API governance superiority signal on full held-out validation.",
+    "The strongest CRAG mock-API decision was decision-reproduced in Docker and replicated under frozen-observation resplits according to packaged artifacts.",
+    "RAGBench HotpotQA supports context-retrieval policy variation, not full corpus-backed retrieval."
+  ],
+  "unsupported_claims": [
+    "RAG Compass superiority",
+    "generative LLM validation",
+    "human-evaluation validation",
+    "official external platform benchmarking",
+    "production readiness"
+  ],
+  "key_limitations": [
+    "Raw licensed datasets are not redistributed.",
+    "CRAG use is noncommercial-research-only.",
+    "RAG Compass ranked fifth in the strongest CRAG mock-API result."
+  ],
+  "reproducibility_status": "Publication bundle includes configs, scripts, manifests, processed summaries, and Docker instructions; raw data must be obtained separately."
+}

@@ -1,0 +1,12 @@
+matrix_name: full_matrix
+seeds: [101, 202, 303, 404, 505]
+tracks:
+  - rag_hard_subset_v1
+  - no_fork_robustness_v1
+  - adaptive_escalation_v2
+  - claim_level_faithfulness_v1
+  - elastic_compute_policy_v1
+  - square_core_v2_field_substrate_targeted
+  - square_core_v2_closed_loop_targeted
+bootstrap_samples: 1000
+

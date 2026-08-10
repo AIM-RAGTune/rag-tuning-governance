@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+*.env
+*.pem
+id_rsa
+id_ed25519
+data/raw/
+results/raw/*
+!results/raw/README.md
+artifacts/raw/
+*.log

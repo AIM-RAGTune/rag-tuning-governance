@@ -1,0 +1,27 @@
+{
+  "audit_timestamp": "2026-08-09T19:28:30.574540+00:00",
+  "human_eval_private_answer_keys_included": false,
+  "notes": [
+    "Raw licensed datasets are excluded.",
+    "CRAG is documented as noncommercial-research-only.",
+    "No password-manager contents were read or exported."
+  ],
+  "oversized_files": [],
+  "raw_dataset_files_included": false,
+  "safe_to_publish": true,
+  "secret_like_findings": [],
+  "secret_scan_patterns": [
+    "ANTHROPIC_API_KEY",
+    "AWS_ACCESS_KEY_ID",
+    "AWS_SECRET_ACCESS_KEY",
+    "AZURE",
+    "GOOGLE_APPLICATION_CREDENTIALS",
+    "LANGCHAIN_API_KEY",
+    "LANGSMITH_API_KEY",
+    "OPENAI_API_KEY",
+    "bearer",
+    "ghp",
+    "github_pat",
+    "ssh_private_key"
+  ]
+}

@@ -1,0 +1,34 @@
+experiment_name: square_tune_external_v2_adaptive_compute_faithfulness_only
+scenario_root: ${SQUARESIM_DATA_ROOT}/datasets/external/square_tune_v1_full/scenarios
+source_appropriate: true
+scenario_families:
+  - hallucination_faithfulness_reduction
+seeds: [101, 202, 303, 404, 505]
+optimizers:
+  - greedy_regression_aware
+  - coordinate_descent
+  - evolutionary_search
+  - optuna_tpe_optional
+  - square_tune_full
+  - square_tune_no_fork
+  - square_tune_no_merge
+  - square_tune_no_snapshot
+  - square_tune_no_cost_sensor
+  - square_tune_adaptive_compute
+  - square_tune_adaptive_compute_no_uncertainty_gate
+  - square_tune_adaptive_compute_no_conflict_gate
+  - square_tune_adaptive_compute_no_roi_gate
+  - square_tune_adaptive_compute_no_budget_gate
+  - square_tune_adaptive_compute_always_fork
+  - square_tune_adaptive_compute_never_fork
+square_tune:
+  max_rounds: 6
+  num_branches: 6
+  rollout_steps: 3
+  max_response_surface_evaluations: 144
+  max_candidate_actions: 144
+  simulated_gpu_hour_budget: 8.0
+  budget_ledger_enabled: true
+calibration_reference:
+  experiment_id: square_tune_calibration_v2_matrix_20260731-135458-7829d0a8bd
+  certificate_path: ${SQUARESIM_DATA_ROOT}/certificates/square_tune/calibration/square_tune_calibration_v2_matrix_20260731-135458-7829d0a8bd/certificate_index.json

@@ -1,0 +1,14 @@
+matrix_name: full_matrix
+tracks:
+  - adaptive_arch
+  - field_substrate
+  - closed_loop
+  - quantum_coupling
+  - soliton
+seeds: [101, 202, 303, 404, 505]
+simulation:
+  grid_size: 32
+  emitter_count: 32
+  steps: 32
+diagnostics:
+  save_large_tensors: false

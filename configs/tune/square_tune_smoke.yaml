@@ -1,0 +1,21 @@
+experiment_name: square_tune_smoke
+datasets:
+  - synthetic_llm_linear_control
+  - synthetic_llm_random_label
+  - synthetic_llm_failure_cluster_routing
+seeds: [101]
+optimizers:
+  - random_search
+  - greedy_eval_improvement
+  - square_tune_full
+  - square_tune_no_fork
+  - square_tune_linear_rollout
+  - square_tune_no_merge
+protocol_path: protocols/square_tune/synthetic_mechanism_protocol_v1.yaml
+bootstrap_samples: 100
+square_tune:
+  max_rounds: 4
+  num_branches: 4
+  rollout_steps: 2
+  simulated_gpu_hour_budget: 2.0
+  eval_budget: 64

@@ -1,0 +1,62 @@
+datasets:
+  hagrid:
+    display_name: "HAGRID"
+    source_type: "huggingface_or_ragbench"
+    required_for_minimal: false
+    license_required: true
+    scenario_families: ["rag_policy_optimization", "hallucination_faithfulness_reduction"]
+    enabled: true
+    max_rows: 50000
+  expertqa:
+    display_name: "ExpertQA"
+    source_type: "huggingface_or_ragbench"
+    required_for_minimal: false
+    license_required: true
+    scenario_families: ["rag_policy_optimization"]
+    enabled: true
+    max_rows: 50000
+  promptbench:
+    display_name: "PromptBench"
+    source_type: "github_or_manual"
+    required_for_minimal: false
+    license_required: true
+    scenario_families: ["prompt_regression_optimization"]
+    enabled: false
+  bbh_subset:
+    display_name: "BBH subset"
+    source_type: "huggingface_or_manual"
+    required_for_minimal: false
+    license_required: true
+    scenario_families: ["prompt_regression_optimization"]
+    enabled: false
+  ultrafeedback:
+    display_name: "UltraFeedback"
+    source_type: "huggingface"
+    dataset_id: "openbmb/UltraFeedback"
+    required_for_minimal: false
+    license_required: true
+    scenario_families: ["data_curation_preference_optimization"]
+    enabled: false
+  oasst1:
+    display_name: "OpenAssistant OASST1"
+    source_type: "huggingface"
+    dataset_id: "OpenAssistant/oasst1"
+    required_for_minimal: false
+    license_required: true
+    scenario_families: ["data_curation_preference_optimization"]
+    enabled: false
+  api_bank:
+    display_name: "API-Bank"
+    source_type: "github_or_manual"
+    repository: "AlibabaResearch/DAMO-ConvAI/api-bank"
+    required_for_minimal: false
+    license_required: true
+    scenario_families: ["tool_routing_policy_optimization"]
+    enabled: false
+  tau_bench:
+    display_name: "Tau-bench"
+    source_type: "manual"
+    required_for_minimal: false
+    license_required: true
+    scenario_families: ["tool_routing_policy_optimization"]
+    enabled: false

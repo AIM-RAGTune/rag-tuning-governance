@@ -1,0 +1,33 @@
+matrix_name: full_matrix
+seeds:
+  - 101
+  - 202
+  - 303
+  - 404
+  - 505
+systems:
+  - static_default_rag_policy
+  - best_single_policy_on_validation
+  - square_tune_full
+  - square_tune_no_fork
+  - square_tune_no_merge
+  - square_tune_no_cost_sensor
+  - square_tune_no_regression_sensor
+  - square_tune_adaptive_compute
+  - random_gating_matched_cost
+  - uncertainty_threshold_gating_matched_cost
+  - retrieval_confidence_gating_matched_cost
+  - entropy_or_margin_gating_matched_cost
+  - optuna_tpe_matched_budget_optional
+  - bayesian_optimization_matched_budget_optional
+  - greedy_regression_aware_search
+  - coordinate_descent_matched_budget
+  - evolutionary_search_matched_budget
+  - oracle_upper_bound_diagnostic
+simulation:
+  max_rows: null
+  bootstrap_samples: 1000
+  matched_cost_tolerance_pct: 2.5
+real_data_required: true
+continue_on_failure: true
+

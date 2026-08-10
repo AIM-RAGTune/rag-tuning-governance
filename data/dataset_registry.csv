@@ -1,0 +1,4 @@
+dataset,role,evidence_class,raw_data_included,license_note,next_action
+MultiHop-RAG,confirmatory anchor,full_corpus_backed,false,see source provider manifests,rerun acquisition from provider
+RAGBench HotpotQA,context retrieval validation,context_retrieval_eligible,false,CC-BY-4.0 reported by provider,obtain from provider and verify revision
+CRAG,full corpus-backed and mock-API validation,full_corpus_backed,false,noncommercial restriction/manual approval,obtain from provider and verify hashes

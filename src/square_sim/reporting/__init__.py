@@ -1,0 +1,2 @@
+"""Deterministic reports and plots."""
+

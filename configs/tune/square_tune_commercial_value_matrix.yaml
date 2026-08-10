@@ -1,0 +1,24 @@
+experiment_name: square_tune_commercial_value_matrix
+datasets:
+  - synthetic_llm_adapter_tradeoff
+  - synthetic_llm_rag_policy_conflict
+  - synthetic_llm_data_poison_regression
+  - synthetic_llm_merge_required
+  - synthetic_llm_curriculum_order
+seeds: [101, 202, 303, 404, 505]
+optimizers:
+  - random_search
+  - greedy_eval_improvement
+  - greedy_regression_aware
+  - evolutionary
+  - square_tune_full
+  - square_tune_no_merge
+  - square_tune_no_memory
+  - square_tune_no_regression_sensor
+  - square_tune_no_cost_sensor
+protocol_path: protocols/square_tune/synthetic_mechanism_protocol_v1.yaml
+bootstrap_samples: 1000
+square_tune:
+  max_rounds: 8
+  num_branches: 6
+  rollout_steps: 3

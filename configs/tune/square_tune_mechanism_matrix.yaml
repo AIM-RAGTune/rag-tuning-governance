@@ -1,0 +1,42 @@
+experiment_name: square_tune_mechanism_matrix
+datasets:
+  - synthetic_llm_linear_control
+  - synthetic_llm_random_label
+  - synthetic_llm_failure_cluster_routing
+  - synthetic_llm_nonmonotonic_data_mix
+  - synthetic_llm_adapter_tradeoff
+  - synthetic_llm_rag_policy_conflict
+  - synthetic_llm_prompt_regression
+  - synthetic_llm_tool_routing
+  - synthetic_llm_data_poison_regression
+  - synthetic_llm_merge_required
+  - synthetic_llm_curriculum_order
+  - synthetic_llm_hard_external_transfer_proxy
+seeds: [101, 202, 303, 404, 505]
+optimizers:
+  - random_search
+  - grid_search
+  - greedy_eval_improvement
+  - greedy_regression_aware
+  - evolutionary
+  - bayesian_optional
+  - hyperband_optional
+  - square_tune_full
+  - square_tune_no_snapshot
+  - square_tune_no_fork
+  - square_tune_linear_rollout
+  - square_tune_no_merge
+  - square_tune_no_memory
+  - square_tune_no_feedback
+  - square_tune_random_branch
+  - square_tune_global_only
+  - square_tune_no_regression_sensor
+  - square_tune_no_cost_sensor
+protocol_path: protocols/square_tune/synthetic_mechanism_protocol_v1.yaml
+bootstrap_samples: 1000
+square_tune:
+  max_rounds: 8
+  num_branches: 6
+  rollout_steps: 3
+  simulated_gpu_hour_budget: 8.0
+  eval_budget: 256

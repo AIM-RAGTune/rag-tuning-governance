@@ -1,0 +1,35 @@
+chunk_size:
+  - 256
+  - 512
+  - 1024
+chunk_overlap:
+  - 0
+  - 64
+  - 128
+retriever_type:
+  - sparse
+top_k:
+  - 3
+  - 5
+  - 8
+reranker_enabled:
+  - false
+  - true
+reranker_depth:
+  - 10
+  - 25
+context_ordering:
+  - retrieval_score
+  - source_order
+citation_required:
+  - false
+  - true
+abstention_threshold:
+  - 0.2
+  - 0.5
+  - 0.8
+generator_type:
+  - deterministic_grounded_extractive
+answer_length_policy:
+  - concise
+  - standard

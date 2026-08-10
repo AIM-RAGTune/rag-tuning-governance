@@ -1,0 +1,13 @@
+{
+  "checks": {
+    "apache_2_text": true,
+    "citation_exists": true,
+    "crag_not_overridden": true,
+    "datasets_not_relicensed": true,
+    "license_exists": true,
+    "pyproject_license": true,
+    "readme_mentions_license": true
+  },
+  "gate": "license_correct",
+  "status": "PASS"
+}

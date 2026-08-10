@@ -1,0 +1,4 @@
+matrix_name: elastic_compute_policy_v1_full
+seeds: [101, 202, 303, 404, 505]
+tracks: [elastic_compute_policy_v1]
+

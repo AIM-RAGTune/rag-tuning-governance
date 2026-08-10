@@ -1,0 +1,159 @@
+datasets:
+  ragbench:
+    enabled: true
+    required_for_minimal: true
+    required: true
+    source_type: "huggingface"
+    dataset_id: "galileo-ai/ragbench"
+    config_name: "covidqa"
+    split: "train"
+    license_required: true
+    license: "cc-by-4.0"
+    max_rows:
+    sample_seed: 101
+    scenario_families: ["rag_policy_optimization", "hallucination_faithfulness_reduction"]
+    storage_policy: "nas_raw_and_normalized"
+    notes: "RAGBench covidqa subset; full RAG coverage augmented by hagrid/expertqa subset keys."
+  hagrid:
+    enabled: true
+    required_for_minimal: false
+    required: false
+    source_type: "huggingface"
+    dataset_id: "galileo-ai/ragbench"
+    config_name: "hagrid"
+    split: "train"
+    license_required: true
+    license: "cc-by-4.0"
+    max_rows:
+    sample_seed: 101
+    scenario_families: ["rag_policy_optimization", "hallucination_faithfulness_reduction"]
+    storage_policy: "nas_raw_and_normalized"
+    notes: "RAGBench HAGRID subset for attributability and faithfulness proxy scenarios."
+  expertqa:
+    enabled: true
+    required_for_minimal: false
+    required: false
+    source_type: "huggingface"
+    dataset_id: "galileo-ai/ragbench"
+    config_name: "expertqa"
+    split: "train"
+    license_required: true
+    license: "cc-by-4.0"
+    max_rows:
+    sample_seed: 101
+    scenario_families: ["rag_policy_optimization"]
+    storage_policy: "nas_raw_and_normalized"
+    notes: "RAGBench ExpertQA subset for expert QA transfer."
+  ifeval:
+    enabled: true
+    required_for_minimal: true
+    required: true
+    source_type: "huggingface"
+    dataset_id: "google/IFEval"
+    config_name: "default"
+    split: "train"
+    license_required: true
+    license: "apache-2.0"
+    max_rows:
+    sample_seed: 101
+    scenario_families: ["prompt_regression_optimization"]
+    storage_policy: "nas_raw_and_normalized"
+    notes: "Instruction-following prompt policy benchmark."
+  helpsteer2:
+    enabled: true
+    required_for_minimal: true
+    required: true
+    source_type: "huggingface"
+    dataset_id: "nvidia/HelpSteer2"
+    config_name: "default"
+    split: "train"
+    license_required: true
+    license: "cc-by-4.0"
+    max_rows: 25000
+    sample_seed: 101
+    scenario_families: ["data_curation_preference_optimization", "adapter_planning_simulation"]
+    storage_policy: "nas_raw_and_normalized"
+    notes: "Preference and quality attribute data."
+  dolly15k:
+    enabled: true
+    required_for_minimal: true
+    required: true
+    source_type: "huggingface"
+    dataset_id: "databricks/databricks-dolly-15k"
+    config_name: "default"
+    split: "train"
+    license_required: true
+    license: "cc-by-sa-3.0"
+    max_rows: 15000
+    sample_seed: 101
+    scenario_families: ["data_curation_preference_optimization", "adapter_planning_simulation", "prompt_regression_optimization"]
+    storage_policy: "nas_raw_and_normalized"
+    notes: "Instruction data curation and adapter planning proxy."
+  bfcl:
+    enabled: true
+    required_for_minimal: true
+    required: true
+    source_type: "huggingface_file"
+    dataset_id: "gorilla-llm/Berkeley-Function-Calling-Leaderboard"
+    data_file: "BFCL_v3_simple.json"
+    license_required: true
+    license: "apache-2.0"
+    max_rows:
+    sample_seed: 101
+    scenario_families: ["tool_routing_policy_optimization"]
+    storage_policy: "nas_raw_and_normalized"
+    notes: "BFCL simple JSON source for tool routing policy optimization."
+  ragtruth:
+    enabled: true
+    required_for_minimal: false
+    required: false
+    source_type: "github_or_manual"
+    repository: "ParticleMedia/RAGTruth"
+    license_required: true
+    allow_unknown_license: false
+    max_rows:
+    sample_seed: 101
+    scenario_families: ["hallucination_faithfulness_reduction", "rag_policy_optimization"]
+    storage_policy: "manual_import_pending"
+    manual_import_allowed: true
+    manual_import_command: "square-sim tune external import-manual --dataset ragtruth --path <path> --license-note <license.txt>"
+    notes: "Manual import pending until source parser is reviewed."
+  ultrafeedback:
+    enabled: true
+    required_for_minimal: false
+    required: false
+    source_type: "huggingface"
+    dataset_id: "openbmb/UltraFeedback"
+    split: "train"
+    license_required: true
+    max_rows: 25000
+    sample_seed: 101
+    scenario_families: ["data_curation_preference_optimization"]
+    storage_policy: "optional"
+    notes: "Optional preference dataset; skipped if unavailable or license not captured."
+  oasst1:
+    enabled: true
+    required_for_minimal: false
+    required: false
+    source_type: "huggingface"
+    dataset_id: "OpenAssistant/oasst1"
+    split: "train"
+    license_required: true
+    max_rows: 25000
+    sample_seed: 101
+    scenario_families: ["data_curation_preference_optimization"]
+    storage_policy: "optional"
+    notes: "Optional conversation data curation source."
+  api_bank:
+    enabled: true
+    required_for_minimal: false
+    required: false
+    source_type: "github_or_manual"
+    repository: "AlibabaResearch/DAMO-ConvAI/api-bank"
+    license_required: true
+    max_rows:
+    sample_seed: 101
+    scenario_families: ["tool_routing_policy_optimization"]
+    storage_policy: "manual_import_pending"
+    manual_import_allowed: true
+    notes: "Optional manual import for tool-routing scenarios."

@@ -1,0 +1,23 @@
+experiment_name: smoke
+dataset_root: ${SQUARESIM_DATA_ROOT}/datasets/synthetic/square_adaptive_arch_v1
+tasks:
+  - local_regime_shift
+  - compute_allocation_trap
+  - linear_static_control
+  - random_unlearnable_control
+seeds: [101]
+systems:
+  - static_policy
+  - greedy_immediate
+  - square_tune_adaptive_compute
+  - square_adaptive_arch_full
+  - square_adaptive_arch_no_fork
+  - square_adaptive_arch_no_merge
+  - square_adaptive_arch_no_memory
+budget:
+  max_rounds: 4
+  num_branches: 4
+  rollout_steps: 2
+  max_response_surface_evaluations: 64
+  max_candidate_actions: 64
+  simulated_gpu_hour_budget: 6.0

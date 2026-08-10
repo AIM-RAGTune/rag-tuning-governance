@@ -1,0 +1,10 @@
+matrix_name: adaptive_escalation_v2_smoke
+smoke: true
+seeds: [101]
+tracks: [adaptive_escalation_v2]
+systems_by_track:
+  adaptive_escalation_v2:
+    - square_tune_no_fork
+    - square_tune_hard_subset_escalation
+    - square_tune_three_tier_escalation
+

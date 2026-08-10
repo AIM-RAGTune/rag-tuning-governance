@@ -1,0 +1,9 @@
+matrix_name: soliton
+tracks: [soliton]
+seeds: [101, 202, 303, 404, 505]
+simulation:
+  grid_size: 32
+  emitter_count: 16
+  steps: 48
+diagnostics:
+  save_large_tensors: false

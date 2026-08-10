@@ -1,0 +1,38 @@
+experiment_name: gpu_smoke_energy
+dataset_version_policy:
+  mode: catalog_latest
+  allow_latest: true
+split:
+  mode: catalog_resolve
+  seed: 42
+  split_id_template: "default_target_{target}_seed_{seed}"
+  create_missing: false
+dataset: energy
+target: target
+seed: 42
+models:
+  - squaresim_full
+feature_policy:
+  exclude_roles: [target, target_real, pocket_flag]
+  exclude_columns: []
+  exclude_patterns: []
+  leakage_warning_policy: warn_and_downgrade_certificate
+  acknowledged_leakage_warnings: []
+run_policy:
+  resume: true
+  skip_completed: true
+  fail_fast: true
+  continue_on_model_failure: false
+training:
+  max_epochs: 2
+  batch_size: 256
+  learning_rate: 0.001
+  bootstrap_samples: 100
+resources:
+  device: cuda:0
+  num_workers: 2
+reporting:
+  generate_run_explanations: true
+  generate_comparison_reports: false
+  generate_certificates: false
+  bootstrap_samples: 100

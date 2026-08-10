@@ -1,0 +1,41 @@
+experiment_name: gate_baseline_matrix
+dataset_version_policy:
+  mode: catalog_latest
+  allow_latest: true
+split:
+  mode: catalog_resolve
+  seed: 42
+  split_id_template: "default_target_{target}_seed_{seed}"
+  create_missing: false
+datasets: [energy, oilgas, maintenance, telecom]
+targets: [target, target_real, in_pocket]
+seed: 42
+models:
+  - fourier_mlp
+  - gate_inspired_vqc_surrogate
+  - gate_inspired_fourier_series
+  - squaresim_full
+feature_policy:
+  exclude_roles: [target, target_real, pocket_flag]
+  exclude_columns: []
+  exclude_patterns: []
+  leakage_warning_policy: warn_and_downgrade_certificate
+  acknowledged_leakage_warnings: []
+run_policy:
+  resume: true
+  skip_completed: true
+  fail_fast: false
+  continue_on_model_failure: true
+training:
+  max_epochs: 25
+  batch_size: 1024
+  learning_rate: 0.001
+  bootstrap_samples: 1000
+resources:
+  device: cuda:0
+  num_workers: 4
+reporting:
+  generate_run_explanations: true
+  generate_comparison_reports: true
+  generate_certificates: true
+  bootstrap_samples: 1000
