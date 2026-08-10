@@ -47,4 +47,6 @@ Used as context-retrieval evidence. Raw RAGBench data are not redistributed here
 
 Fresh live CRAG requires approved noncommercial research-only local access to CRAG and its mock API. This repository does not include raw CRAG queries, source documents, or API responses.
 
+The latest fresh-live attempt configured approved local CRAG root/data paths and found the local evaluator, but the mock-API KG data were not readable by the runtime. The result remains `FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE`; reviewers should restore a complete, readable CRAG mock-API KG/data installation before rerunning.
+
 HotpotQA is the preferred alternate public corpus for stronger answer-label and supporting-fact evaluation. This repository does not include raw HotpotQA questions, context paragraphs, or supporting-fact sentences. Reviewers should acquire HotpotQA from the original approved source or Hugging Face into a local data cache, then run the scripts documented in `docs/dataset_acquisition.md`.

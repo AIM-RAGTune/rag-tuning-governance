@@ -1,6 +1,6 @@
 {
   "claim_boundary": "Replication is not claimed when only frozen-observation evidence succeeds.",
-  "fresh_live_crag_result_class": "FRESH_CRAG_BLOCKED_NO_APPROVED_DATA",
+  "fresh_live_crag_result_class": "FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE",
   "hotpotqa_result_class": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS",
   "prior_frozen_observation_result_class": "GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY",
   "result_class": "MULTI_DATASET_BEHAVIORAL_GOVERNANCE_INCONCLUSIVE",

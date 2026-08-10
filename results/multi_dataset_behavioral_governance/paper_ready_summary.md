@@ -14,7 +14,7 @@ HotpotQA provides answer labels, multi-hop structure, bridge/comparison types, d
 
 ## Dataset acquisition status
 
-Fresh CRAG: `FRESH_CRAG_BLOCKED_NO_APPROVED_DATA`. HotpotQA: `HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS`.
+Fresh CRAG: `FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE`. HotpotQA: `HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS`.
 
 ## Policy suite
 
@@ -30,7 +30,7 @@ Equivalent quality with lower measured cost/latency, or improved quality under a
 
 ## Fresh CRAG result
 
-`FRESH_CRAG_BLOCKED_NO_APPROVED_DATA`.
+`FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE`.
 
 ## HotpotQA result
 
@@ -42,7 +42,7 @@ Equivalent quality with lower measured cost/latency, or improved quality under a
 
 ## Negative findings
 
-Fresh CRAG remains blocked unless approved local CRAG data and mock-API paths are configured. HotpotQA is classified only by the observed answer-label/supporting-fact result; noninferiority without operational gain is not treated as replication.
+Fresh CRAG remains blocked if the approved local mock-API runtime cannot read the required KG/data files. HotpotQA is classified only by the observed answer-label/supporting-fact result; noninferiority without operational gain is not treated as replication.
 
 ## Claim boundaries
 

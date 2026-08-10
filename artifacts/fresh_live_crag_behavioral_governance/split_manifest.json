@@ -1,4 +1,4 @@
 {
-  "result_class": "FRESH_CRAG_BLOCKED_NO_APPROVED_DATA",
-  "split_status": "not_created_blocked_no_approved_data"
+  "result_class": "FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE",
+  "split_status": "not_created_blocked_mock_api_not_available"
 }

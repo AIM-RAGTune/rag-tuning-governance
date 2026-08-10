@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import bz2
 import importlib.util
 import json
 import os
@@ -390,6 +391,65 @@ def crag_required_paths(root: Path) -> dict[str, bool]:
     }
 
 
+def crag_data_file_status(data: Path | None) -> dict[str, Any]:
+    if data is None or not data.exists():
+        return {"data_files_present": False, "data_file_count": 0}
+    files = [path for path in data.rglob("*") if path.is_file() and path.name != ".gitattributes"]
+    return {
+        "data_files_present": bool(files),
+        "data_file_count": len(files),
+        "expected_task_1_and_2_present": any(path.name.startswith("crag_task_1_and_2") for path in files),
+        "expected_task_3_parts_present": any(path.name.startswith("crag_task_3") for path in files),
+    }
+
+
+def crag_mock_api_runtime_status(root: Path | None) -> dict[str, Any]:
+    if root is None or not root.exists():
+        return {
+            "mock_api_path_available": False,
+            "mock_api_kg_files_present": False,
+            "mock_api_kg_files_readable": False,
+            "mock_api_runtime_available": False,
+            "mock_api_blocker": "crag_root_missing",
+        }
+    mock_api = root / "mock_api"
+    open_kg = mock_api / "cragkg" / "open" / "kg.0.jsonl.bz2"
+    if not mock_api.exists():
+        return {
+            "mock_api_path_available": False,
+            "mock_api_kg_files_present": False,
+            "mock_api_kg_files_readable": False,
+            "mock_api_runtime_available": False,
+            "mock_api_blocker": "mock_api_path_missing",
+        }
+    if not open_kg.exists():
+        return {
+            "mock_api_path_available": True,
+            "mock_api_kg_files_present": False,
+            "mock_api_kg_files_readable": False,
+            "mock_api_runtime_available": False,
+            "mock_api_blocker": "open_kg_file_missing",
+        }
+    try:
+        with bz2.open(open_kg, "rt", encoding="utf-8", errors="ignore") as handle:
+            handle.readline()
+    except Exception as exc:
+        return {
+            "mock_api_path_available": True,
+            "mock_api_kg_files_present": True,
+            "mock_api_kg_files_readable": False,
+            "mock_api_runtime_available": False,
+            "mock_api_blocker": f"open_kg_unreadable:{type(exc).__name__}",
+        }
+    return {
+        "mock_api_path_available": True,
+        "mock_api_kg_files_present": True,
+        "mock_api_kg_files_readable": True,
+        "mock_api_runtime_available": True,
+        "mock_api_blocker": "",
+    }
+
+
 def inspect_crag_environment() -> dict[str, Any]:
     approved = os.environ.get("RAGTUNE_CRAG_APPROVED_NONCOMMERCIAL_RESEARCH_ONLY") == "true"
     root_value = os.environ.get("RAGTUNE_CRAG_ROOT")
@@ -399,14 +459,19 @@ def inspect_crag_environment() -> dict[str, Any]:
     root_ok = bool(root and root.exists())
     data_ok = bool(data and data.exists())
     required = crag_required_paths(root) if root_ok and root is not None else {}
+    data_status = crag_data_file_status(data)
+    runtime_status = crag_mock_api_runtime_status(root)
     return {
         "approved_noncommercial_research_only": approved,
+        "approval_env_var_present": approved,
         "crag_root_configured": bool(root_value),
         "crag_data_configured": bool(data_value),
         "crag_root_exists": root_ok,
         "crag_data_exists": data_ok,
         "required_paths": required,
-        "mock_api_available": bool(required.get("mock_api")) if required else False,
+        **data_status,
+        **runtime_status,
+        "mock_api_available": bool(runtime_status["mock_api_runtime_available"]),
         "local_evaluation_available": bool(required.get("local_evaluation.py")) if required else False,
     }
 
@@ -414,7 +479,7 @@ def inspect_crag_environment() -> dict[str, Any]:
 def write_crag_acquisition_report(repo_root: Path, *, dry_run: bool = False) -> dict[str, Any]:
     output = repo_root / "artifacts" / "fresh_live_crag_behavioral_governance"
     env = inspect_crag_environment()
-    if not env["approved_noncommercial_research_only"] or not env["crag_root_exists"] or not env["crag_data_exists"]:
+    if not env["approved_noncommercial_research_only"] or not env["crag_root_exists"] or not env["crag_data_exists"] or not env["data_files_present"]:
         result = "FRESH_CRAG_BLOCKED_NO_APPROVED_DATA"
     elif not env["mock_api_available"]:
         result = "FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE"
@@ -426,6 +491,8 @@ def write_crag_acquisition_report(repo_root: Path, *, dry_run: bool = False) -> 
         "dry_run": dry_run,
         "evidence_class": "fresh_live_crag_mock_api_blocked" if result.startswith("FRESH_CRAG_BLOCKED") else "fresh_live_crag_mock_api",
         "environment": env,
+        "crag_root_placeholder": "<approved-local-crag-root>" if env["crag_root_configured"] else "",
+        "crag_data_placeholder": "<approved-local-crag-data>" if env["crag_data_configured"] else "",
         "dataset_rows_committed": False,
         "query_wording_exported": False,
         "endpoint_outputs_exported": False,
@@ -445,16 +512,17 @@ def write_crag_acquisition_report(repo_root: Path, *, dry_run: bool = False) -> 
         output / "live_crag_acquisition_report.md",
         "# Fresh Live CRAG Mock-API Acquisition\n\n"
         f"Result: `{result}`.\n\n"
-        "No fresh live CRAG collection was run because approved local CRAG data and/or mock-API paths were unavailable in this environment. "
+        "No fresh live CRAG collection was run because a runnable mock-API environment was unavailable in this environment. Approved local CRAG root/data paths may be configured, but the runtime still requires complete readable mock-API KG data. "
         "Raw CRAG data, raw query wording, source documents, and API responses were not copied or exported.\n",
     )
     write_text(
         output / "primary_outcome_report.md",
         "# Fresh Live CRAG Behavioral Governance\n\n"
         f"Result: `{result}`.\n\n"
-        "This is a blocked result, not a governance-success claim. Re-run after configuring approved local CRAG paths.\n",
+        "This is a blocked result, not a governance-success claim. Re-run after configuring approved local CRAG data and a working mock-API runtime with readable KG data.\n",
     )
-    write_sanitized_json(output / "split_manifest.json", {"result_class": result, "split_status": "not_created_blocked_no_approved_data"})
+    split_status = "not_created_blocked_no_approved_data" if result == "FRESH_CRAG_BLOCKED_NO_APPROVED_DATA" else "not_created_blocked_mock_api_not_available"
+    write_sanitized_json(output / "split_manifest.json", {"result_class": result, "split_status": split_status})
     for name in [
         "per_query_policy_results.csv",
         "policy_summary_metrics.csv",
@@ -843,7 +911,7 @@ def write_multi_dataset_synthesis(repo_root: Path) -> dict[str, Any]:
         "## Multi-dataset synthesis\n\n"
         f"`{result}`.\n\n"
         "## Negative findings\n\n"
-        "Fresh CRAG remains blocked unless approved local CRAG data and mock-API paths are configured. HotpotQA is classified only by the observed answer-label/supporting-fact result; noninferiority without operational gain is not treated as replication.\n\n"
+        "Fresh CRAG remains blocked if the approved local mock-API runtime cannot read the required KG/data files. HotpotQA is classified only by the observed answer-label/supporting-fact result; noninferiority without operational gain is not treated as replication.\n\n"
         "## Claim boundaries\n\n"
         "No human validation, generative validation, official platform benchmark, production readiness, broad governance superiority, or RAG Compass superiority is claimed.\n\n"
         "## Reproduction instructions\n\n"
@@ -859,7 +927,7 @@ def write_multi_dataset_synthesis(repo_root: Path) -> dict[str, Any]:
     write_text(
         output / "limitations.md",
         "# Limitations\n\n"
-        "- Fresh CRAG was blocked by missing approved local CRAG data/mock-API configuration.\n"
+        "- Fresh CRAG was blocked because the approved local mock-API runtime could not read the required KG/data files.\n"
         "- HotpotQA raw data are not redistributed; only sanitized metrics, hashes, IDs, and labels are exported.\n"
         "- No raw data were committed.\n"
         "- No replication claim is made from frozen-only evidence or from non-positive endpoint classes.\n",

@@ -1,0 +1,42 @@
+{
+  "publication_validator": "passed",
+  "pytest_publication": "34 passed",
+  "make_validate_publication": "passed",
+  "make_test": "34 passed",
+  "compileall": "passed",
+  "large_file_scan": "passed; no non-git non-local-cache files over 50 MB",
+  "raw_data_query_api_response_scan": {
+    "status": "passed_with_expected_references",
+    "interpretation": "Findings were sanitizer code, validator patterns, sanitized audit inventories, and synthetic test fixtures; no fresh CRAG raw query text, raw source documents, or raw API responses were committed."
+  },
+  "secret_scan": {
+    "status": "passed_with_expected_scanner_pattern_references",
+    "candidate_secret_values_found": 0
+  },
+  "private_path_scan": {
+    "status": "passed",
+    "private_paths_found": 0
+  },
+  "overclaim_scan": {
+    "status": "passed_with_expected_unsupported_claim_statements",
+    "overclaim_findings": 0
+  },
+  "fresh_crag": {
+    "evidence_class": "fresh_live_crag_mock_api_blocked",
+    "result_class": "FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE",
+    "approval_env_var_present": true,
+    "crag_root_configured": true,
+    "crag_data_configured": true,
+    "local_evaluator_available": true,
+    "mock_api_path_available": true,
+    "mock_api_runtime_available": false,
+    "mock_api_blocker": "open_kg_unreadable:OSError"
+  },
+  "multi_dataset_synthesis": {
+    "prior_frozen_crag": "GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY",
+    "fresh_crag": "FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE",
+    "hotpotqa": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS",
+    "result_class": "MULTI_DATASET_BEHAVIORAL_GOVERNANCE_INCONCLUSIVE"
+  },
+  "github_actions_readiness": "ready_for_push_and_pr"
+}

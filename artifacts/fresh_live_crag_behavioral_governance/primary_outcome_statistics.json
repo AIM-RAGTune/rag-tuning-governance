@@ -7,22 +7,39 @@
     "Set RAGTUNE_CRAG_APPROVED_NONCOMMERCIAL_RESEARCH_ONLY=true, RAGTUNE_CRAG_ROOT, and RAGTUNE_CRAG_DATA.",
     "Do not copy raw CRAG data into this public repository."
   ],
+  "crag_data_placeholder": "<approved-local-crag-data>",
+  "crag_root_placeholder": "<approved-local-crag-root>",
   "dataset_rows_committed": false,
   "dry_run": false,
   "endpoint_outputs_exported": false,
   "environment": {
+    "approval_env_var_present": true,
     "approved_noncommercial_research_only": true,
-    "crag_data_configured": false,
-    "crag_data_exists": false,
-    "crag_root_configured": false,
-    "crag_root_exists": false,
-    "local_evaluation_available": false,
+    "crag_data_configured": true,
+    "crag_data_exists": true,
+    "crag_root_configured": true,
+    "crag_root_exists": true,
+    "data_file_count": 10,
+    "data_files_present": true,
+    "expected_task_1_and_2_present": true,
+    "expected_task_3_parts_present": true,
+    "local_evaluation_available": true,
     "mock_api_available": false,
-    "required_paths": {}
+    "mock_api_blocker": "open_kg_unreadable:OSError",
+    "mock_api_kg_files_present": true,
+    "mock_api_kg_files_readable": false,
+    "mock_api_path_available": true,
+    "mock_api_runtime_available": false,
+    "required_paths": {
+      "docs": true,
+      "local_evaluation.py": true,
+      "mock_api": true,
+      "requirements.txt": true
+    }
   },
   "evidence_class": "fresh_live_crag_mock_api_blocked",
   "query_wording_exported": false,
-  "result_class": "FRESH_CRAG_BLOCKED_NO_APPROVED_DATA",
+  "result_class": "FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE",
   "source_documents_exported": false,
   "suite": "ragtune_fresh_live_crag_mock_api_behavioral_governance_v1"
 }

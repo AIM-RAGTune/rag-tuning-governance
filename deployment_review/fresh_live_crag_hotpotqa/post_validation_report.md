@@ -2,7 +2,7 @@
 
 ## Results
 
-- Fresh live CRAG: `FRESH_CRAG_BLOCKED_NO_APPROVED_DATA`
+- Fresh live CRAG: `FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE`
 - HotpotQA: `HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS`
 - Multi-dataset synthesis: `MULTI_DATASET_BEHAVIORAL_GOVERNANCE_INCONCLUSIVE`
 
@@ -34,4 +34,4 @@ The raw-text scan produced expected references in documentation, tests, validato
 
 ## Claim Boundary
 
-This phase replaces the blocked HotpotQA artifact with real alternate-corpus evidence, but it does not replicate the prior frozen-observation result. Fresh CRAG remains blocked because approved local CRAG data/mock-API paths are unavailable, and HotpotQA showed operational gain with quality loss.
+This phase replaces the blocked HotpotQA artifact with real alternate-corpus evidence, but it does not replicate the prior frozen-observation result. Fresh CRAG remains blocked because the configured local mock-API runtime could not read required KG data, and HotpotQA showed operational gain with quality loss.

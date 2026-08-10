@@ -1,0 +1,35 @@
+{
+  "starting_commit": "07b4ee089d7cec6468092b0038f23e422f6b6c28",
+  "branch": "fresh-live-crag-unblock-validation",
+  "remote": "https://github.com/AIM-RAGTune/rag-tuning-governance-public.git",
+  "baseline_validation": {
+    "publication_validator": "passed",
+    "pytest_publication": "34 passed",
+    "make_validate_publication": "passed",
+    "make_test": "34 passed",
+    "compileall": "passed"
+  },
+  "known_existing_status": {
+    "fresh_crag": "FRESH_CRAG_BLOCKED_NO_APPROVED_DATA",
+    "hotpotqa": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS"
+  },
+  "hygiene_scan_interpretation": {
+    "raw_data_query_api_response_scan": "passed_with_expected_references",
+    "secret_scan": "passed_with_expected_references",
+    "private_path_scan": "passed",
+    "overclaim_scan": "passed_with_expected_unsupported_claim_statements"
+  },
+  "crag_environment_attempt": {
+    "approval_env_var_present": true,
+    "crag_root_configured": true,
+    "crag_data_configured": true,
+    "local_evaluator_available": true,
+    "mock_api_path_available": true,
+    "mock_api_runtime_available": false,
+    "mock_api_blocker": "open_kg_unreadable:OSError"
+  },
+  "raw_crag_data_committed": false,
+  "raw_query_text_exported": false,
+  "raw_api_responses_exported": false,
+  "raw_source_documents_exported": false
+}

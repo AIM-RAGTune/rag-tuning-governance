@@ -38,6 +38,6 @@ This follow-up avoids relying only on a small weighted-utility delta by using a 
 
 ## Fresh Live CRAG Attempt
 
-The fresh live CRAG phase adds `ragtune_fresh_live_crag_mock_api_behavioral_governance_v1`. In this execution environment, the run is blocked as `FRESH_CRAG_BLOCKED_NO_APPROVED_DATA` because approved local CRAG data and mock-API paths are not configured. This is a blocked result, not a replication claim.
+The fresh live CRAG phase adds `ragtune_fresh_live_crag_mock_api_behavioral_governance_v1`. In this execution environment, the run is blocked as `FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE`: approved local CRAG root/data paths and the local evaluator were configured, but the mock-API KG data were not readable by the runtime. This is a blocked result, not a replication claim.
 
-To run it in an approved environment, set `RAGTUNE_CRAG_APPROVED_NONCOMMERCIAL_RESEARCH_ONLY=true`, `RAGTUNE_CRAG_ROOT`, and `RAGTUNE_CRAG_DATA`, then run `scripts/run_fresh_live_crag_behavioral_governance.py`.
+To run it in an approved environment, set `RAGTUNE_CRAG_APPROVED_NONCOMMERCIAL_RESEARCH_ONLY=true`, `RAGTUNE_CRAG_ROOT`, and `RAGTUNE_CRAG_DATA`; verify the mock-API KG files are complete and readable; then run `scripts/run_fresh_live_crag_behavioral_governance.py`.
