@@ -1,0 +1,33 @@
+{
+  "interpretation": "The pinned local generator comparison is mixed or inconclusive.",
+  "models": [
+    {
+      "generator_model": "qwen3:8b",
+      "generator_provider": "ollama",
+      "model_role": "primary_model",
+      "positive_cost_result_runs": 1,
+      "run_count": 4,
+      "stability_result_class": "CRAG_GEN_LLM_COST_RESULT_NOT_STABLE_ACROSS_REPEATS",
+      "usable_generated_quality_runs": 4
+    },
+    {
+      "generator_model": "gpt-oss:20b",
+      "generator_provider": "ollama",
+      "model_role": "second_model",
+      "positive_cost_result_runs": 0,
+      "run_count": 4,
+      "stability_result_class": "CRAG_GEN_LLM_COST_RESULT_INCONCLUSIVE_ACROSS_REPEATS",
+      "usable_generated_quality_runs": 4
+    }
+  ],
+  "primary_generator_model": "qwen3:8b",
+  "primary_model_stability_result": "CRAG_GEN_LLM_COST_RESULT_NOT_STABLE_ACROSS_REPEATS",
+  "raw_evidence_committed": false,
+  "raw_generated_answers_committed": false,
+  "raw_prompts_committed": false,
+  "raw_questions_committed": false,
+  "result_class": "CRAG_GEN_LLM_COST_RESULT_MIXED_OR_INCONCLUSIVE_ACROSS_MODELS",
+  "second_generator_model": "gpt-oss:20b",
+  "second_model_stability_result": "CRAG_GEN_LLM_COST_RESULT_INCONCLUSIVE_ACROSS_REPEATS",
+  "suite": "ragtune_crag_generative_second_model_comparison_v1"
+}
