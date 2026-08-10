@@ -22,19 +22,21 @@
     "overclaim_findings": 0
   },
   "fresh_crag": {
-    "evidence_class": "fresh_live_crag_mock_api_blocked",
-    "result_class": "FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE",
+    "evidence_class": "fresh_live_crag_mock_api_sanitized_live_sample",
+    "result_class": "FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY",
     "approval_env_var_present": true,
     "crag_root_configured": true,
     "crag_data_configured": true,
     "local_evaluator_available": true,
     "mock_api_path_available": true,
-    "mock_api_runtime_available": false,
-    "mock_api_blocker": "open_kg_unreadable:OSError"
+    "mock_api_runtime_available": true,
+    "mock_api_blocker": "",
+    "examples_loaded_locally": 50,
+    "per_query_policy_rows": 550
   },
   "multi_dataset_synthesis": {
     "prior_frozen_crag": "GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY",
-    "fresh_crag": "FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE",
+    "fresh_crag": "FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY",
     "hotpotqa": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS",
     "result_class": "MULTI_DATASET_BEHAVIORAL_GOVERNANCE_INCONCLUSIVE"
   },

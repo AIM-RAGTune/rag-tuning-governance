@@ -10,7 +10,7 @@
     "status": "passed_with_expected_references",
     "interpretation": "Findings are documentation, tests, validators, and prior sanitization reports; no new raw CRAG query text, HotpotQA questions, source documents, supporting-fact text, or API responses were added."
   },
-  "fresh_live_crag_result_class": "FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE",
+  "fresh_live_crag_result_class": "FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY",
     "hotpotqa_result_class": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS",
     "hotpotqa_evidence_class": "hotpotqa_public_corpus_behavioral_governance_sanitized_sample",
     "hotpotqa_examples_loaded_locally": 1000,

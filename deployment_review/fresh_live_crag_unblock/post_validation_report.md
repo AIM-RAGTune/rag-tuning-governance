@@ -18,22 +18,24 @@
 
 ## Fresh CRAG Result
 
-- Evidence class: `fresh_live_crag_mock_api_blocked`
-- Result class: `FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE`
+- Evidence class: `fresh_live_crag_mock_api_sanitized_live_sample`
+- Result class: `FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY`
 - Approval env var: present during run
 - CRAG root configured: true
 - CRAG data configured: true
 - Local evaluator available: true
 - Mock API path available: true
-- Mock API runtime available: false
-- Mock API blocker: `open_kg_unreadable:OSError`
+- Mock API runtime available: true
+- Mock API blocker: none
+- Examples loaded locally: 50
+- Per-query policy rows: 550
 
 No raw CRAG data, query wording, source documents, or mock-API responses were copied or exported.
 
 ## Multi-Dataset Synthesis
 
 - Prior frozen CRAG: `GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY`
-- Fresh CRAG: `FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE`
+- Fresh CRAG: `FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY`
 - HotpotQA: `HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS`
 - Synthesis result: `MULTI_DATASET_BEHAVIORAL_GOVERNANCE_INCONCLUSIVE`
 

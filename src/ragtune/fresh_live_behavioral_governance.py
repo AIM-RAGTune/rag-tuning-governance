@@ -9,6 +9,8 @@ import random
 import re
 import statistics
 import time
+import urllib.error
+import urllib.request
 from pathlib import Path
 from typing import Any
 
@@ -110,6 +112,49 @@ HOTPOTQA_RESULT_FIELDNAMES = [
     "total_latency_ms",
     "api_call_count",
     "failure",
+]
+
+CRAG_LIVE_POLICIES = [
+    "low_retrieval_single_endpoint",
+    "expanded_retrieval_multi_endpoint",
+    "adaptive_routing_on_insufficient_evidence",
+    "measured_cost_minimizer_at_quality_floor",
+    "measured_latency_minimizer_at_quality_floor",
+    "quality_only_best_on_validation",
+    "constrained_quality_optimizer",
+    "pareto_frontier_selector",
+    "governed_selection",
+    "static_default_policy",
+    "rag_compass_optional",
+]
+
+CRAG_RESULT_FIELDNAMES = [
+    "example_id",
+    "query_text_hash",
+    "split",
+    "domain",
+    "question_type",
+    "static_or_dynamic",
+    "policy_id",
+    "policy_family",
+    "selector_eligible",
+    "selected_endpoints",
+    "endpoint_count",
+    "api_call_count",
+    "failure",
+    "total_latency_ms",
+    "measured_cost_units",
+    "context_count",
+    "context_token_count",
+    "source_count",
+    "supporting_fact_title_recall",
+    "supporting_fact_sentence_recall",
+    "answer_correctness_f1",
+    "answer_exact_match",
+    "evidence_support_score",
+    "abstained",
+    "abstention_correctness",
+    "final_quality_score",
 ]
 
 
@@ -450,6 +495,387 @@ def crag_mock_api_runtime_status(root: Path | None) -> dict[str, Any]:
     }
 
 
+def crag_split_for_row(row: dict[str, Any]) -> str:
+    bucket = int(stable_hash(str(row.get("interaction_id", "")))[:8], 16) % 100
+    if bucket < 50:
+        return "calibration"
+    if bucket < 75:
+        return "validation"
+    return "confirmatory_test"
+
+
+def load_crag_live_rows(data_dir: Path, *, max_examples: int = 96) -> list[dict[str, Any]]:
+    candidates = [
+        data_dir / "crag_task_1_and_2_dev_v5.jsonl.bz2",
+        data_dir / "crag_task_1_and_2_dev_v4.jsonl.bz2",
+    ]
+    source = next((path for path in candidates if path.exists()), None)
+    if source is None:
+        return []
+    rows: list[dict[str, Any]] = []
+    domain_counts: dict[str, int] = {}
+    per_domain_limit = max(1, max_examples // 5)
+    with bz2.open(source, "rt", encoding="utf-8") as handle:
+        for line in handle:
+            row = json.loads(line)
+            domain = str(row.get("domain") or "unknown")
+            if domain_counts.get(domain, 0) >= per_domain_limit:
+                continue
+            rows.append(row)
+            domain_counts[domain] = domain_counts.get(domain, 0) + 1
+            if len(rows) >= max_examples:
+                break
+    return rows
+
+
+def crag_domain_endpoints(domain: str) -> list[str]:
+    endpoints = {
+        "open": ["/open/search_entity_by_name", "/open/get_entity"],
+        "movie": ["/movie/get_movie_info", "/movie/get_person_info"],
+        "finance": ["/finance/get_ticker_by_name", "/finance/get_company_name"],
+        "music": ["/music/search_artist_entity_by_name", "/music/search_song_entity_by_name"],
+        "sports": ["/sports/nba/get_games_on_date", "/sports/soccer/get_games_on_date"],
+    }
+    return endpoints.get(domain, ["/open/search_entity_by_name"])
+
+
+def crag_policy_endpoints(policy_id: str, domain: str) -> list[str]:
+    endpoints = crag_domain_endpoints(domain)
+    if policy_id in {
+        "low_retrieval_single_endpoint",
+        "measured_cost_minimizer_at_quality_floor",
+        "measured_latency_minimizer_at_quality_floor",
+        "static_default_policy",
+    }:
+        return endpoints[:1]
+    if policy_id in {
+        "expanded_retrieval_multi_endpoint",
+        "quality_only_best_on_validation",
+        "pareto_frontier_selector",
+    }:
+        return endpoints[:2]
+    if policy_id in {
+        "adaptive_routing_on_insufficient_evidence",
+        "constrained_quality_optimizer",
+        "governed_selection",
+    }:
+        return endpoints[:2]
+    if policy_id == "rag_compass_optional":
+        return list(reversed(endpoints[:2]))
+    return endpoints[:1]
+
+
+def crag_api_call(base_url: str, endpoint: str, query: str) -> tuple[str, float, int]:
+    start = time.perf_counter()
+    payload = json.dumps({"query": query}).encode("utf-8")
+    request = urllib.request.Request(
+        base_url.rstrip("/") + endpoint,
+        data=payload,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=10) as response:
+            body = response.read().decode("utf-8", errors="ignore")
+        failure = 0
+    except (urllib.error.URLError, TimeoutError, OSError):
+        body = ""
+        failure = 1
+    elapsed_ms = (time.perf_counter() - start) * 1000.0
+    return body, elapsed_ms, failure
+
+
+def crag_score_response(response_texts: list[str], answer: str) -> tuple[float, float, int, int]:
+    combined = " ".join(response_texts)
+    normalized_answer = " ".join(tokenize(answer))
+    normalized_response = " ".join(tokenize(combined))
+    if not normalized_answer:
+        support = 0.0
+    elif normalized_answer and normalized_answer in normalized_response:
+        support = 1.0
+    else:
+        answer_tokens = set(tokenize(answer))
+        response_tokens = set(tokenize(combined))
+        support = len(answer_tokens & response_tokens) / max(1, len(answer_tokens))
+    context_tokens = len(tokenize(combined))
+    nonempty = sum(1 for text in response_texts if text and text != '{"result":null}')
+    return support, support, context_tokens, nonempty
+
+
+def score_crag_live_policy(row: dict[str, Any], policy_id: str, split: str, *, base_url: str) -> dict[str, Any]:
+    query = str(row.get("query") or "")
+    answer = str(row.get("answer") or "")
+    domain = str(row.get("domain") or "unknown")
+    endpoints = crag_policy_endpoints(policy_id, domain)
+    response_texts: list[str] = []
+    total_latency = 0.0
+    failures = 0
+    for idx, endpoint in enumerate(endpoints):
+        body, elapsed_ms, failure = crag_api_call(base_url, endpoint, query)
+        response_texts.append(body)
+        total_latency += elapsed_ms
+        failures += failure
+        if policy_id in {
+            "adaptive_routing_on_insufficient_evidence",
+            "constrained_quality_optimizer",
+            "governed_selection",
+        }:
+            support, _correctness, _tokens, _nonempty = crag_score_response(response_texts, answer)
+            if idx == 0 and support >= 0.5:
+                break
+    evidence_support, correctness, context_tokens, nonempty = crag_score_response(response_texts, answer)
+    endpoint_count = len(response_texts)
+    final_quality = 0.65 * correctness + 0.35 * evidence_support
+    measured_cost = endpoint_count + context_tokens / 2000.0
+    return {
+        "example_id": stable_hash(str(row.get("interaction_id", ""))),
+        "query_text_hash": stable_hash(query),
+        "split": split,
+        "domain": domain,
+        "question_type": str(row.get("question_type") or ""),
+        "static_or_dynamic": str(row.get("static_or_dynamic") or ""),
+        "policy_id": policy_id,
+        "policy_family": policy_id.split("_")[0],
+        "selector_eligible": True,
+        "selected_endpoints": "|".join(endpoints[:endpoint_count]),
+        "endpoint_count": endpoint_count,
+        "api_call_count": endpoint_count,
+        "failure": failures,
+        "total_latency_ms": total_latency,
+        "measured_cost_units": measured_cost,
+        "context_count": nonempty,
+        "context_token_count": context_tokens,
+        "source_count": nonempty,
+        "supporting_fact_title_recall": evidence_support,
+        "supporting_fact_sentence_recall": evidence_support,
+        "answer_correctness_f1": correctness,
+        "answer_exact_match": 1.0 if correctness >= 1.0 else 0.0,
+        "evidence_support_score": evidence_support,
+        "abstained": nonempty == 0,
+        "abstention_correctness": 1.0 if nonempty > 0 else 0.0,
+        "final_quality_score": final_quality,
+    }
+
+
+def run_crag_live_behavioral_governance(repo_root: Path, env: dict[str, Any], *, dry_run: bool = False) -> dict[str, Any]:
+    output = repo_root / "artifacts" / "fresh_live_crag_behavioral_governance"
+    data_dir = Path(os.environ["RAGTUNE_CRAG_DATA"]).expanduser()
+    base_url = os.environ.get("RAGTUNE_CRAG_API_BASE", "http://127.0.0.1:8000")
+    max_examples = int(os.environ.get("RAGTUNE_CRAG_MAX_EXAMPLES", "50"))
+    if dry_run:
+        rows: list[dict[str, Any]] = []
+    else:
+        rows = load_crag_live_rows(data_dir, max_examples=max_examples)
+    if not rows and not dry_run:
+        return write_crag_placeholder(repo_root, env, "FRESH_CRAG_GOVERNANCE_INCONCLUSIVE", dry_run=dry_run, note="No eligible rows loaded from approved local CRAG data.")
+
+    per_query_rows: list[dict[str, Any]] = []
+    for row in rows:
+        split = crag_split_for_row(row)
+        for policy_id in CRAG_LIVE_POLICIES:
+            per_query_rows.append(score_crag_live_policy(row, policy_id, split, base_url=base_url))
+
+    validation_summaries = aggregate_policy_rows(per_query_rows, "validation")
+    confirmatory_summaries = aggregate_policy_rows(per_query_rows, "confirmatory_test")
+    if not validation_summaries or not confirmatory_summaries:
+        result = "FRESH_CRAG_GOVERNANCE_INCONCLUSIVE"
+        quality_winner = ""
+        governed_winner = ""
+        constrained_winner = ""
+        frontier: list[str] = []
+    else:
+        quality_winner = quality_only_winner(validation_summaries)
+        governed_winner = cost_minimizer_at_quality_floor(validation_summaries, margin=0.01)
+        constraints = {
+            "max_mean_cost_units": 2.5,
+            "max_p95_latency_ms": 5000.0,
+            "max_failure_rate": 0.05,
+            "min_evidence_support_score": 0.05,
+        }
+        constrained_winner = constrained_quality_winner(validation_summaries, constraints) or governed_winner
+        frontier = pareto_frontier(
+            confirmatory_summaries,
+            maximize=("final_quality_score", "evidence_support_score", "abstention_correctness"),
+            minimize=("measured_cost_units", "p95_latency_ms", "failure_rate"),
+        )
+        quality_delta = bootstrap_ci(paired_delta(per_query_rows, governed_winner, quality_winner, "final_quality_score"))
+        support_delta = bootstrap_ci(paired_delta(per_query_rows, governed_winner, quality_winner, "evidence_support_score"))
+        cost_delta = bootstrap_ci(paired_delta(per_query_rows, governed_winner, quality_winner, "measured_cost_units"))
+        latency_delta = bootstrap_ci(paired_delta(per_query_rows, governed_winner, quality_winner, "total_latency_ms"))
+        api_delta = bootstrap_ci(paired_delta(per_query_rows, governed_winner, quality_winner, "api_call_count"))
+        token_delta = bootstrap_ci(paired_delta(per_query_rows, governed_winner, quality_winner, "context_token_count"))
+        quality_margin = 0.01
+        materially_distinct = abs(api_delta["mean"]) >= 0.25 or abs(cost_delta["mean"]) >= 0.25 or abs(token_delta["mean"]) >= 25
+        max_confirmatory_quality = max(float(row["final_quality_score"]) for row in confirmatory_summaries)
+        if max_confirmatory_quality <= 0.0:
+            result = "FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY"
+        elif not materially_distinct:
+            result = "FRESH_CRAG_BLOCKED_POLICY_DISTINCTION_FAILED"
+        elif quality_delta["ci_low"] >= -quality_margin and cost_delta["ci_high"] < 0:
+            result = "FRESH_CRAG_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY"
+        elif quality_delta["ci_low"] >= -quality_margin and latency_delta["ci_high"] < 0:
+            result = "FRESH_CRAG_GOVERNANCE_REDUCES_LATENCY_AT_EQUIVALENT_QUALITY"
+        elif quality_delta["mean"] > 0 and cost_delta["mean"] <= 0:
+            result = "FRESH_CRAG_GOVERNANCE_IMPROVES_QUALITY_UNDER_FIXED_BUDGET"
+        elif quality_delta["ci_low"] >= -quality_margin:
+            result = "FRESH_CRAG_GOVERNANCE_NONINFERIOR_NO_OPERATIONAL_GAIN"
+        elif cost_delta["mean"] < 0 or latency_delta["mean"] < 0:
+            result = "FRESH_CRAG_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS"
+        else:
+            result = "FRESH_CRAG_GOVERNANCE_INCONCLUSIVE"
+
+    if validation_summaries and confirmatory_summaries:
+        quality_delta = bootstrap_ci(paired_delta(per_query_rows, governed_winner, quality_winner, "final_quality_score"))
+        support_delta = bootstrap_ci(paired_delta(per_query_rows, governed_winner, quality_winner, "evidence_support_score"))
+        cost_delta = bootstrap_ci(paired_delta(per_query_rows, governed_winner, quality_winner, "measured_cost_units"))
+        latency_delta = bootstrap_ci(paired_delta(per_query_rows, governed_winner, quality_winner, "total_latency_ms"))
+        api_delta = bootstrap_ci(paired_delta(per_query_rows, governed_winner, quality_winner, "api_call_count"))
+        token_delta = bootstrap_ci(paired_delta(per_query_rows, governed_winner, quality_winner, "context_token_count"))
+    else:
+        quality_delta = support_delta = cost_delta = latency_delta = api_delta = token_delta = {"mean": 0.0, "ci_low": 0.0, "ci_high": 0.0}
+
+    payload = {
+        "suite": "ragtune_fresh_live_crag_mock_api_behavioral_governance_v1",
+        "result_class": result,
+        "dry_run": dry_run,
+        "evidence_class": "fresh_live_crag_mock_api_sanitized_live_sample",
+        "environment": env,
+        "crag_root_placeholder": "<approved-local-crag-root>",
+        "crag_data_placeholder": "<approved-local-crag-data>",
+        "mock_api_base_placeholder": "<local-crag-mock-api>",
+        "examples_loaded_locally": len(rows),
+        "per_query_policy_rows": len(per_query_rows),
+        "validation_rows": sum(1 for row in rows if crag_split_for_row(row) == "validation"),
+        "confirmatory_rows": sum(1 for row in rows if crag_split_for_row(row) == "confirmatory_test"),
+        "quality_metric_class": "QUALITY_MEASURE_PROXY_PLUS_LOCAL_ANSWER_EVIDENCE",
+        "quality_noninferiority_margin": 0.01,
+        "governed_winner": governed_winner,
+        "quality_only_winner": quality_winner,
+        "constrained_optimizer_winner": constrained_winner,
+        "pareto_frontier": frontier,
+        "rag_compass_rank": next(
+            (idx + 1 for idx, row in enumerate(sorted(confirmatory_summaries, key=lambda item: -float(item["final_quality_score"]))) if row["policy_id"] == "rag_compass_optional"),
+            None,
+        ),
+        "final_quality_delta": quality_delta,
+        "evidence_support_delta": support_delta,
+        "cost_delta": cost_delta,
+        "latency_delta_ms": latency_delta,
+        "api_call_delta": api_delta,
+        "context_token_delta": token_delta,
+        "dataset_rows_committed": False,
+        "query_wording_exported": False,
+        "endpoint_outputs_exported": False,
+        "source_documents_exported": False,
+    }
+    write_csv(output / "per_query_policy_results.csv", CRAG_RESULT_FIELDNAMES, per_query_rows)
+    summary_fields = [
+        "policy_id",
+        "split",
+        "n",
+        "final_quality_score",
+        "answer_correctness_f1",
+        "answer_exact_match",
+        "evidence_support_score",
+        "supporting_fact_sentence_recall",
+        "measured_cost_units",
+        "total_latency_ms",
+        "p95_latency_ms",
+        "api_call_count",
+        "context_token_count",
+        "failure_rate",
+        "abstention_rate",
+        "abstention_correctness",
+    ]
+    write_csv(output / "policy_summary_metrics.csv", summary_fields, validation_summaries + confirmatory_summaries)
+    selector_rows = [
+        {"selector": "governed_selection", "selected_policy": governed_winner, "selection_split": "validation"},
+        {"selector": "quality_only_best_on_validation", "selected_policy": quality_winner, "selection_split": "validation"},
+        {"selector": "constrained_quality_optimizer", "selected_policy": constrained_winner, "selection_split": "validation"},
+        {"selector": "pareto_frontier_selector", "selected_policy": "|".join(frontier), "selection_split": "confirmatory_test"},
+    ]
+    write_csv(output / "selector_comparison.csv", ["selector", "selected_policy", "selection_split"], selector_rows)
+    write_csv(output / "pareto_frontier.csv", ["policy_id"], [{"policy_id": policy_id} for policy_id in frontier])
+    write_sanitized_json(output / "live_crag_manifest.json", payload)
+    write_sanitized_json(output / "primary_outcome_statistics.json", payload)
+    write_sanitized_json(
+        output / "split_manifest.json",
+        {
+            "result_class": result,
+            "split_status": "created_sanitized_live_sample",
+            "query_wording_exported": False,
+            "source_documents_exported": False,
+            "endpoint_outputs_exported": False,
+        },
+    )
+    write_text(
+        output / "live_crag_acquisition_report.md",
+        "# Fresh Live CRAG Mock-API Acquisition\n\n"
+        f"Result: `{result}`.\n\n"
+        f"Loaded `{len(rows)}` approved local CRAG examples and executed `{len(per_query_rows)}` sanitized query-policy observations against the local mock API. "
+        "Raw CRAG data, raw query wording, source documents, and API responses were not copied or exported.\n",
+    )
+    write_text(
+        output / "primary_outcome_report.md",
+        "# Fresh Live CRAG Behavioral Governance\n\n"
+        f"Result: `{result}`.\n\n"
+        f"Governed winner: `{governed_winner or 'not_available'}`. Quality-only winner: `{quality_winner or 'not_available'}`. "
+        "The live sample uses local-answer/evidence containment over mock-API responses and exports only sanitized hashes, endpoint identifiers, counts, latencies, and aggregate metrics. "
+        "No human, generative LLM, production, or RAG Compass superiority claim is made.\n",
+    )
+    return payload
+
+
+def write_crag_placeholder(repo_root: Path, env: dict[str, Any], result: str, *, dry_run: bool = False, note: str = "") -> dict[str, Any]:
+    output = repo_root / "artifacts" / "fresh_live_crag_behavioral_governance"
+    payload = {
+        "suite": "ragtune_fresh_live_crag_mock_api_behavioral_governance_v1",
+        "result_class": result,
+        "dry_run": dry_run,
+        "evidence_class": "fresh_live_crag_mock_api_blocked" if result.startswith("FRESH_CRAG_BLOCKED") else "fresh_live_crag_mock_api",
+        "environment": env,
+        "crag_root_placeholder": "<approved-local-crag-root>" if env["crag_root_configured"] else "",
+        "crag_data_placeholder": "<approved-local-crag-data>" if env["crag_data_configured"] else "",
+        "dataset_rows_committed": False,
+        "query_wording_exported": False,
+        "endpoint_outputs_exported": False,
+        "source_documents_exported": False,
+        "note": note,
+        "acquisition_instructions": [
+            "git clone https://github.com/facebookresearch/CRAG.git <approved-local-path>/CRAG",
+            "cd <approved-local-path>/CRAG",
+            "pip install -r requirements.txt",
+            "Follow CRAG dataset documentation for approved noncommercial research-only data acquisition.",
+            "Set RAGTUNE_CRAG_APPROVED_NONCOMMERCIAL_RESEARCH_ONLY=true, RAGTUNE_CRAG_ROOT, and RAGTUNE_CRAG_DATA.",
+            "Do not copy raw CRAG data into this public repository.",
+        ],
+    }
+    write_sanitized_json(output / "live_crag_manifest.json", payload)
+    write_sanitized_json(output / "primary_outcome_statistics.json", payload)
+    write_text(
+        output / "live_crag_acquisition_report.md",
+        "# Fresh Live CRAG Mock-API Acquisition\n\n"
+        f"Result: `{result}`.\n\n"
+        f"{note or 'No fresh live CRAG collection was completed.'} Raw CRAG data, raw query wording, source documents, and API responses were not copied or exported.\n",
+    )
+    write_text(
+        output / "primary_outcome_report.md",
+        "# Fresh Live CRAG Behavioral Governance\n\n"
+        f"Result: `{result}`.\n\n"
+        "This is not a governance-success claim.\n",
+    )
+    split_status = "not_created_blocked_no_approved_data" if result == "FRESH_CRAG_BLOCKED_NO_APPROVED_DATA" else "not_created_blocked_mock_api_not_available"
+    write_sanitized_json(output / "split_manifest.json", {"result_class": result, "split_status": split_status})
+    for name in [
+        "per_query_policy_results.csv",
+        "policy_summary_metrics.csv",
+        "selector_comparison.csv",
+        "pareto_frontier.csv",
+    ]:
+        csv_empty(output / name, ["result_class", "note"])
+    return payload
+
+
 def inspect_crag_environment() -> dict[str, Any]:
     approved = os.environ.get("RAGTUNE_CRAG_APPROVED_NONCOMMERCIAL_RESEARCH_ONLY") == "true"
     root_value = os.environ.get("RAGTUNE_CRAG_ROOT")
@@ -477,60 +903,27 @@ def inspect_crag_environment() -> dict[str, Any]:
 
 
 def write_crag_acquisition_report(repo_root: Path, *, dry_run: bool = False) -> dict[str, Any]:
-    output = repo_root / "artifacts" / "fresh_live_crag_behavioral_governance"
     env = inspect_crag_environment()
     if not env["approved_noncommercial_research_only"] or not env["crag_root_exists"] or not env["crag_data_exists"] or not env["data_files_present"]:
         result = "FRESH_CRAG_BLOCKED_NO_APPROVED_DATA"
     elif not env["mock_api_available"]:
         result = "FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE"
     else:
-        result = "FRESH_CRAG_GOVERNANCE_INCONCLUSIVE"
-    payload = {
-        "suite": "ragtune_fresh_live_crag_mock_api_behavioral_governance_v1",
-        "result_class": result,
-        "dry_run": dry_run,
-        "evidence_class": "fresh_live_crag_mock_api_blocked" if result.startswith("FRESH_CRAG_BLOCKED") else "fresh_live_crag_mock_api",
-        "environment": env,
-        "crag_root_placeholder": "<approved-local-crag-root>" if env["crag_root_configured"] else "",
-        "crag_data_placeholder": "<approved-local-crag-data>" if env["crag_data_configured"] else "",
-        "dataset_rows_committed": False,
-        "query_wording_exported": False,
-        "endpoint_outputs_exported": False,
-        "source_documents_exported": False,
-        "acquisition_instructions": [
-            "git clone https://github.com/facebookresearch/CRAG.git <approved-local-path>/CRAG",
-            "cd <approved-local-path>/CRAG",
-            "pip install -r requirements.txt",
-            "Follow CRAG dataset documentation for approved noncommercial research-only data acquisition.",
-            "Set RAGTUNE_CRAG_APPROVED_NONCOMMERCIAL_RESEARCH_ONLY=true, RAGTUNE_CRAG_ROOT, and RAGTUNE_CRAG_DATA.",
-            "Do not copy raw CRAG data into this public repository.",
-        ],
-    }
-    write_sanitized_json(output / "live_crag_manifest.json", payload)
-    write_sanitized_json(output / "primary_outcome_statistics.json", payload)
-    write_text(
-        output / "live_crag_acquisition_report.md",
-        "# Fresh Live CRAG Mock-API Acquisition\n\n"
-        f"Result: `{result}`.\n\n"
-        "No fresh live CRAG collection was run because a runnable mock-API environment was unavailable in this environment. Approved local CRAG root/data paths may be configured, but the runtime still requires complete readable mock-API KG data. "
-        "Raw CRAG data, raw query wording, source documents, and API responses were not copied or exported.\n",
+        if dry_run:
+            return write_crag_placeholder(
+                repo_root,
+                env,
+                "FRESH_CRAG_GOVERNANCE_INCONCLUSIVE",
+                dry_run=True,
+                note="Dry run verified approved local CRAG data and a readable mock-API installation; no live collection was executed.",
+            )
+        return run_crag_live_behavioral_governance(repo_root, env, dry_run=False)
+    note = (
+        "Approved local CRAG data are unavailable or incomplete."
+        if result == "FRESH_CRAG_BLOCKED_NO_APPROVED_DATA"
+        else "Approved local CRAG data were found, but the mock-API runtime was unavailable."
     )
-    write_text(
-        output / "primary_outcome_report.md",
-        "# Fresh Live CRAG Behavioral Governance\n\n"
-        f"Result: `{result}`.\n\n"
-        "This is a blocked result, not a governance-success claim. Re-run after configuring approved local CRAG data and a working mock-API runtime with readable KG data.\n",
-    )
-    split_status = "not_created_blocked_no_approved_data" if result == "FRESH_CRAG_BLOCKED_NO_APPROVED_DATA" else "not_created_blocked_mock_api_not_available"
-    write_sanitized_json(output / "split_manifest.json", {"result_class": result, "split_status": split_status})
-    for name in [
-        "per_query_policy_results.csv",
-        "policy_summary_metrics.csv",
-        "selector_comparison.csv",
-        "pareto_frontier.csv",
-    ]:
-        csv_empty(output / name, ["result_class", "note"])
-    return payload
+    return write_crag_placeholder(repo_root, env, result, dry_run=dry_run, note=note)
 
 
 def inspect_hotpotqa_environment(local_data_root: Path | None = None) -> dict[str, Any]:
@@ -911,7 +1304,7 @@ def write_multi_dataset_synthesis(repo_root: Path) -> dict[str, Any]:
         "## Multi-dataset synthesis\n\n"
         f"`{result}`.\n\n"
         "## Negative findings\n\n"
-        "Fresh CRAG remains blocked if the approved local mock-API runtime cannot read the required KG/data files. HotpotQA is classified only by the observed answer-label/supporting-fact result; noninferiority without operational gain is not treated as replication.\n\n"
+        "Fresh CRAG remains blocked if the approved local mock-API runtime cannot read the required KG/data files or if the live sample does not produce a usable answer/evidence quality signal. HotpotQA is classified only by the observed answer-label/supporting-fact result; noninferiority without operational gain is not treated as replication.\n\n"
         "## Claim boundaries\n\n"
         "No human validation, generative validation, official platform benchmark, production readiness, broad governance superiority, or RAG Compass superiority is claimed.\n\n"
         "## Reproduction instructions\n\n"
@@ -927,7 +1320,7 @@ def write_multi_dataset_synthesis(repo_root: Path) -> dict[str, Any]:
     write_text(
         output / "limitations.md",
         "# Limitations\n\n"
-        "- Fresh CRAG was blocked because the approved local mock-API runtime could not read the required KG/data files.\n"
+        "- Fresh CRAG was blocked because the live sample did not produce a usable answer/evidence quality signal or because the approved local mock-API runtime was unavailable.\n"
         "- HotpotQA raw data are not redistributed; only sanitized metrics, hashes, IDs, and labels are exported.\n"
         "- No raw data were committed.\n"
         "- No replication claim is made from frozen-only evidence or from non-positive endpoint classes.\n",

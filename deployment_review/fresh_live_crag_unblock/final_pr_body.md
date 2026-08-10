@@ -1,6 +1,6 @@
 ## Summary
 
-Runs the fresh live CRAG mock-API behaviorally distinct governance validation using approved local CRAG data/mock-API paths where available, and preserves the blocked status because the mock-API runtime could not read required KG data.
+Restores approved local CRAG data and a readable mock-API KG/runtime, then runs a sanitized fresh live CRAG sample. The result remains blocked because the sample did not produce a usable answer/evidence quality signal.
 
 ## CRAG acquisition status
 
@@ -8,8 +8,10 @@ Runs the fresh live CRAG mock-API behaviorally distinct governance validation us
 - CRAG root configured: true
 - CRAG data configured: true
 - Mock API path available: true
-- Mock API runtime available: false
+- Mock API runtime available: true
 - Local evaluator available: true
+- Examples loaded locally: 50
+- Per-query policy rows: 550
 - Raw CRAG data committed: no
 - Raw query text exported: no
 - Raw API responses exported: no
@@ -17,24 +19,24 @@ Runs the fresh live CRAG mock-API behaviorally distinct governance validation us
 
 ## Fresh CRAG result
 
-- Evidence class: `fresh_live_crag_mock_api_blocked`
-- Result class: `FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE`
-- Governed winner: not available
-- Quality-only winner: not available
-- Constrained optimizer winner: not available
-- Pareto frontier: not available
-- RAG Compass rank: not available
-- Quality metric class: not available
-- Final quality delta: not available
-- Evidence-support delta: not available
-- Cost delta: not available
-- Latency delta: not available
-- API-call delta: not available
+- Evidence class: `fresh_live_crag_mock_api_sanitized_live_sample`
+- Result class: `FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY`
+- Governed winner: `measured_cost_minimizer_at_quality_floor`
+- Quality-only winner: `adaptive_routing_on_insufficient_evidence`
+- Constrained optimizer winner: `measured_cost_minimizer_at_quality_floor`
+- Pareto frontier: `static_default_policy`
+- RAG Compass rank: 10
+- Quality metric class: `QUALITY_MEASURE_PROXY_PLUS_LOCAL_ANSWER_EVIDENCE`
+- Final quality delta: 0.0 [0.0, 0.0]
+- Evidence-support delta: 0.0 [0.0, 0.0]
+- Cost delta: -1.0 [-1.0, -1.0]
+- Latency delta: -0.035 ms approx
+- API-call delta: -1.0 [-1.0, -1.0]
 
 ## Multi-dataset synthesis
 
 - Prior frozen CRAG: `GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY`
-- Fresh CRAG: `FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE`
+- Fresh CRAG: `FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY`
 - HotpotQA: `HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS`
 - Synthesis result: `MULTI_DATASET_BEHAVIORAL_GOVERNANCE_INCONCLUSIVE`
 

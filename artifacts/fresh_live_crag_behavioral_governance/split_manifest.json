@@ -1,4 +1,7 @@
 {
-  "result_class": "FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE",
-  "split_status": "not_created_blocked_mock_api_not_available"
+  "endpoint_outputs_exported": false,
+  "query_wording_exported": false,
+  "result_class": "FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY",
+  "source_documents_exported": false,
+  "split_status": "created_sanitized_live_sample"
 }

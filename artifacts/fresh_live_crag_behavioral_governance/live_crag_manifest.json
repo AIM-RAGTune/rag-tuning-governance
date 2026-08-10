@@ -1,12 +1,21 @@
 {
-  "acquisition_instructions": [
-    "git clone https://github.com/facebookresearch/CRAG.git <approved-local-path>/CRAG",
-    "cd <approved-local-path>/CRAG",
-    "pip install -r requirements.txt",
-    "Follow CRAG dataset documentation for approved noncommercial research-only data acquisition.",
-    "Set RAGTUNE_CRAG_APPROVED_NONCOMMERCIAL_RESEARCH_ONLY=true, RAGTUNE_CRAG_ROOT, and RAGTUNE_CRAG_DATA.",
-    "Do not copy raw CRAG data into this public repository."
-  ],
+  "api_call_delta": {
+    "ci_high": -1.0,
+    "ci_low": -1.0,
+    "mean": -1.0
+  },
+  "confirmatory_rows": 14,
+  "constrained_optimizer_winner": "measured_cost_minimizer_at_quality_floor",
+  "context_token_delta": {
+    "ci_high": 0.0,
+    "ci_low": 0.0,
+    "mean": 0.0
+  },
+  "cost_delta": {
+    "ci_high": -1.0,
+    "ci_low": -1.0,
+    "mean": -1.0
+  },
   "crag_data_placeholder": "<approved-local-crag-data>",
   "crag_root_placeholder": "<approved-local-crag-root>",
   "dataset_rows_committed": false,
@@ -24,12 +33,12 @@
     "expected_task_1_and_2_present": true,
     "expected_task_3_parts_present": true,
     "local_evaluation_available": true,
-    "mock_api_available": false,
-    "mock_api_blocker": "open_kg_unreadable:OSError",
+    "mock_api_available": true,
+    "mock_api_blocker": "",
     "mock_api_kg_files_present": true,
-    "mock_api_kg_files_readable": false,
+    "mock_api_kg_files_readable": true,
     "mock_api_path_available": true,
-    "mock_api_runtime_available": false,
+    "mock_api_runtime_available": true,
     "required_paths": {
       "docs": true,
       "local_evaluation.py": true,
@@ -37,9 +46,36 @@
       "requirements.txt": true
     }
   },
-  "evidence_class": "fresh_live_crag_mock_api_blocked",
+  "evidence_class": "fresh_live_crag_mock_api_sanitized_live_sample",
+  "evidence_support_delta": {
+    "ci_high": 0.0,
+    "ci_low": 0.0,
+    "mean": 0.0
+  },
+  "examples_loaded_locally": 50,
+  "final_quality_delta": {
+    "ci_high": 0.0,
+    "ci_low": 0.0,
+    "mean": 0.0
+  },
+  "governed_winner": "measured_cost_minimizer_at_quality_floor",
+  "latency_delta_ms": {
+    "ci_high": -0.030317875955786024,
+    "ci_low": -0.03981543704867363,
+    "mean": -0.0350175957594599
+  },
+  "mock_api_base_placeholder": "<local-crag-mock-api>",
+  "pareto_frontier": [
+    "static_default_policy"
+  ],
+  "per_query_policy_rows": 550,
+  "quality_metric_class": "QUALITY_MEASURE_PROXY_PLUS_LOCAL_ANSWER_EVIDENCE",
+  "quality_noninferiority_margin": 0.01,
+  "quality_only_winner": "adaptive_routing_on_insufficient_evidence",
   "query_wording_exported": false,
-  "result_class": "FRESH_CRAG_BLOCKED_MOCK_API_NOT_AVAILABLE",
+  "rag_compass_rank": 10,
+  "result_class": "FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY",
   "source_documents_exported": false,
-  "suite": "ragtune_fresh_live_crag_mock_api_behavioral_governance_v1"
+  "suite": "ragtune_fresh_live_crag_mock_api_behavioral_governance_v1",
+  "validation_rows": 16
 }
