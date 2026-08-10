@@ -21,8 +21,8 @@
 
 ## Results
 
-- CRAG generative result: `GEN_LLM_VALIDATION_BLOCKED_NO_GENERATOR`
+- CRAG generative result: `GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY`
 - HotpotQA generative result: `GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY`
-- Synthesis result: `GEN_LLM_SYNTHESIS_DIRECTIONAL`
+- Synthesis result: `GEN_LLM_SYNTHESIS_GENERATIVE_VALIDATION_SUPPORTED`
 
-The HotpotQA result is a bounded 4-example local-generator run. It is not official platform benchmarking, human validation, production validation, broad governance superiority, or RAG Compass superiority.
+The HotpotQA result is a bounded 8-example local-generator run; the CRAG result is a bounded 4-example local-generator run. These are not official platform benchmarking, human validation, production validation, broad governance superiority, or RAG Compass superiority.

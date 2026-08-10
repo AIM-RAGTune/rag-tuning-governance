@@ -8,30 +8,29 @@
   "cost_delta": {
     "ci_high": -1.0943000000000005,
     "ci_low": -1.0943000000000005,
-    "mean": -1.0943000000000005
+    "mean": -1.0925500000000001
   },
   "evidence_class": "hotpotqa_local_generative_validation_sanitized_bounded_sample",
-  "example_count": 4,
+  "example_count": 8,
   "generated_quality_delta": {
     "ci_high": 0.0,
     "ci_low": 0.0,
     "mean": 0.0
   },
-  "generation_rows": 32,
+  "generation_rows": 64,
   "generator_available": true,
   "generator_local_or_hosted": "local",
   "generator_model": "qwen3:8b",
   "generator_provider": "ollama",
   "governed_winner": "rag_compass_optional",
   "latency_delta_ms": {
-    "ci_high": -302.0331673324108,
-    "ci_low": -302.0331673324108,
-    "mean": -302.0331673324108
+    "ci_high": -131.80037401616573,
+    "ci_low": -131.80037401616573,
+    "mean": -100.4628324881196
   },
   "pareto_frontier": [
     "adaptive_routing_on_insufficient_evidence",
-    "rag_compass_optional",
-    "rerank_top_k"
+    "rag_compass_optional"
   ],
   "quality_metric_class": "GENERATED_QUALITY_HOTPOTQA_ANSWER_LABELS_PLUS_SUPPORTING_FACTS",
   "quality_only_winner": "expanded_retrieval_multi_context",

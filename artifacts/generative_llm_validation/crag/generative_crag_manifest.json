@@ -1,10 +1,10 @@
 {
-  "blocker": "<urlopen error [Errno 1] Operation not permitted>",
+  "blocker": "",
   "crag_approval_env_var_present": true,
   "crag_data_configured": true,
   "crag_root_configured": true,
-  "evidence_class": "crag_generative_validation_attempt",
-  "generator_available": false,
+  "evidence_class": "crag_generative_validation_sanitized_bounded_sample",
+  "generator_available": true,
   "generator_local_or_hosted": "local",
   "generator_model": "qwen3:8b",
   "generator_provider": "ollama",
@@ -14,7 +14,7 @@
   "raw_generated_answers_committed": false,
   "raw_prompts_committed": false,
   "raw_questions_committed": false,
-  "result_class": "GEN_LLM_VALIDATION_BLOCKED_NO_GENERATOR",
+  "result_class": "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY",
   "secrets_committed": false,
   "suite": "ragtune_crag_generative_llm_validation_v1"
 }

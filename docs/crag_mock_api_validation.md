@@ -44,4 +44,4 @@ To run it in an approved environment, set `RAGTUNE_CRAG_APPROVED_NONCOMMERCIAL_R
 
 ## CRAG Generative LLM Status
 
-`ragtune_crag_generative_llm_validation_v1` is implemented as a sanitized harness, but the public artifact set does not include a completed CRAG generated-answer quality run. CRAG generative validation remains blocked or incomplete until a publication-safe evaluator mapping can score generated answers without exporting CRAG question text, source documents, raw API responses, or raw generated answers.
+`ragtune_crag_generative_llm_validation_v1` now includes a publication-safe evaluator mapping that scores generated answers against CRAG answers/alternate answers locally and exports only hashes, counts, and metrics. A bounded 4-example local Ollama `qwen3:8b` run produced `GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY`. Raw CRAG question text, source documents, raw API responses, prompts, and generated answers are not committed.

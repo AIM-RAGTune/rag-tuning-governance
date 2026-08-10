@@ -14,8 +14,8 @@ A later behaviorally distinct follow-up over the sanitized frozen CRAG mock-API 
 
 The fresh live CRAG + HotpotQA phase adds the next validation harness. Fresh CRAG now has a restored local data/mock-API environment and a sanitized 50-example live sample, but remains blocked as `FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY` because the sample did not produce a usable answer/evidence quality signal. HotpotQA ran from local cached public data with sanitized outputs and returned `HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS`, meaning operating cost improved but quality noninferiority was not established. This negative/mixed status is preserved to avoid upgrading frozen-observation evidence into a replication claim.
 
-Generative LLM Validation v1 adds bounded local HotpotQA generated-answer evidence with Ollama `qwen3:8b`, producing `GEN_LLM_SYNTHESIS_DIRECTIONAL`. CRAG generative validation remains blocked or incomplete, so this is not replicated generative evidence across datasets.
+Generative LLM Validation v1 adds bounded local CRAG and HotpotQA generated-answer evidence with Ollama `qwen3:8b`, producing `GEN_LLM_SYNTHESIS_GENERATIVE_VALIDATION_SUPPORTED`. This is small-sample local generative evidence rather than broad, human, platform, or production validation.
 
-Unsupported areas remain: RAG Compass superiority, broad generative LLM validation beyond the bounded local HotpotQA run, human-evaluation validation, official external-platform benchmarking, production readiness, broad governance superiority across many public datasets, and SQUARE hardware/quantum advantage.
+Unsupported areas remain: RAG Compass superiority, broad generative LLM validation beyond the bounded local CRAG and HotpotQA runs, human-evaluation validation, official external-platform benchmarking, production readiness, broad governance superiority across many public datasets, and SQUARE hardware/quantum advantage.
 
 No raw datasets, raw CRAG query wording, raw source documents, raw API responses, or private paths are included in the historical ledger.
