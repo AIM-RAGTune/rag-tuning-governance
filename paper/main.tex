@@ -36,6 +36,9 @@ Use processed tables from \texttt{results/processed/}.
 \section{CRAG Mock-API Governance Superiority}
 Summarize the full held-out CRAG mock-API result, Docker decision reproduction, cost/latency ablation, case explanations, and frozen-observation resplit replication.
 
+\section{Behaviorally Distinct Policy Experiment}
+The follow-up experiment reanalyzes sanitized CRAG mock-API frozen observations using candidate policies with different endpoint-routing and operating-cost behavior. The primary endpoint is not a scalar weighted utility difference: governed selection must either reduce measured cost or latency at equivalent proxy-plus-evidence quality, or improve quality under a fixed deployment budget. The current result is \texttt{GOVERNANCE\_REDUCES\_COST\_AT\_EQUIVALENT\_QUALITY}: governed selection chose \texttt{low\_retrieval\_single\_endpoint}, while quality-only selection chose \texttt{optuna\_tpe}. This remains frozen-observation source/retrieval evidence and does not establish human-calibrated, generative, production, or RAG Compass superiority claims.
+
 \section{Limitations}
 Generative LLM validation is unsupported. Human evaluation is not yet run. Official external-platform benchmarking is not yet run. Production readiness is not claimed.
 

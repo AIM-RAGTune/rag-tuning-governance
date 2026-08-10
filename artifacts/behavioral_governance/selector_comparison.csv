@@ -1,0 +1,7 @@
+selector_id,selected_policy_id,selection_rule
+quality_only_best_on_validation,optuna_tpe,highest validation final_quality_score; ignores cost and latency
+measured_cost_minimizer_at_quality_floor,low_retrieval_single_endpoint,lowest measured cost among validation-quality-noninferior candidates
+measured_latency_minimizer_at_quality_floor,low_retrieval_single_endpoint,lowest p95 latency among validation-quality-noninferior candidates
+constrained_quality_optimizer,low_retrieval_single_endpoint,highest validation quality subject to predeclared cost/latency/failure/evidence constraints
+pareto_frontier_selector,low_retrieval_single_endpoint|optuna_tpe,report nondominated confirmatory policies without scalar utility
+governed_selection,low_retrieval_single_endpoint,"quality floor, eligibility, then measured cost and latency"

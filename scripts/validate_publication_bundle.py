@@ -97,6 +97,30 @@ def approved_deployment_remote() -> str | None:
     return report.get("remote_url")
 
 
+def public_repository_remote_allowed(remotes: str) -> bool:
+    """Allow the approved public clean-history repository in deployed mode.
+
+    Local unpublished export packages still reject external remotes. The
+    public repository is intentionally different: it is already deployed, has
+    a fresh one-commit history, and carries a public repository note.
+    """
+
+    mode = os.environ.get("RAGTUNE_PUBLICATION_REMOTE_MODE", "deployed_public_repo")
+    if mode == "local_unpublished":
+        return False
+    allowed_remotes = {
+        "https://github.com/AIM-RAGTune/rag-tuning-governance-public.git",
+        "git@github.com:AIM-RAGTune/rag-tuning-governance-public.git",
+    }
+    remote_lines = [line for line in remotes.splitlines() if line.strip()]
+    if not remote_lines:
+        return False
+    public_note = ROOT / "docs" / "public_repository_note.md"
+    if not public_note.exists():
+        return False
+    return all(any(remote in line for remote in allowed_remotes) for line in remote_lines)
+
+
 def validate_no_crag_raw_text_fields() -> None:
     root = ROOT / CRAG_ARTIFACT_ROOT
     if not root.exists():
@@ -193,6 +217,7 @@ def main() -> None:
         if approved_remote:
             remote_lines = [line for line in remotes.splitlines() if line.strip()]
             approved = approved or all(approved_remote in line for line in remote_lines)
+        approved = approved or public_repository_remote_allowed(remotes)
         if not approved:
             fail("external git remote configured in publication bundle")
 

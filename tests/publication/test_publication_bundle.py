@@ -1,9 +1,19 @@
 from pathlib import Path
 import json
 import subprocess
+import importlib.util
 
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def load_validator_module():
+    spec = importlib.util.spec_from_file_location("validate_publication_bundle", ROOT / "scripts" / "validate_publication_bundle.py")
+    assert spec is not None
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
 
 
 def test_required_publication_files_exist() -> None:
@@ -42,3 +52,12 @@ def test_publication_validator_passes() -> None:
         check=False,
     )
     assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_publication_validator_remote_modes(monkeypatch) -> None:
+    validator = load_validator_module()
+    remote = "origin\thttps://github.com/AIM-RAGTune/rag-tuning-governance-public.git (fetch)"
+    monkeypatch.setenv("RAGTUNE_PUBLICATION_REMOTE_MODE", "local_unpublished")
+    assert validator.public_repository_remote_allowed(remote) is False
+    monkeypatch.setenv("RAGTUNE_PUBLICATION_REMOTE_MODE", "deployed_public_repo")
+    assert validator.public_repository_remote_allowed(remote) is True

@@ -1,0 +1,15 @@
+{
+  "active_constraints": [
+    "mean_measured_cost_units",
+    "p95_latency_ms",
+    "failure_rate",
+    "evidence_support_score"
+  ],
+  "constraints": {
+    "max_failure_rate": 0.05,
+    "max_mean_cost_units": 1.5,
+    "max_p95_latency_ms": 4000.0,
+    "min_evidence_support_score": 0.5
+  },
+  "winner": "low_retrieval_single_endpoint"
+}

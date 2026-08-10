@@ -30,6 +30,8 @@ Multi-corpus evidence improves breadth but must be stratified by evidence class.
 
 Governance reaches this level when it changes a natural public promotion decision and evidence supports the governed choice as beneficial under the declared utility. RAGTune governance has reached Level 6 in a bounded CRAG mock-API source/retrieval governance setting.
 
+The behaviorally distinct follow-up strengthens this level by reframing the strongest CRAG mock-API evidence around a predeclared quality noninferiority margin and measured operating outcomes. It does not move the program to Level 7 because it uses frozen observations and a proxy-plus-evidence quality metric rather than independent human, generative, or official platform validation.
+
 ## Level 7 — Docker-Reproduced And Human/Generative/Platform Validated Evidence
 
 This level would require stronger independent reproduction and validation layers, including human evaluation, pinned generative LLM paths, and official platform integrations where claimed.

@@ -1,0 +1,62 @@
+{
+  "abstention_delta_mean": 0.0,
+  "active_constraints": [
+    "mean_measured_cost_units",
+    "p95_latency_ms",
+    "failure_rate",
+    "evidence_support_score"
+  ],
+  "api_call_delta_mean": -1.798598949211909,
+  "behavioral_distinction_passed": true,
+  "claim_boundaries": [
+    "Derived from sanitized frozen CRAG mock-API observations included in the publication repository.",
+    "No raw CRAG query text, source documents, or raw API responses are exported.",
+    "Quality is proxy-plus-evidence, not human calibrated and not generative LLM validated.",
+    "RAG Compass is secondary and is not claimed superior."
+  ],
+  "constrained_optimizer_winner": "low_retrieval_single_endpoint",
+  "cost_delta": {
+    "ci_high": -2.368388791593691,
+    "ci_low": -2.368388791593693,
+    "mean_delta": -2.368388791593695
+  },
+  "evidence_class": "public_full_corpus_mock_api_validation_derived_frozen_observation",
+  "evidence_support_delta": {
+    "ci_high": -0.07775831873905421,
+    "ci_low": -0.07775831873905427,
+    "mean_delta": -0.07775831873905428
+  },
+  "governed_winner": "low_retrieval_single_endpoint",
+  "latency_delta": {
+    "ci_high": -86.13883681438746,
+    "ci_low": -86.13883681438746,
+    "mean_delta": -86.13883681438746
+  },
+  "parent_run_id": "ragtune_crag_mock_api_validation_v1_20260809-165415-92d8c0edd4",
+  "pareto_frontier_policies": [
+    "low_retrieval_single_endpoint",
+    "optuna_tpe"
+  ],
+  "primary_result_class": "GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY",
+  "quality_delta": {
+    "ci_high": -0.005153711484292915,
+    "ci_low": -0.005153711484292924,
+    "mean_delta": -0.00515371148429292
+  },
+  "quality_measure_result_class": "QUALITY_MEASURE_PROXY_PLUS_EVIDENCE",
+  "quality_noninferiority_margin": 0.01,
+  "quality_only_winner": "optuna_tpe",
+  "query_win_tie_loss_cost_savings": {
+    "loss": 0,
+    "tie": 0,
+    "win": 571
+  },
+  "query_win_tie_loss_quality": {
+    "loss": 116,
+    "tie": 258,
+    "win": 197
+  },
+  "rag_compass_rank": 6,
+  "repeat_result_class": "BEHAVIORAL_GOVERNANCE_DIRECTIONAL_REPEAT",
+  "suite": "ragtune_behavioral_governance_primary_outcome_v1"
+}

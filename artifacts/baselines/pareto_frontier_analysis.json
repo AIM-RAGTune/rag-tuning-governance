@@ -1,0 +1,14 @@
+{
+  "frontier": [
+    "low_retrieval_single_endpoint",
+    "optuna_tpe"
+  ],
+  "objectives": [
+    "quality",
+    "cost",
+    "latency",
+    "failure",
+    "evidence",
+    "abstention"
+  ]
+}

@@ -21,6 +21,14 @@ The strongest current result is a CRAG mock-API validation run:
 
 The hardening package reports that this result was decision-reproduced in Docker, explained by cost/latency ablation, illustrated with cases, and replicated under frozen-observation resplits.
 
+## Behaviorally Distinct Policy Experiment
+
+A follow-up experiment reanalyzes the sanitized CRAG mock-API frozen observations with behaviorally distinct candidate policies: low retrieval, expanded retrieval, adaptive routing, cost-aware selection, latency-aware selection, quality-only selection, constrained optimization, and Pareto selection.
+
+Primary result: `GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY`. Governed selection chose `low_retrieval_single_endpoint`; quality-only selection chose `optuna_tpe` under the proxy-plus-evidence quality metric. Governed selection was within the predeclared 0.01 quality noninferiority margin while reducing measured cost and latency. This result is not a small weighted-utility-only claim, but it remains derived from sanitized frozen observations and uses `QUALITY_MEASURE_PROXY_PLUS_EVIDENCE`, not human-calibrated or generative LLM validation.
+
+See `results/behavioral_governance/paper_ready_summary.md` and `docs/behaviorally_distinct_policy_experiment_plan.md`.
+
 ## What This Repository Contains
 
 - `src/ragtune/`: RAGTune implementation code.

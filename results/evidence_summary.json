@@ -9,10 +9,11 @@
     "ci": [0.0010022708, 0.0010028250],
     "win_tie_loss": [571, 0, 0]
   },
-  "supported_claims": [
-    "RAGTune governance produced a CRAG mock-API governance superiority signal on full held-out validation.",
-    "The strongest CRAG mock-API decision was decision-reproduced in Docker and replicated under frozen-observation resplits according to packaged artifacts.",
-    "RAGBench HotpotQA supports context-retrieval policy variation, not full corpus-backed retrieval."
+    "supported_claims": [
+        "RAGTune governance produced a CRAG mock-API governance superiority signal on full held-out validation.",
+        "A behaviorally distinct follow-up over sanitized frozen CRAG mock-API observations found governed selection reduced measured cost at equivalent proxy-plus-evidence quality.",
+        "The strongest CRAG mock-API decision was decision-reproduced in Docker and replicated under frozen-observation resplits according to packaged artifacts.",
+        "RAGBench HotpotQA supports context-retrieval policy variation, not full corpus-backed retrieval."
   ],
   "unsupported_claims": [
     "RAG Compass superiority",
@@ -22,9 +23,10 @@
     "production readiness"
   ],
   "key_limitations": [
-    "Raw licensed datasets are not redistributed.",
-    "CRAG use is noncommercial-research-only.",
-    "RAG Compass ranked fifth in the strongest CRAG mock-API result."
+        "Raw licensed datasets are not redistributed.",
+        "CRAG use is noncommercial-research-only.",
+        "The behaviorally distinct follow-up is derived from frozen sanitized observations and uses proxy-plus-evidence quality, not human-calibrated or generative validation.",
+        "RAG Compass ranked fifth in the strongest CRAG mock-API result."
   ],
   "reproducibility_status": "Publication bundle includes configs, scripts, manifests, processed summaries, and Docker instructions; raw data must be obtained separately."
 }

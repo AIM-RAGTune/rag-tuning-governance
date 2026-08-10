@@ -21,3 +21,17 @@ Key facts:
 Interpretation: this supports RAGTune governance value more directly than RAG Compass optimizer superiority.
 
 CRAG raw data, raw question wording, raw source passages, and raw mock-API responses are not included here. Case explanations use sanitized summaries and query hashes rather than CRAG wording. Reproduction requires obtaining CRAG from the original approved source, verifying expected hashes, and respecting the noncommercial-research-only restriction used by the local validation. The CRAG mock-API result supports source/retrieval governance evidence under the configured utility, not generative LLM answer-quality validation. Commercial use requires separate license and legal review.
+
+## Behaviorally Distinct Follow-Up
+
+The follow-up suite `ragtune_behavioral_governance_primary_outcome_v1` reuses the sanitized frozen CRAG mock-API observations and compares genuinely different operating behaviors: one-endpoint low retrieval, two-endpoint expanded retrieval, variable-call adaptive routing, measured-cost selection, measured-latency selection, quality-only selection, constrained optimization, and Pareto frontier selection.
+
+Result: `GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY`.
+
+- Governed winner: `low_retrieval_single_endpoint`
+- Quality-only winner: `optuna_tpe`
+- Quality metric: `QUALITY_MEASURE_PROXY_PLUS_EVIDENCE`
+- Quality noninferiority margin: 0.01
+- Evidence class: `public_full_corpus_mock_api_validation_derived_frozen_observation`
+
+This follow-up avoids relying only on a small weighted-utility delta by using a predeclared quality floor and measured cost/latency outcomes. It remains bounded: no raw CRAG text is included, no new live API collection is claimed, and no human/generative validation is claimed.
