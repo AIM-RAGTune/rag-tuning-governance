@@ -8,10 +8,10 @@
     "Do not copy raw CRAG data into this public repository."
   ],
   "dataset_rows_committed": false,
-  "dry_run": true,
+  "dry_run": false,
   "endpoint_outputs_exported": false,
   "environment": {
-    "approved_noncommercial_research_only": false,
+    "approved_noncommercial_research_only": true,
     "crag_data_configured": false,
     "crag_data_exists": false,
     "crag_root_configured": false,

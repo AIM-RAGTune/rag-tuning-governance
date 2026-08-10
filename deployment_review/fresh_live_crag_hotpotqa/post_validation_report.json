@@ -4,13 +4,22 @@
   "make_validate_publication": "passed",
   "make_test": "32 passed",
   "compileall": "passed",
-  "large_file_scan": "passed; no files over 50 MB outside .git",
+    "large_file_scan": "passed; no tracked files over 50 MB",
+    "local_data_cache": "HotpotQA Arrow cache exists under gitignored .local_data/ and is not tracked",
   "raw_text_scan": {
     "status": "passed_with_expected_references",
     "interpretation": "Findings are documentation, tests, validators, and prior sanitization reports; no new raw CRAG query text, HotpotQA questions, source documents, supporting-fact text, or API responses were added."
   },
   "fresh_live_crag_result_class": "FRESH_CRAG_BLOCKED_NO_APPROVED_DATA",
-  "hotpotqa_result_class": "HOTPOTQA_BLOCKED_DATASET_UNAVAILABLE",
-  "multi_dataset_synthesis_result_class": "MULTI_DATASET_BEHAVIORAL_GOVERNANCE_BLOCKED",
-  "claim_boundary": "No replication claim is made from frozen-only evidence."
+    "hotpotqa_result_class": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS",
+    "hotpotqa_evidence_class": "hotpotqa_public_corpus_behavioral_governance_sanitized_sample",
+    "hotpotqa_examples_loaded_locally": 1000,
+    "hotpotqa_validation_rows": 262,
+    "hotpotqa_confirmatory_rows": 249,
+    "hotpotqa_governed_winner": "expanded_retrieval_multi_context",
+    "hotpotqa_quality_only_winner": "bm25_high_k",
+    "hotpotqa_constrained_optimizer_winner": "rag_compass_optional",
+    "hotpotqa_quality_metric_class": "QUALITY_MEASURE_ANSWER_LABELS_PLUS_SUPPORTING_FACT_EVIDENCE",
+    "multi_dataset_synthesis_result_class": "MULTI_DATASET_BEHAVIORAL_GOVERNANCE_INCONCLUSIVE",
+    "claim_boundary": "No replication claim is made; HotpotQA showed operational gain with quality loss and fresh CRAG remains blocked."
 }

@@ -3,8 +3,20 @@
 ## Results
 
 - Fresh live CRAG: `FRESH_CRAG_BLOCKED_NO_APPROVED_DATA`
-- HotpotQA: `HOTPOTQA_BLOCKED_DATASET_UNAVAILABLE`
-- Multi-dataset synthesis: `MULTI_DATASET_BEHAVIORAL_GOVERNANCE_BLOCKED`
+- HotpotQA: `HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS`
+- Multi-dataset synthesis: `MULTI_DATASET_BEHAVIORAL_GOVERNANCE_INCONCLUSIVE`
+
+## HotpotQA Details
+
+- Evidence class: `hotpotqa_public_corpus_behavioral_governance_sanitized_sample`
+- Examples loaded locally: 1,000
+- Validation rows: 262
+- Confirmatory rows: 249
+- Governed winner: `expanded_retrieval_multi_context`
+- Quality-only winner: `bm25_high_k`
+- Constrained optimizer winner: `rag_compass_optional`
+- Quality metric class: `QUALITY_MEASURE_ANSWER_LABELS_PLUS_SUPPORTING_FACT_EVIDENCE`
+- Result interpretation: governance reduced measured cost but the confirmatory quality delta crossed the predeclared `0.01` noninferiority margin, so this is a quality-loss result rather than a positive replication.
 
 ## Validation
 
@@ -13,7 +25,8 @@
 - `make validate-publication`: passed
 - `make test`: 32 passed
 - `python3 -m compileall src scripts`: passed
-- Large-file scan: passed; no files over 50 MB outside `.git`
+- Tracked large-file scan: passed; no tracked files over 50 MB
+- Local data cache: HotpotQA Arrow cache exists under gitignored `.local_data/` and is not tracked
 
 ## Publication Hygiene
 
@@ -21,4 +34,4 @@ The raw-text scan produced expected references in documentation, tests, validato
 
 ## Claim Boundary
 
-This phase adds the fresh/live and HotpotQA harnesses, but it does not replicate the prior frozen-observation result because approved local CRAG and HotpotQA data were unavailable.
+This phase replaces the blocked HotpotQA artifact with real alternate-corpus evidence, but it does not replicate the prior frozen-observation result. Fresh CRAG remains blocked because approved local CRAG data/mock-API paths are unavailable, and HotpotQA showed operational gain with quality loss.

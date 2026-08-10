@@ -5,18 +5,86 @@
     "Alternatively clone https://github.com/hotpotqa/hotpot and follow official download instructions.",
     "Do not commit raw questions, context paragraphs, or supporting-fact sentences."
   ],
+  "answer_correctness_f1_delta": {
+    "ci_high": -0.020080321285140562,
+    "ci_low": -0.14859437751004015,
+    "mean": -0.08433734939759036
+  },
+  "api_call_delta": {
+    "ci_high": -1.9598393574297188,
+    "ci_low": -2.0,
+    "mean": -1.9839357429718876
+  },
+  "confirmatory_rows": 249,
+  "constrained_optimizer_winner": "rag_compass_optional",
+  "constraints": {
+    "max_failure_rate": 0.05,
+    "max_mean_cost_units": 4.0,
+    "max_p95_latency_ms": 10.0,
+    "min_evidence_support_score": 0.1
+  },
   "context_paragraphs_exported": false,
-  "dry_run": true,
+  "context_token_delta": {
+    "ci_high": -326.7309236947791,
+    "ci_low": -368.34939759036143,
+    "mean": -346.2008032128514
+  },
+  "cost_delta": {
+    "ci_high": -2.2946546184738956,
+    "ci_low": -2.359265060240964,
+    "mean": -2.3301365461847388
+  },
+  "dry_run": false,
   "environment": {
-    "datasets_library_available": false,
+    "datasets_library_available": true,
+    "hf_cache_location": "<repo>/.local_data/huggingface/datasets",
+    "hf_cache_used": true,
     "known_raw_files_present": [],
     "local_data_root": "<repo>/.local_data/hotpotqa",
     "local_data_root_exists": false
   },
-  "evidence_class": "hotpotqa_public_corpus_blocked",
+  "evidence_class": "hotpotqa_public_corpus_behavioral_governance_sanitized_sample",
+  "examples_loaded_locally": 1000,
+  "final_quality_delta": {
+    "ci_high": 0.012580321285140571,
+    "ci_low": -0.09108768406961178,
+    "mean": -0.04083668005354752
+  },
+  "governed_winner": "expanded_retrieval_multi_context",
+  "latency_delta_ms": {
+    "ci_high": 0.005163185029144746,
+    "ci_low": -0.017041505041371387,
+    "mean": -0.00592507047945237
+  },
   "license_status": "Dataset CC BY-SA 4.0; code Apache-2.0; raw data not redistributed by this repository.",
+  "pareto_frontier": [
+    "bm25_high_k",
+    "bm25_low_k",
+    "expanded_retrieval_multi_context",
+    "low_retrieval_single_context",
+    "rag_compass_optional",
+    "rerank_top_k",
+    "static_default_policy"
+  ],
+  "per_query_policy_rows": 9000,
+  "policy_behavior_materially_distinct": true,
+  "quality_metric_class": "QUALITY_MEASURE_ANSWER_LABELS_PLUS_SUPPORTING_FACT_EVIDENCE",
+  "quality_noninferiority_margin": 0.01,
+  "quality_only_winner": "bm25_high_k",
   "question_wording_exported": false,
-  "result_class": "HOTPOTQA_BLOCKED_DATASET_UNAVAILABLE",
+  "rag_compass_rank": 4,
+  "result_class": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS",
   "suite": "ragtune_hotpotqa_behavioral_governance_v1",
-  "supporting_fact_sentences_exported": false
+  "supporting_fact_sentence_recall_delta": {
+    "ci_high": 0.07302543507362784,
+    "ci_low": -0.03654618473895582,
+    "mean": 0.017001338688085676
+  },
+  "supporting_fact_sentences_exported": false,
+  "supporting_fact_title_recall_delta": {
+    "ci_high": 0.08433734939759036,
+    "ci_low": -0.028112449799196786,
+    "mean": 0.02610441767068273
+  },
+  "validation_rows": 262
 }

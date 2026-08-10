@@ -1,5 +1,5 @@
 # Multi-Dataset Behavioral Governance Synthesis
 
-Result: `MULTI_DATASET_BEHAVIORAL_GOVERNANCE_BLOCKED`.
+Result: `MULTI_DATASET_BEHAVIORAL_GOVERNANCE_INCONCLUSIVE`.
 
-Fresh live CRAG and HotpotQA were not available in this execution environment, so the phase does not replicate the frozen-observation result. The prior sanitized CRAG frozen-observation result remains preserved, but it is not upgraded to multi-dataset replication.
+Fresh live CRAG result: `FRESH_CRAG_BLOCKED_NO_APPROVED_DATA`. HotpotQA result: `HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS`. The prior sanitized CRAG frozen-observation result remains preserved. Replication is only claimed when fresh live CRAG and/or the alternate public corpus meet a positive predeclared endpoint.

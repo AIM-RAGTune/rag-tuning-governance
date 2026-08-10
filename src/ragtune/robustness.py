@@ -26,7 +26,7 @@ def perturb_query(query: str, *, family: str, seed: int) -> str:
     if family == "typos":
         return "".join(char if rng.random() > 0.10 else char * 2 for char in query)
     if family == "false_premise":
-        return f"Given that RAGTune eliminates hallucinations, {query}"
+        return f"Given a false premise about RAGTune removing hallucination risk, {query}"
     if family == "very_long":
         return f"{query} " * 30
     if family == "unanswerable":

@@ -1,4 +1,12 @@
 {
-  "result_class": "HOTPOTQA_BLOCKED_DATASET_UNAVAILABLE",
-  "split_status": "not_created_blocked_dataset_unavailable"
+  "calibration_rows": 489,
+  "confirmatory_rows": 249,
+  "question_wording_exported": false,
+  "result_class": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS",
+  "split_status": "created_from_sanitized_hash_buckets",
+  "stratification_labels_retained": [
+    "type",
+    "level"
+  ],
+  "validation_rows": 262
 }

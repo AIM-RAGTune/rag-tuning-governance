@@ -14,7 +14,7 @@ HotpotQA provides answer labels, multi-hop structure, bridge/comparison types, d
 
 ## Dataset acquisition status
 
-Fresh CRAG: `FRESH_CRAG_BLOCKED_NO_APPROVED_DATA`. HotpotQA: `HOTPOTQA_BLOCKED_DATASET_UNAVAILABLE`.
+Fresh CRAG: `FRESH_CRAG_BLOCKED_NO_APPROVED_DATA`. HotpotQA: `HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS`.
 
 ## Policy suite
 
@@ -34,15 +34,15 @@ Equivalent quality with lower measured cost/latency, or improved quality under a
 
 ## HotpotQA result
 
-`HOTPOTQA_BLOCKED_DATASET_UNAVAILABLE`.
+`HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS`.
 
 ## Multi-dataset synthesis
 
-`MULTI_DATASET_BEHAVIORAL_GOVERNANCE_BLOCKED`.
+`MULTI_DATASET_BEHAVIORAL_GOVERNANCE_INCONCLUSIVE`.
 
 ## Negative findings
 
-This run did not move beyond frozen-observation evidence because approved local CRAG and HotpotQA data were unavailable.
+Fresh CRAG remains blocked unless approved local CRAG data and mock-API paths are configured. HotpotQA is classified only by the observed answer-label/supporting-fact result; noninferiority without operational gain is not treated as replication.
 
 ## Claim boundaries
 
@@ -54,4 +54,4 @@ Configure approved CRAG and/or HotpotQA local data roots, then run the acquisiti
 
 ## Recommended next experiment
 
-Run HotpotQA from an approved local dataset cache and repeat fresh live CRAG after configuring the CRAG mock API runtime.
+Repeat HotpotQA with a larger/full split and stronger non-oracle adaptive triggers, and repeat fresh live CRAG after configuring the CRAG mock API runtime.
