@@ -29,6 +29,14 @@ Primary result: `GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY`. Governed select
 
 See `results/behavioral_governance/paper_ready_summary.md` and `docs/behaviorally_distinct_policy_experiment_plan.md`.
 
+## Fresh Live CRAG And HotpotQA Behaviorally Distinct Governance Experiment
+
+The next validation phase adds a harness for fresh live CRAG mock-API collection and HotpotQA alternate-corpus validation. The goal is to test whether the behaviorally distinct governance result holds beyond frozen observations and whether HotpotQA answer labels/supporting facts support a stronger answer-quality endpoint.
+
+Current execution status in this public repository environment: fresh CRAG is blocked until approved local CRAG data and mock-API paths are configured; HotpotQA is blocked until local HotpotQA data or the `datasets` loader are available. These blocked results are preserved honestly and do not upgrade the prior frozen-observation claim.
+
+Raw CRAG data are not redistributed. CRAG remains noncommercial research-only. HotpotQA raw data are not committed to this repository. See `docs/fresh_live_crag_hotpotqa_behavioral_governance_plan.md`, `docs/dataset_acquisition.md`, and `results/multi_dataset_behavioral_governance/paper_ready_summary.md`.
+
 ## What This Repository Contains
 
 - `src/ragtune/`: RAGTune implementation code.

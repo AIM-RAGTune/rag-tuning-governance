@@ -10,6 +10,7 @@ Supported or partially supported:
 - CRAG web-document evaluation produced governance noninferiority, not superiority.
 - CRAG mock-API validation produced the strongest governance result: governed selection chose `top_k_low` over quality-only `greedy_regression_aware_search` on the full held-out confirmatory split.
 - A behaviorally distinct follow-up over sanitized frozen CRAG mock-API observations produced `GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY`: governed selection chose `low_retrieval_single_endpoint` while quality-only selected `optuna_tpe` under a proxy-plus-evidence quality metric and a predeclared 0.01 noninferiority margin.
+- The fresh live CRAG + HotpotQA phase currently provides an acquisition and validation harness plus blocked artifacts; it does not yet replicate the frozen-observation result because approved local CRAG and HotpotQA data were unavailable.
 - CRAG publication artifacts preserve metrics and hashes but redact raw CRAG question text, source passages, and mock-API responses.
 
 Unsupported:
@@ -25,4 +26,4 @@ Unsupported:
 
 Evidence classes must not be relabeled. Context-retrieval evidence is weaker than full corpus-backed evidence. Workflow simulation is not an official platform benchmark.
 
-This repository does not grant CRAG redistribution rights. The CRAG mock-API result and behaviorally distinct follow-up support source/retrieval governance evidence under bounded operating constraints; they are not generative LLM validation and are not human-calibrated answer-quality validation.
+This repository does not grant CRAG redistribution rights. The CRAG mock-API result and behaviorally distinct follow-up support source/retrieval governance evidence under bounded operating constraints; they are not generative LLM validation and are not human-calibrated answer-quality validation. Fresh CRAG and HotpotQA replication remains blocked until approved local datasets are configured.

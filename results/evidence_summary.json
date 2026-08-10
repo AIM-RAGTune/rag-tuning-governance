@@ -26,6 +26,7 @@
         "Raw licensed datasets are not redistributed.",
         "CRAG use is noncommercial-research-only.",
         "The behaviorally distinct follow-up is derived from frozen sanitized observations and uses proxy-plus-evidence quality, not human-calibrated or generative validation.",
+        "Fresh live CRAG and HotpotQA behavioral-governance validation are currently blocked by missing approved local datasets.",
         "RAG Compass ranked fifth in the strongest CRAG mock-API result."
   ],
   "reproducibility_status": "Publication bundle includes configs, scripts, manifests, processed summaries, and Docker instructions; raw data must be obtained separately."

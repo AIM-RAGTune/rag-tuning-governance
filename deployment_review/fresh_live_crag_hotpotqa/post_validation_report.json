@@ -1,0 +1,16 @@
+{
+  "publication_validator": "passed",
+  "pytest": "32 passed",
+  "make_validate_publication": "passed",
+  "make_test": "32 passed",
+  "compileall": "passed",
+  "large_file_scan": "passed; no files over 50 MB outside .git",
+  "raw_text_scan": {
+    "status": "passed_with_expected_references",
+    "interpretation": "Findings are documentation, tests, validators, and prior sanitization reports; no new raw CRAG query text, HotpotQA questions, source documents, supporting-fact text, or API responses were added."
+  },
+  "fresh_live_crag_result_class": "FRESH_CRAG_BLOCKED_NO_APPROVED_DATA",
+  "hotpotqa_result_class": "HOTPOTQA_BLOCKED_DATASET_UNAVAILABLE",
+  "multi_dataset_synthesis_result_class": "MULTI_DATASET_BEHAVIORAL_GOVERNANCE_BLOCKED",
+  "claim_boundary": "No replication claim is made from frozen-only evidence."
+}

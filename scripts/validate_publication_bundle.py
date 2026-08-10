@@ -22,6 +22,11 @@ REQUIRED = [
     "results/evidence_summary.json",
     "results/claim_status/claim_status_table.csv",
     ".gitattributes",
+    "artifacts/fresh_live_crag_behavioral_governance/live_crag_manifest.json",
+    "artifacts/hotpotqa_behavioral_governance/hotpotqa_acquisition_manifest.json",
+    "results/multi_dataset_behavioral_governance/synthesis_result.json",
+    "docs/fresh_live_crag_hotpotqa_behavioral_governance_plan.md",
+    "docs/dataset_acquisition.md",
 ]
 
 EXPORT_REQUIRED = [

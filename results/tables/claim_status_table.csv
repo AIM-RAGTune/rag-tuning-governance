@@ -12,3 +12,6 @@ generative LLM validation,unsupported,,generator,blocked,no pinned model or cred
 human evaluation,unsupported,,human_eval,blocked,zero annotations,run blinded pilot
 official platform benchmarking,unsupported,,platform,blocked,no official integrations,configure LangSmith/Ragas/DeepEval/RAGChecker
 production readiness,unsupported,,deployment,blocked,scientific harness not production system,hardening and ops review
+fresh live CRAG behavioral governance,blocked,artifacts/fresh_live_crag_behavioral_governance/primary_outcome_statistics.json,fresh_live_crag_mock_api_blocked,blocked,approved local CRAG data/mock API not configured,configure approved CRAG root and rerun
+HotpotQA behavioral governance,blocked,artifacts/hotpotqa_behavioral_governance/primary_outcome_statistics.json,hotpotqa_public_corpus_blocked,blocked,HotpotQA data and datasets loader unavailable,acquire HotpotQA locally and rerun
+multi-dataset behavioral governance synthesis,blocked,results/multi_dataset_behavioral_governance/synthesis_result.json,multi_dataset_synthesis,blocked,only prior frozen-observation result is available,rerun with fresh CRAG or HotpotQA data

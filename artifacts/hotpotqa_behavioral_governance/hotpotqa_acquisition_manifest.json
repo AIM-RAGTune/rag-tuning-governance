@@ -1,0 +1,22 @@
+{
+  "acquisition_instructions": [
+    "pip install datasets",
+    "python3 scripts/acquire_hotpotqa_public_corpus.py --source huggingface --config distractor --output-root ${RAGTUNE_DATA_ROOT:-.local_data}/hotpotqa",
+    "Alternatively clone https://github.com/hotpotqa/hotpot and follow official download instructions.",
+    "Do not commit raw questions, context paragraphs, or supporting-fact sentences."
+  ],
+  "context_paragraphs_exported": false,
+  "dry_run": true,
+  "environment": {
+    "datasets_library_available": false,
+    "known_raw_files_present": [],
+    "local_data_root": "<repo>/.local_data/hotpotqa",
+    "local_data_root_exists": false
+  },
+  "evidence_class": "hotpotqa_public_corpus_blocked",
+  "license_status": "Dataset CC BY-SA 4.0; code Apache-2.0; raw data not redistributed by this repository.",
+  "question_wording_exported": false,
+  "result_class": "HOTPOTQA_BLOCKED_DATASET_UNAVAILABLE",
+  "suite": "ragtune_hotpotqa_behavioral_governance_v1",
+  "supporting_fact_sentences_exported": false
+}

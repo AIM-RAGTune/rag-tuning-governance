@@ -12,6 +12,8 @@ The strongest current result is CRAG mock-API governance superiority under a sou
 
 A later behaviorally distinct follow-up over the sanitized frozen CRAG mock-API observations produced `GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY`: governed selection chose `low_retrieval_single_endpoint` while quality-only selected `optuna_tpe` under a proxy-plus-evidence quality metric. This strengthens the operating-constraint interpretation but remains frozen-observation evidence, not independent human/generative validation.
 
+The fresh live CRAG + HotpotQA phase adds the next validation harness but is blocked in this repository execution because approved local CRAG data and HotpotQA data were unavailable. The blocked status is preserved to avoid upgrading frozen-observation evidence into a replication claim.
+
 Unsupported areas remain: RAG Compass superiority, generative LLM validation, human-evaluation validation, official external-platform benchmarking, production readiness, broad governance superiority across many public datasets, and SQUARE hardware/quantum advantage.
 
 No raw datasets, raw CRAG query wording, raw source documents, raw API responses, or private paths are included in the historical ledger.

@@ -35,3 +35,9 @@ Result: `GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY`.
 - Evidence class: `public_full_corpus_mock_api_validation_derived_frozen_observation`
 
 This follow-up avoids relying only on a small weighted-utility delta by using a predeclared quality floor and measured cost/latency outcomes. It remains bounded: no raw CRAG text is included, no new live API collection is claimed, and no human/generative validation is claimed.
+
+## Fresh Live CRAG Attempt
+
+The fresh live CRAG phase adds `ragtune_fresh_live_crag_mock_api_behavioral_governance_v1`. In this execution environment, the run is blocked as `FRESH_CRAG_BLOCKED_NO_APPROVED_DATA` because approved local CRAG data and mock-API paths are not configured. This is a blocked result, not a replication claim.
+
+To run it in an approved environment, set `RAGTUNE_CRAG_APPROVED_NONCOMMERCIAL_RESEARCH_ONLY=true`, `RAGTUNE_CRAG_ROOT`, and `RAGTUNE_CRAG_DATA`, then run `scripts/run_fresh_live_crag_behavioral_governance.py`.

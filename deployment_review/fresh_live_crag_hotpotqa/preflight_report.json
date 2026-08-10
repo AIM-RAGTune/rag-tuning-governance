@@ -1,0 +1,27 @@
+{
+  "starting_commit": "03d5b93b5efc75bf94967ff1eac7f42bbdf6720a",
+  "branch": "fresh-live-crag-hotpotqa-behavioral-governance",
+  "remote_url": "https://github.com/AIM-RAGTune/rag-tuning-governance-public.git",
+  "working_tree_status_before_changes": "clean",
+  "baseline_validation": {
+    "publication_validator": "passed",
+    "pytest": "16 passed",
+    "make_validate_publication": "passed",
+    "make_test": "16 passed",
+    "compileall": "passed"
+  },
+  "hygiene_scans": {
+    "raw_text_scan": "expected references only in validators, tests, prior sanitization reports, and source code that redacts raw fields",
+    "secret_scan": "expected pattern definitions only; no secret values found",
+    "private_path_scan": "no findings",
+    "overclaim_scan": "expected explicit unsupported-claim statements only"
+  },
+  "dataset_availability": {
+    "crag_approval_env": "not configured",
+    "crag_root": "not configured",
+    "crag_data": "not configured",
+    "hotpotqa_datasets_library": "not installed",
+    "hotpotqa_local_data": "not found"
+  },
+  "preflight_decision": "proceed_with_harness_and_honest_blocked_results"
+}

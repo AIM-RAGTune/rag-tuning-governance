@@ -1,0 +1,28 @@
+{
+  "acquisition_instructions": [
+    "git clone https://github.com/facebookresearch/CRAG.git <approved-local-path>/CRAG",
+    "cd <approved-local-path>/CRAG",
+    "pip install -r requirements.txt",
+    "Follow CRAG dataset documentation for approved noncommercial research-only data acquisition.",
+    "Set RAGTUNE_CRAG_APPROVED_NONCOMMERCIAL_RESEARCH_ONLY=true, RAGTUNE_CRAG_ROOT, and RAGTUNE_CRAG_DATA.",
+    "Do not copy raw CRAG data into this public repository."
+  ],
+  "dataset_rows_committed": false,
+  "dry_run": true,
+  "endpoint_outputs_exported": false,
+  "environment": {
+    "approved_noncommercial_research_only": false,
+    "crag_data_configured": false,
+    "crag_data_exists": false,
+    "crag_root_configured": false,
+    "crag_root_exists": false,
+    "local_evaluation_available": false,
+    "mock_api_available": false,
+    "required_paths": {}
+  },
+  "evidence_class": "fresh_live_crag_mock_api_blocked",
+  "query_wording_exported": false,
+  "result_class": "FRESH_CRAG_BLOCKED_NO_APPROVED_DATA",
+  "source_documents_exported": false,
+  "suite": "ragtune_fresh_live_crag_mock_api_behavioral_governance_v1"
+}

@@ -42,3 +42,9 @@ Used as a public corpus-backed confirmatory anchor. Consult the source provider 
 ## RAGBench HotpotQA
 
 Used as context-retrieval evidence. Raw RAGBench data are not redistributed here.
+
+## Fresh Live CRAG And HotpotQA Phase
+
+Fresh live CRAG requires approved noncommercial research-only local access to CRAG and its mock API. This repository does not include raw CRAG queries, source documents, or API responses.
+
+HotpotQA is the preferred alternate public corpus for stronger answer-label and supporting-fact evaluation. This repository does not include raw HotpotQA questions, context paragraphs, or supporting-fact sentences. Reviewers should acquire HotpotQA from the original approved source or Hugging Face into a local data cache, then run the scripts documented in `docs/dataset_acquisition.md`.
