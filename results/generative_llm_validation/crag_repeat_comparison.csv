@@ -1,0 +1,3 @@
+run,result_class,sample_offset,example_count,governed_winner,quality_only_winner,quality_delta_mean,cost_delta_mean,latency_delta_ms_mean
+primary,GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY_CRAG,0,12,pareto_frontier_selector,expanded_retrieval_multi_endpoint,0.016653375863902167,-3.7790000000000004,-5971.851041385283
+repeat,GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG,24,12,expanded_retrieval_multi_endpoint,expanded_retrieval_multi_endpoint,0.0,0.0,0.0

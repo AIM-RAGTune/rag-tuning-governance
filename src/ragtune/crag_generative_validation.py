@@ -30,13 +30,15 @@ def crag_data_file() -> Path | None:
     return path if path.exists() else None
 
 
-def load_crag_rows(max_examples: int) -> list[dict[str, Any]]:
+def load_crag_rows(max_examples: int, *, offset: int = 0) -> list[dict[str, Any]]:
     path = crag_data_file()
     if path is None:
         return []
     rows: list[dict[str, Any]] = []
     with bz2.open(path, "rt", encoding="utf-8") as handle:
-        for line in handle:
+        for idx, line in enumerate(handle):
+            if idx < offset:
+                continue
             if len(rows) >= max_examples:
                 break
             rows.append(json.loads(line))
@@ -144,9 +146,10 @@ def choose_winners(summaries: list[dict[str, object]]) -> tuple[str, str, list[s
 def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, object]:
     assert discovery.generator is not None
     max_examples = int(os.environ.get("RAGTUNE_CRAG_GEN_MAX_EXAMPLES", "4"))
+    sample_offset = int(os.environ.get("RAGTUNE_CRAG_GEN_OFFSET", "0"))
     max_tokens = int(os.environ.get("RAGTUNE_GENERATOR_MAX_TOKENS", "48"))
     timeout_s = float(os.environ.get("RAGTUNE_GENERATOR_TIMEOUT_S", "120"))
-    rows = load_crag_rows(max_examples)
+    rows = load_crag_rows(max_examples, offset=sample_offset)
     result_rows: list[dict[str, object]] = []
     for row in rows:
         split = split_for_row(row)
@@ -244,9 +247,14 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
         if diagnostics["usable_quality_signal"]
         else "CRAG_GENERATED_QUALITY_BLOCKED_NO_USABLE_SIGNAL"
     )
+    evidence_class = (
+        "crag_generative_validation_sanitized_bounded_repeat"
+        if sample_offset
+        else "crag_generative_validation_sanitized_bounded_sample"
+    )
     stats = {
         "suite": "ragtune_crag_generative_llm_validation_v1",
-        "evidence_class": "crag_generative_validation_sanitized_bounded_sample",
+        "evidence_class": evidence_class,
         "result_class": result_class,
         "generator_provider": discovery.provider,
         "generator_model": discovery.model,
@@ -266,6 +274,8 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
         "api_call_delta": simple_ci(api_deltas),
         "generation_rows": len(result_rows),
         "example_count": len(rows),
+        "sample_offset": sample_offset,
+        "sample_strategy": "deterministic_contiguous_offset",
         "quality_signal_audit_result_class": diagnostics["quality_signal_audit_result_class"],
         "prior_zero_delta_explanation": diagnostics["prior_zero_delta_explanation"],
         "non_empty_generated_answers": diagnostics["non_empty_generated_answers"],

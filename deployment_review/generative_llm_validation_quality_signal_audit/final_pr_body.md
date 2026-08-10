@@ -1,6 +1,6 @@
 ## Summary
 
-Increases the CRAG generative validation sample after the qwen3:8b answer-emission repair, reruns the local Ollama CRAG generated-answer evaluation, and updates synthesis to reflect bounded directional CRAG evidence with HotpotQA still inconclusive.
+Adds an independent deterministic CRAG generative repeat after the larger qwen3:8b run, compares whether the cost-at-equivalent-generated-quality result persists, and downgrades synthesis to mixed because the repeat did not reproduce the cost result.
 
 ## HotpotQA quality-signal audit
 
@@ -44,17 +44,31 @@ Increases the CRAG generative validation sample after the qwen3:8b answer-emissi
 - Cost delta: -3.7790000000 [-3.8808000000, -3.7257000000]
 - Latency delta: -5971.8510413853 ms [-8768.2858742774, -5159.1000836343]
 
+## Independent CRAG repeat
+
+- Repeat type: deterministic non-overlapping CRAG offset slice
+- Repeat sample offset: 24
+- Repeat sample size: 12 examples / 132 policy-generation rows
+- Repeat result class: `GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG`
+- Repeat governed winner: `expanded_retrieval_multi_endpoint`
+- Repeat quality-only winner: `expanded_retrieval_multi_endpoint`
+- Repeat RAG Compass rank: 3
+- Repeat generated-quality delta: 0.0 [0.0, 0.0]
+- Repeat cost delta: 0.0 [0.0, 0.0]
+- Repeat latency delta: 0.0 [0.0, 0.0]
+- Repeat comparison result: `CRAG_GEN_LLM_COST_RESULT_NOT_REPLICATED`
+
 ## Synthesis
 
-- Result class: `GEN_LLM_SYNTHESIS_DIRECTIONAL`
-- Interpretation: CRAG produced bounded local generative support for reduced measured cost at equivalent generated-answer quality, while HotpotQA remained inconclusive.
+- Result class: `GEN_LLM_SYNTHESIS_MIXED`
+- Interpretation: The primary CRAG slice produced generative support, but an independent deterministic CRAG repeat did not reproduce the cost result; HotpotQA remained inconclusive.
 
 ## Validation
 
 - publication validator: passed
-- pytest: 69 passed
+- pytest: 70 passed
 - make validate-publication: passed
-- make test: 69 passed
+- make test: 70 passed
 - compile: passed
 - raw prompt/generated-answer scan: expected sanitizer/test/field-name references only
 - raw dataset text scan: expected sanitizer/test/field-name references only

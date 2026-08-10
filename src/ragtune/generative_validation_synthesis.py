@@ -40,6 +40,11 @@ def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[s
     )
     crag_class = str(crag.get("result_class", ""))
     hotpotqa_class = str(hotpotqa.get("result_class", ""))
+    repeat_comparison = load_result(
+        root / "results/generative_llm_validation/crag_repeat_comparison.json",
+        "",
+    )
+    repeat_comparison_class = str(repeat_comparison.get("result_class", ""))
     crag_usable = bool(crag.get("usable_quality_signal", crag_class in POSITIVE))
     hotpotqa_usable = bool(hotpotqa.get("usable_quality_signal", hotpotqa_class in POSITIVE))
     crag_positive = crag_class in POSITIVE and crag_usable
@@ -47,6 +52,9 @@ def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[s
     if "NO_GENERATOR" in crag_class and "NO_GENERATOR" in hotpotqa_class:
         result_class = "GEN_LLM_SYNTHESIS_BLOCKED"
         interpretation = "No pinned local or hosted generator was available, so generative validation remains blocked."
+    elif repeat_comparison_class == "CRAG_GEN_LLM_COST_RESULT_NOT_REPLICATED":
+        result_class = "GEN_LLM_SYNTHESIS_MIXED"
+        interpretation = "The primary CRAG slice produced generative support, but an independent deterministic CRAG repeat did not reproduce the cost result."
     elif crag_positive and hotpotqa_positive:
         result_class = "GEN_LLM_SYNTHESIS_GENERATIVE_VALIDATION_SUPPORTED"
         interpretation = "Both datasets produced generative validation support."
@@ -67,6 +75,7 @@ def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[s
         "prior_frozen_crag_behavioral_result": "GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY",
         "fresh_live_crag_proxy_result": "FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY",
         "hotpotqa_non_generative_result": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS",
+        "crag_repeat_comparison_result": repeat_comparison_class,
         "interpretation": interpretation,
         "unsupported_claims": [
             "official platform benchmarking",
@@ -101,7 +110,14 @@ No raw prompts, raw generated answers, raw dataset questions, raw source documen
 """
     for filename in ["synthesis_report.md", "paper_ready_summary.md", "executive_summary.md"]:
         write_md(output_root / filename, report)
-    if result_class == "GEN_LLM_SYNTHESIS_DIRECTIONAL":
+    if result_class == "GEN_LLM_SYNTHESIS_MIXED":
+        limitation_text = (
+            "Generative validation is currently mixed bounded local evidence. The primary CRAG slice produced "
+            "a cost-reduction signal, but an independent deterministic CRAG repeat did not reproduce it, and "
+            "HotpotQA remained inconclusive. This is not broad generative validation, not official platform "
+            "benchmarking, not human validation, and not production readiness."
+        )
+    elif result_class == "GEN_LLM_SYNTHESIS_DIRECTIONAL":
         limitation_text = (
             "Generative validation is currently bounded local evidence. One dataset produced generative "
             "support while the other did not. This is not broad generative validation, not official "

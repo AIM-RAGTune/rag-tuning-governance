@@ -117,6 +117,18 @@ def test_synthesis_downgrades_invalid_quality_signal() -> None:
         assert synthesis["result_class"] != "GEN_LLM_SYNTHESIS_GENERATIVE_VALIDATION_SUPPORTED"
 
 
+def test_crag_repeat_comparison_result_class_machine_readable() -> None:
+    comparison = load_json("results/generative_llm_validation/crag_repeat_comparison.json")
+    assert comparison["result_class"] in {
+        "CRAG_GEN_LLM_COST_RESULT_PERSISTED_IN_INDEPENDENT_REPEAT",
+        "CRAG_GEN_LLM_COST_RESULT_NOT_REPLICATED",
+        "CRAG_GEN_LLM_COST_RESULT_DIRECTIONAL_REPEAT_ONLY",
+        "CRAG_GEN_LLM_COST_RESULT_INCONCLUSIVE",
+    }
+    assert comparison["raw_prompts_committed"] is False
+    assert comparison["raw_generated_answers_committed"] is False
+
+
 def test_no_official_platform_benchmark_claim_from_local_generator() -> None:
     docs = (ROOT / "docs/generative_llm_validation.md").read_text(encoding="utf-8").lower()
     assert "official platform benchmarking completed" not in docs

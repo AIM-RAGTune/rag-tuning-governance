@@ -1,11 +1,12 @@
 {
+  "crag_repeat_comparison_result": "CRAG_GEN_LLM_COST_RESULT_NOT_REPLICATED",
   "crag_result_class": "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY_CRAG",
   "fresh_live_crag_proxy_result": "FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY",
   "hotpotqa_non_generative_result": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS",
   "hotpotqa_result_class": "GEN_LLM_GOVERNANCE_INCONCLUSIVE",
-  "interpretation": "One dataset produced generative support while the other did not.",
+  "interpretation": "The primary CRAG slice produced generative support, but an independent deterministic CRAG repeat did not reproduce the cost result.",
   "prior_frozen_crag_behavioral_result": "GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY",
-  "result_class": "GEN_LLM_SYNTHESIS_DIRECTIONAL",
+  "result_class": "GEN_LLM_SYNTHESIS_MIXED",
   "suite": "ragtune_generative_llm_validation_synthesis_v1",
   "unsupported_claims": [
     "official platform benchmarking",
