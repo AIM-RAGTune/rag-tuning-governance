@@ -228,9 +228,42 @@ def test_llama3_guarded_latency_offsets_are_quality_protective() -> None:
         assert stats["usable_quality_signal"] is True
         assert stats["result_class"] == "GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG"
         assert stats["raw_generated_answers_committed"] is False
-    comparison = load_json("results/generative_llm_validation/crag_stability_comparison.json")
-    assert comparison["result_class"] == "CRAG_GEN_LLM_LATENCY_RESULT_INCONCLUSIVE_ACROSS_REPEATS"
-    assert comparison["positive_latency_result_count"] == 0
+
+
+def test_llama3_learned_risk_predictor_offsets_are_validation_gated() -> None:
+    positive_latency = 0
+    quality_loss = 0
+    for offset in ["0", "24", "36", "60"]:
+        stats = load_json(f"artifacts/generative_llm_validation/crag_llama3_2_3b_learned_guarded_latency_offset_{offset}/primary_outcome_statistics.json")
+        predictor = stats["quality_risk_predictor"]
+        assert stats["generator_model"] == "llama3.2:3b"
+        assert stats["primary_endpoint"] == "latency"
+        assert stats["selector_design"] == "validation_learned_deployable_quality_risk_predictor_vs_quality_only_high_evidence_confirmatory_eval"
+        assert stats["quality_risk_predictor_gate_passed"] is True
+        assert stats["quality_risk_predictor_deployable_features_only"] is True
+        assert stats["quality_risk_predictor_raw_text_features_used"] is False
+        assert predictor["predictor_result_class"] == "CRAG_GEN_LLM_RISK_PREDICTOR_VALIDATION_GATE_PASSED"
+        assert float(predictor["validation_expansion_rate"]) < float(predictor["old_guardrail_validation_expansion_rate"])
+        assert float(predictor["validation_generated_quality_delta_vs_expanded"]) >= -0.01
+        assert int(predictor["validation_unprotected_quality_risk_count"]) == 0
+        assert stats["raw_generated_answers_committed"] is False
+        assert stats["raw_prompts_committed"] is False
+        if stats["result_class"] == "GEN_LLM_GOVERNANCE_REDUCES_LATENCY_AT_EQUIVALENT_GENERATED_QUALITY_CRAG":
+            positive_latency += 1
+        if stats["result_class"] == "GEN_LLM_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS_CRAG":
+            quality_loss += 1
+    assert positive_latency == 1
+    assert quality_loss == 2
+
+
+def test_crag_learned_risk_predictor_comparison_is_mixed() -> None:
+    comparison = load_json("results/generative_llm_validation/crag_learned_quality_risk_predictor_comparison.json")
+    assert comparison["result_class"] == "CRAG_GEN_LLM_LEARNED_RISK_PREDICTOR_LATENCY_MIXED_CONFIRMATORY_QUALITY_LOSS"
+    assert comparison["predictor_gate_passed_count"] == 4
+    assert comparison["positive_latency_result_count"] == 1
+    assert comparison["quality_loss_result_count"] == 2
+    assert comparison["raw_text_features_used"] is False
+    assert comparison["raw_generated_answers_committed"] is False
 
 
 def test_crag_generative_selector_uses_deployable_validation_candidates() -> None:
@@ -244,9 +277,12 @@ def test_crag_generative_selector_uses_deployable_validation_candidates() -> Non
 def test_crag_generative_latency_guardrail_is_predeclared() -> None:
     source = (ROOT / "src/ragtune/crag_generative_validation.py").read_text(encoding="utf-8")
     assert "QUALITY_GUARDED_LATENCY_POLICY" in source
+    assert "LEARNED_QUALITY_RISK_LATENCY_POLICY" in source
     assert "quality_guarded_latency_adaptive_expansion" in source
+    assert "learned_quality_risk_latency_adaptive_expansion" in source
     assert "RAGTUNE_CRAG_GEN_LATENCY_GUARDRAIL" in source
     assert "validation_split_quality_only_high_evidence_vs_quality_guarded_latency_confirmatory_eval" in source
+    assert "validation_learned_deployable_quality_risk_predictor_vs_quality_only_high_evidence_confirmatory_eval" in source
     assert "expand to five" in source
 
 

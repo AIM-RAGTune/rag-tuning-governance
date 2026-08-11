@@ -6,6 +6,6 @@ CRAG generative result: `GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED
 
 HotpotQA generative result: `GEN_LLM_GOVERNANCE_INCONCLUSIVE`
 
-Interpretation: The primary CRAG slice produced generative support, an independent deterministic CRAG repeat did not reproduce the cost result, and the latest latency-endpoint fixed-offset comparison was inconclusive.
+Interpretation: CRAG generative latency reduction was mixed across independent deterministic repeats. The earlier cost-reduction result was not recovered by a second pinned local generator. A faster non-thinking instruct model repaired answer emission; the follow-up latency-endpoint selector comparison was mixed across fixed offsets. A validation-trained deployable quality-risk predictor reduced expansions, but confirmatory quality protection did not persist across fixed offsets.
 
 No raw prompts, raw generated answers, raw dataset questions, raw source documents, secrets, or private local paths are included.
