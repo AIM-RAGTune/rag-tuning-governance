@@ -1,6 +1,7 @@
 {
   "crag_answer_emission_model_comparison_result": "CRAG_GEN_LLM_ANSWER_EMISSION_REPAIRED_NO_COST_RESULT",
   "crag_learned_quality_risk_predictor_comparison_result": "CRAG_GEN_LLM_LEARNED_RISK_PREDICTOR_LATENCY_MIXED_CONFIRMATORY_QUALITY_LOSS",
+  "crag_quality_risk_guardrail_v2_comparison_result": "CRAG_GEN_LLM_QUALITY_RISK_GUARDRAIL_V2_BLOCKED_HELDOUT_QUALITY_LOSS",
   "crag_repeat_comparison_result": "CRAG_GEN_LLM_COST_RESULT_NOT_REPLICATED",
   "crag_result_class": "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY_CRAG",
   "crag_second_model_comparison_result": "CRAG_GEN_LLM_COST_RESULT_MIXED_OR_INCONCLUSIVE_ACROSS_MODELS",
@@ -8,7 +9,7 @@
   "fresh_live_crag_proxy_result": "FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY",
   "hotpotqa_non_generative_result": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS",
   "hotpotqa_result_class": "GEN_LLM_GOVERNANCE_INCONCLUSIVE",
-  "interpretation": "CRAG generative latency reduction was mixed across independent deterministic repeats. The earlier cost-reduction result was not recovered by a second pinned local generator. A faster non-thinking instruct model repaired answer emission; the follow-up latency-endpoint selector comparison was mixed across fixed offsets. A validation-trained deployable quality-risk predictor reduced expansions, but confirmatory quality protection did not persist across fixed offsets.",
+  "interpretation": "CRAG generative latency reduction was mixed across independent deterministic repeats. The earlier cost-reduction result was not recovered by a second pinned local generator. A faster non-thinking instruct model repaired answer emission; the follow-up latency-endpoint selector comparison was mixed across fixed offsets. A validation-trained deployable quality-risk predictor reduced expansions, but confirmatory quality protection did not persist across fixed offsets. A pooled cross-offset quality-risk guardrail v2 was tested on held-out offsets and blocked promotion after held-out generated-quality loss.",
   "prior_frozen_crag_behavioral_result": "GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY",
   "result_class": "GEN_LLM_SYNTHESIS_MIXED",
   "suite": "ragtune_generative_llm_validation_synthesis_v1",
