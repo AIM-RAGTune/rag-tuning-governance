@@ -55,3 +55,6 @@ The current generative result is small-sample local evidence and is not stable a
 - `results/generative_llm_validation/`
 
 Public artifacts contain hashes, counts, model identifiers, policy identifiers, and metrics only.
+## Readiness Package Update
+
+The open-source/arXiv readiness package preserves the generative synthesis as `GEN_LLM_SYNTHESIS_MIXED`. It adds a public mini reproduction, CRAG evaluator-mapping diagnostics, selector ablations, external evaluator input adapters, and sanitized AIM hardware characterization, but does not claim stable generative cost or latency superiority.

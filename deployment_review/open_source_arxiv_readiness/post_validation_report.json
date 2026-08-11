@@ -1,0 +1,41 @@
+{
+  "repository_path": "<repo>",
+  "starting_commit": "37e0a997b8e7510e444961d9026ed419859eddeb",
+  "branch": "codex/open-source-arxiv-readiness",
+  "validator_result": "passed",
+  "pytest_result": "124 passed",
+  "make_validate_publication_result": "passed",
+  "make_test_result": "124 passed",
+  "compile_result": "passed",
+  "diff_check_result": "passed",
+  "large_file_scan_result": "only ignored .local_data cache exceeded 50 MB; no tracked public artifact exceeded threshold",
+  "raw_text_scan_result": "passed after manual inspection; hits were scanner definitions, sanitizer field names, hashes, and explicit false flags",
+  "secret_scan_result": "passed after manual inspection; hits were scanner definitions and environment-variable names, not secret values",
+  "private_path_scan_result": "passed after manual inspection; hits were existing scripts/placeholders, not new public artifact paths",
+  "overclaim_scan_result": "passed after manual inspection; hits were explicit unsupported-claim statements",
+  "public_mini_reproduction_result": "PUBLIC_MINI_REPRODUCTION_FAIL_CLOSED",
+  "hotpotqa_audit_result": "HOTPOTQA_GEN_LLM_QUALITY_SIGNAL_CONFIRMED",
+  "hotpotqa_sample_size": 12,
+  "hotpotqa_configured_larger_sample_target": 600,
+  "crag_evaluator_mapping_result": "CRAG_GENERATED_QUALITY_LOCAL_EVALUATOR_ACTIVE",
+  "external_evaluator_adapter_result": "EXTERNAL_EVALUATOR_ADAPTER_PROMOTION_DECISION_GENERATED",
+  "selector_ablation_result": "SELECTOR_ABLATION_GOVERNANCE_BLOCKS_UNSAFE_SELECTORS",
+  "aim_hardware_characterization_result": "AIM_HARDWARE_CHARACTERIZATION_COMPLETED",
+  "open_source_arxiv_readiness_synthesis_result": "OPEN_SOURCE_ARXIV_READINESS_SUPPORTED_WITH_BOUNDARIES",
+  "claims_now_supported": [
+    "public mini reproduction",
+    "external evaluator input adapter interoperability",
+    "selector ablation matrix over sanitized summaries",
+    "local AIM hardware characterization",
+    "open-source/arXiv readiness with boundaries"
+  ],
+  "claims_still_unsupported": [
+    "RAG Compass superiority",
+    "stable generative cost or latency superiority",
+    "broad generative governance superiority",
+    "human validation",
+    "official platform benchmarking",
+    "production readiness",
+    "hallucination elimination"
+  ]
+}

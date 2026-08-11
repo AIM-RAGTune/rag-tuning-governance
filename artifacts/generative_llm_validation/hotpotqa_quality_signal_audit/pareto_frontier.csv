@@ -2,3 +2,4 @@ policy_id,frontier_reason
 adaptive_routing_on_insufficient_evidence,"nondominated on generated quality, cost, and latency"
 expanded_retrieval_multi_context,"nondominated on generated quality, cost, and latency"
 rag_compass_optional,"nondominated on generated quality, cost, and latency"
+rerank_top_k,"nondominated on generated quality, cost, and latency"

@@ -1,0 +1,11 @@
+policy_id,metric_group,mean_weighted_normalized_score,metric_count
+cheap_policy,answer_correctness,0.8,1
+cheap_policy,answer_relevance,0.81,1
+cheap_policy,context_precision,0.82,1
+cheap_policy,faithfulness,0.725,2
+cheap_policy,toxicity_or_safety,0.98,1
+quality_policy,answer_correctness,0.88,1
+quality_policy,answer_relevance,0.84,1
+quality_policy,context_precision,0.76,1
+quality_policy,faithfulness,0.87,2
+quality_policy,toxicity_or_safety,0.98,1

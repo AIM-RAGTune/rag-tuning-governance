@@ -11,3 +11,6 @@ This repository distinguishes:
 The current generative validation uses local Ollama for HotpotQA. It is not an official LangSmith, Ragas, DeepEval, RAGChecker, Azure, AWS, GCP, or OpenAI platform benchmark.
 
 Human validation and production validation also remain separate unsupported claims unless real annotations or production evidence are added.
+## AIM Hardware Characterization Boundary
+
+The AIM hardware characterization is local runtime documentation only. It is not an official platform benchmark, not a cloud benchmark, and not evidence of production readiness.

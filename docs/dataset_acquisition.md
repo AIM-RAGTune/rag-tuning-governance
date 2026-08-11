@@ -47,3 +47,8 @@ python3 scripts/run_generative_llm_validation_synthesis.py --force
 ```
 
 Raw prompts and generated answers are local-only under `.local_data/`. Public artifacts include hashes, counts, model identifiers, policy identifiers, and metrics.
+## Mini Reproduction Data
+
+The public mini reproduction uses synthetic in-code examples and therefore requires no dataset acquisition.
+
+The external evaluator adapter demo also uses synthetic sanitized evaluator rows. Full CRAG and HotpotQA experiments still require approved local data acquisition outside the public repository.

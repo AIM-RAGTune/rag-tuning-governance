@@ -1,0 +1,31 @@
+{
+  "metric_count": 12,
+  "normalized_schema": [
+    "example_id",
+    "query_hash",
+    "policy_id",
+    "dataset_id",
+    "evaluator_name",
+    "metric_name",
+    "metric_value",
+    "metric_direction",
+    "metric_weight",
+    "metric_group",
+    "split",
+    "source_artifact_hash"
+  ],
+  "promotion_decision_generated": true,
+  "raw_contexts_committed": false,
+  "raw_questions_committed": false,
+  "raw_traces_used": false,
+  "result_class": "EXTERNAL_EVALUATOR_ADAPTER_PROMOTION_DECISION_GENERATED",
+  "selected_policy": "quality_policy",
+  "suite": "ragtune_external_evaluator_adapters_v1",
+  "supported_inputs": [
+    "generic_jsonl",
+    "generic_csv",
+    "ragas_like_export",
+    "deepeval_like_export"
+  ],
+  "tool_replacement_claimed": false
+}

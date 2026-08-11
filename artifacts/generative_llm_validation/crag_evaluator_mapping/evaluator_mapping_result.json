@@ -1,0 +1,19 @@
+{
+  "generated_answers_scored_locally": true,
+  "generation_rows_checked": 132,
+  "local_evaluator_available": true,
+  "mapping_result_class": "CRAG_GENERATED_QUALITY_LOCAL_EVALUATOR_ACTIVE",
+  "mean_evidence_support_score": 0.19696969696969696,
+  "mean_generated_quality_score": 0.13942381190343406,
+  "private_paths_exported": false,
+  "public_outputs_hashes_and_scores_only": true,
+  "quality_signal_nonconstant": true,
+  "quality_signal_usable": true,
+  "raw_api_responses_committed": false,
+  "raw_crag_text_committed": false,
+  "raw_generated_answers_committed": false,
+  "raw_generated_answers_required_for_public_artifacts": false,
+  "raw_query_text_required_for_public_artifacts": false,
+  "raw_text_exported": false,
+  "suite": "ragtune_crag_generated_answer_evaluator_mapping_v1"
+}

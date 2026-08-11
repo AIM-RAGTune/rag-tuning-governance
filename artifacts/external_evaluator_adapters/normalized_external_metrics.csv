@@ -1,0 +1,13 @@
+example_id,query_hash,policy_id,dataset_id,evaluator_name,metric_name,metric_value,metric_direction,metric_weight,metric_group,split,source_artifact_hash
+ex_001,hash_001,quality_policy,ragas_export,ragas,answer_correctness,0.88,maximize,1.0,answer_correctness,validation,
+ex_001,hash_001,quality_policy,ragas_export,ragas,faithfulness,0.86,maximize,1.0,faithfulness,validation,
+ex_001,hash_001,quality_policy,ragas_export,ragas,context_precision,0.76,maximize,1.0,context_precision,validation,
+ex_001,hash_001,cheap_policy,ragas_export,ragas,answer_correctness,0.8,maximize,1.0,answer_correctness,validation,
+ex_001,hash_001,cheap_policy,ragas_export,ragas,faithfulness,0.72,maximize,1.0,faithfulness,validation,
+ex_001,hash_001,cheap_policy,ragas_export,ragas,context_precision,0.82,maximize,1.0,context_precision,validation,
+ex_002,hash_002,quality_policy,deepeval_export,deepeval,answer_relevancy_score,0.84,maximize,1.0,answer_relevance,validation,
+ex_002,hash_002,quality_policy,deepeval_export,deepeval,faithfulness_score,0.88,maximize,1.0,faithfulness,validation,
+ex_002,hash_002,quality_policy,deepeval_export,deepeval,toxicity_score,0.02,minimize,1.0,toxicity_or_safety,validation,
+ex_002,hash_002,cheap_policy,deepeval_export,deepeval,answer_relevancy_score,0.81,maximize,1.0,answer_relevance,validation,
+ex_002,hash_002,cheap_policy,deepeval_export,deepeval,faithfulness_score,0.73,maximize,1.0,faithfulness,validation,
+ex_002,hash_002,cheap_policy,deepeval_export,deepeval,toxicity_score,0.02,minimize,1.0,toxicity_or_safety,validation,

@@ -1,12 +1,15 @@
 {
+  "configured_larger_sample_target": 600,
   "diagnostics_path": "artifacts/generative_llm_validation/hotpotqa_quality_signal_audit/quality_signal_diagnostics.csv",
   "generation_rows": 96,
   "generator_model": "qwen3:8b",
   "generator_provider": "ollama",
-  "non_empty_generated_answers": 2,
+  "larger_sample_status": "actual_generation_rows_recorded; target remains bounded and publication-safe",
+  "larger_sample_target_met": false,
+  "non_empty_generated_answers": 96,
   "primary_result_class": "GEN_LLM_GOVERNANCE_INCONCLUSIVE",
   "prior_zero_delta_explanation": "generated answers and configured quality scores vary across the audited sample",
-  "quality_variance": 0.024150548562885805,
+  "quality_variance": 0.03388860908882467,
   "raw_contexts_committed": false,
   "raw_generated_answers_committed": false,
   "raw_prompts_committed": false,
@@ -16,5 +19,5 @@
   "sample_size": 12,
   "secrets_committed": false,
   "suite": "ragtune_hotpotqa_generative_quality_signal_audit_v1",
-  "unique_answer_hash_count": 2
+  "unique_answer_hash_count": 39
 }

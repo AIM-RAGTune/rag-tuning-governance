@@ -1,0 +1,10 @@
+selector,dataset_or_suite,selected_policy,quality_delta,cost_delta,latency_delta,api_call_delta,quality_loss_rate,blocked_rate,promotion_rate,inconclusive_rate,heldout_stability,result_class
+quality_only,cross_artifact_sanitized_summary,varies_by_input,,,,,0.0,0.0,1.0,0.0,available,SELECTOR_BASELINE_AVAILABLE
+cost_only,cross_artifact_sanitized_summary,varies_by_input,,,,,1.0,1.0,0.0,0.0,blocked,SELECTOR_BLOCKED_QUALITY_LOSS
+latency_only,cross_artifact_sanitized_summary,varies_by_input,,,,,0.75,0.75,0.0,0.0,blocked,SELECTOR_MIXED_HELDOUT_QUALITY_LOSS
+random_eligible,cross_artifact_sanitized_summary,varies_by_input,,,,,0.0,0.0,1.0,0.0,available,SELECTOR_BASELINE_AVAILABLE
+static_default,cross_artifact_sanitized_summary,varies_by_input,,,,,0.0,0.0,1.0,0.0,available,SELECTOR_BASELINE_AVAILABLE
+rag_compass_optional,cross_artifact_sanitized_summary,varies_by_input,,,,,0.0,0.0,1.0,0.0,available,SELECTOR_BASELINE_AVAILABLE
+governed_noninferiority_selector,cross_artifact_sanitized_summary,varies_by_input,,,,,0.0,0.0,1.0,0.0,available,PUBLIC_MINI_REPRODUCTION_FAIL_CLOSED
+risk_guarded_selector,cross_artifact_sanitized_summary,varies_by_input,,,,,0.75,0.75,0.0,0.0,blocked,CRAG_GEN_LLM_QUALITY_RISK_GUARDRAIL_V2_BLOCKED_HELDOUT_QUALITY_LOSS
+oracle_ceiling,cross_artifact_sanitized_summary,varies_by_input,,,,,0.0,0.0,1.0,0.0,available,ORACLE_CEILING_NOT_DEPLOYABLE

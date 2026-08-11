@@ -1,0 +1,20 @@
+{
+  "cpu_model_sanitized": "arm64",
+  "elapsed_ms": 7.177,
+  "generator_model_id": "not_configured",
+  "generator_provider": "not_configured",
+  "gpu_count": "",
+  "gpu_names_sanitized": [],
+  "hostnames_exported": false,
+  "ip_addresses_exported": false,
+  "mac_addresses_exported": false,
+  "machine_role": "local_validation_node",
+  "official_platform_benchmark": false,
+  "os_family": "Darwin",
+  "private_paths_exported": false,
+  "public_label": "AIM local validation node",
+  "python_version": "3.13.5",
+  "ram_gb": 0.0,
+  "result_class": "AIM_HARDWARE_CHARACTERIZATION_COMPLETED",
+  "suite": "ragtune_aim_hardware_characterization_v1"
+}
