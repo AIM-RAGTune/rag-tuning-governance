@@ -1,0 +1,4 @@
+selector,winner,reason
+governed_selection,quality_guarded_latency_adaptive_expansion,validation quality-risk guarded latency policy with lowest latency within generated-quality noninferiority margin
+quality_only_best_on_validation,expanded_retrieval_multi_endpoint,highest validation generated quality among predeclared high-evidence quality-only candidates; ignores cost and latency
+constrained_quality_optimizer,quality_guarded_latency_adaptive_expansion,deployment-aware validation selector over deployable policies

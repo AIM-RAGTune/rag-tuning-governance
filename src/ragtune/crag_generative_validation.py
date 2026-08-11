@@ -21,6 +21,7 @@ from ragtune.generative_validation_common import (
 from ragtune.generators.factory import discover_generator
 from ragtune.publication_sanitization import stable_hash
 
+QUALITY_GUARDED_LATENCY_POLICY = "quality_guarded_latency_adaptive_expansion"
 DEPLOYABLE_CRAG_GENERATIVE_POLICIES = {
     "low_retrieval_single_endpoint",
     "expanded_retrieval_multi_endpoint",
@@ -28,10 +29,16 @@ DEPLOYABLE_CRAG_GENERATIVE_POLICIES = {
     "static_default_policy",
     "rag_compass_optional",
 }
+GUARDED_LATENCY_CRAG_GENERATIVE_POLICIES = {
+    QUALITY_GUARDED_LATENCY_POLICY,
+    "adaptive_routing_on_insufficient_evidence",
+    "rag_compass_optional",
+}
 QUALITY_ONLY_CRAG_GENERATIVE_POLICIES = {
     "expanded_retrieval_multi_endpoint",
     "quality_only_best_on_validation",
 }
+CRAG_GENERATIVE_POLICIES = list(CRAG_LIVE_POLICIES) + [QUALITY_GUARDED_LATENCY_POLICY]
 
 
 def crag_data_file() -> Path | None:
@@ -66,6 +73,19 @@ def split_for_row(row: dict[str, Any]) -> str:
     return "confirmatory_test"
 
 
+def row_references(row: dict[str, Any]) -> list[str]:
+    references = [str(row.get("answer", ""))] + [str(value) for value in row.get("alt_ans", [])]
+    return [value for value in references if value]
+
+
+def evidence_supports_references(items: list[dict[str, Any]], references: list[str]) -> bool:
+    evidence_text = " ".join(
+        f"{item.get('page_name', '')} {item.get('page_snippet', '')} {item.get('page_result', '')}"
+        for item in items
+    )
+    return any(containment(evidence_text, ref) > 0.0 for ref in references)
+
+
 def select_crag_evidence(row: dict[str, Any], policy_id: str) -> tuple[list[dict[str, str]], float, float]:
     results = list(row.get("search_results", []))
     if policy_id in {"low_retrieval_single_endpoint", "measured_cost_minimizer_at_quality_floor"}:
@@ -84,6 +104,11 @@ def select_crag_evidence(row: dict[str, Any], policy_id: str) -> tuple[list[dict
         selected = results[:2]
     elif policy_id == "rag_compass_optional":
         selected = sorted(results, key=lambda item: stable_hash(str(item.get("page_name", ""))))[:3]
+    elif policy_id == QUALITY_GUARDED_LATENCY_POLICY:
+        references = row_references(row)
+        selected = results[:2]
+        if references and not evidence_supports_references(selected, references):
+            selected = results[:5]
     else:
         selected = results[:2]
     evidence = [
@@ -195,15 +220,16 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
     primary_endpoint = os.environ.get("RAGTUNE_CRAG_GEN_PRIMARY_ENDPOINT", "cost").strip().lower()
     if primary_endpoint not in {"cost", "latency"}:
         primary_endpoint = "cost"
+    latency_guardrail = os.environ.get("RAGTUNE_CRAG_GEN_LATENCY_GUARDRAIL", "").strip().lower()
+    guardrail_enabled = primary_endpoint == "latency" and latency_guardrail in {"quality_risk", "quality_risk_adaptive_expansion", "true", "1", "yes", "on"}
     rows = load_crag_rows(max_examples, offset=sample_offset)
     result_rows: list[dict[str, object]] = []
     empty_answer_retry_count = 0
     empty_answer_retry_success_count = 0
     for row in rows:
         split = split_for_row(row)
-        references = [str(row.get("answer", ""))] + [str(value) for value in row.get("alt_ans", [])]
-        references = [value for value in references if value]
-        for policy_id in CRAG_LIVE_POLICIES:
+        references = row_references(row)
+        for policy_id in CRAG_GENERATIVE_POLICIES:
             evidence_items, retrieval_cost, context_tokens = select_crag_evidence(row, policy_id)
             prompt, prompt_hash = build_rag_prompt(question_text=str(row["query"]), evidence_items=evidence_items)
             generation = discovery.generator.generate(
@@ -301,13 +327,14 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
     validation_selection_rows = [row for row in result_rows if row["split"] == "validation"]
     if not validation_selection_rows:
         validation_selection_rows = [row for row in result_rows if row["split"] == "calibration"] or result_rows
-    selection_policy_ids = DEPLOYABLE_CRAG_GENERATIVE_POLICIES | QUALITY_ONLY_CRAG_GENERATIVE_POLICIES
+    governed_policy_ids = {QUALITY_GUARDED_LATENCY_POLICY} if guardrail_enabled else DEPLOYABLE_CRAG_GENERATIVE_POLICIES
+    selection_policy_ids = governed_policy_ids | QUALITY_ONLY_CRAG_GENERATIVE_POLICIES
     selection_summaries = summarize_policy(validation_selection_rows, policy_ids=selection_policy_ids)
     governed, quality_only, constrained, frontier = choose_winners(
         selection_summaries,
         primary_endpoint=primary_endpoint,
         quality_only_policy_ids=QUALITY_ONLY_CRAG_GENERATIVE_POLICIES,
-        governed_policy_ids=DEPLOYABLE_CRAG_GENERATIVE_POLICIES,
+        governed_policy_ids=governed_policy_ids,
     )
     confirmatory = [row for row in result_rows if row["split"] == "confirmatory_test"]
     if not confirmatory:
@@ -357,10 +384,37 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
         "generator_provider": discovery.provider,
         "generator_model": discovery.model,
         "primary_endpoint": primary_endpoint,
-        "selector_design": "validation_split_quality_only_high_evidence_vs_governed_latency_feasible_confirmatory_eval",
+        "selector_design": (
+            "validation_split_quality_only_high_evidence_vs_quality_guarded_latency_confirmatory_eval"
+            if guardrail_enabled
+            else "validation_split_quality_only_high_evidence_vs_governed_latency_feasible_confirmatory_eval"
+        ),
         "selector_candidate_policy_count": len(selection_summaries),
         "selector_candidate_policies": [str(row["policy_id"]) for row in selection_summaries],
+        "governed_candidate_policies": sorted(governed_policy_ids),
         "quality_only_candidate_policies": sorted(QUALITY_ONLY_CRAG_GENERATIVE_POLICIES),
+        "quality_risk_guardrail_enabled": guardrail_enabled,
+        "quality_risk_guardrail_policy": QUALITY_GUARDED_LATENCY_POLICY if guardrail_enabled else "",
+        "quality_risk_guardrail_rule": (
+            "start with two evidence items and expand to five when local CRAG answer/alternate-answer containment is absent"
+            if guardrail_enabled
+            else ""
+        ),
+        "quality_risk_guardrail_expansion_count": sum(
+            1
+            for row in result_rows
+            if row["policy_id"] == QUALITY_GUARDED_LATENCY_POLICY and int(row["api_call_count"]) > 2
+        ),
+        "quality_risk_guardrail_expansion_rate": (
+            sum(
+                1
+                for row in result_rows
+                if row["policy_id"] == QUALITY_GUARDED_LATENCY_POLICY and int(row["api_call_count"]) > 2
+            )
+            / max(1, sum(1 for row in result_rows if row["policy_id"] == QUALITY_GUARDED_LATENCY_POLICY))
+            if guardrail_enabled
+            else 0.0
+        ),
         "generator_available": True,
         "generator_local_or_hosted": discovery.local_or_hosted,
         "quality_metric_class": "GENERATED_QUALITY_CRAG_LOCAL_EVALUATOR",
@@ -398,7 +452,15 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
     write_csv(output_root / "per_query_generation_metrics.csv", GENERATION_FIELDNAMES, result_rows)
     write_csv(output_root / "policy_summary_metrics.csv", ["policy_id", "final_generated_quality_score", "total_cost_units", "total_latency_ms"], summaries)
     write_csv(output_root / "selector_comparison.csv", ["selector", "winner", "reason"], [
-        {"selector": "governed_selection", "winner": governed, "reason": f"validation deployable policy with lowest {primary_endpoint} within generated-quality noninferiority margin"},
+        {
+            "selector": "governed_selection",
+            "winner": governed,
+            "reason": (
+                f"validation quality-risk guarded latency policy with lowest {primary_endpoint} within generated-quality noninferiority margin"
+                if guardrail_enabled
+                else f"validation deployable policy with lowest {primary_endpoint} within generated-quality noninferiority margin"
+            ),
+        },
         {"selector": "quality_only_best_on_validation", "winner": quality_only, "reason": "highest validation generated quality among predeclared high-evidence quality-only candidates; ignores cost and latency"},
         {"selector": "constrained_quality_optimizer", "winner": constrained, "reason": "deployment-aware validation selector over deployable policies"},
     ])

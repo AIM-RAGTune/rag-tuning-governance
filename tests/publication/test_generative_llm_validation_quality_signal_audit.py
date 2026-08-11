@@ -216,12 +216,38 @@ def test_llama3_latency_selector_offsets_separate_winners() -> None:
     assert quality_loss == 3
 
 
+def test_llama3_guarded_latency_offsets_are_quality_protective() -> None:
+    for offset in ["0", "24", "36", "60"]:
+        stats = load_json(f"artifacts/generative_llm_validation/crag_llama3_2_3b_guarded_latency_offset_{offset}/primary_outcome_statistics.json")
+        assert stats["generator_model"] == "llama3.2:3b"
+        assert stats["primary_endpoint"] == "latency"
+        assert stats["quality_risk_guardrail_enabled"] is True
+        assert stats["governed_winner"] == "quality_guarded_latency_adaptive_expansion"
+        assert stats["quality_only_winner"] == "expanded_retrieval_multi_endpoint"
+        assert stats["non_empty_generated_answers"] == stats["generation_rows"]
+        assert stats["usable_quality_signal"] is True
+        assert stats["result_class"] == "GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG"
+        assert stats["raw_generated_answers_committed"] is False
+    comparison = load_json("results/generative_llm_validation/crag_stability_comparison.json")
+    assert comparison["result_class"] == "CRAG_GEN_LLM_LATENCY_RESULT_INCONCLUSIVE_ACROSS_REPEATS"
+    assert comparison["positive_latency_result_count"] == 0
+
+
 def test_crag_generative_selector_uses_deployable_validation_candidates() -> None:
     source = (ROOT / "src/ragtune/crag_generative_validation.py").read_text(encoding="utf-8")
     assert "DEPLOYABLE_CRAG_GENERATIVE_POLICIES" in source
     assert "QUALITY_ONLY_CRAG_GENERATIVE_POLICIES" in source
     assert "validation_split_quality_only_high_evidence_vs_governed_latency_feasible_confirmatory_eval" in source
     assert "RAGTUNE_CRAG_GEN_PRIMARY_ENDPOINT" in source
+
+
+def test_crag_generative_latency_guardrail_is_predeclared() -> None:
+    source = (ROOT / "src/ragtune/crag_generative_validation.py").read_text(encoding="utf-8")
+    assert "QUALITY_GUARDED_LATENCY_POLICY" in source
+    assert "quality_guarded_latency_adaptive_expansion" in source
+    assert "RAGTUNE_CRAG_GEN_LATENCY_GUARDRAIL" in source
+    assert "validation_split_quality_only_high_evidence_vs_quality_guarded_latency_confirmatory_eval" in source
+    assert "expand to five" in source
 
 
 def test_no_official_platform_benchmark_claim_from_local_generator() -> None:
