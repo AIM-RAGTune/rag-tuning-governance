@@ -1,9 +1,12 @@
 check,status,detail
 dockerfile_exists,PASS,Dockerfile
 dockerfile_has_entrypoint_or_cmd,PASS,ENTRYPOINT or CMD
+dockerfile_has_oci_labels,PASS,OCI labels
 dockerfile_sets_container_env,PASS,RAGTUNE_CONTAINER=1
+dockerfile_disables_pip_cache,PASS,PIP_NO_CACHE_DIR=1
 dockerfile_supports_outputs,PASS,/outputs
-dockerfile_non_root,PASS,USER ragtune
+dockerfile_fixed_non_root_uid,PASS,fixed non-root user
+dockerfile_has_stopsignal,PASS,STOPSIGNAL
 dockerfile_no_local_data_copy,PASS,.local_data absent
 dockerfile_no_git_copy,PASS,no broad copy
 dockerfile_copies_gitattributes,PASS,.gitattributes
@@ -16,6 +19,11 @@ dockerignore_excludes_env,PASS,.env patterns
 dockerignore_excludes_key_files,PASS,key patterns
 dockerignore_excludes_large_artifacts,PASS,large data/model patterns
 compose_public_mini_exists,PASS,docker/compose.public-mini.yml
+compose_network_disabled,PASS,network_mode none
+compose_read_only_rootfs,PASS,read_only
+compose_no_new_privileges,PASS,no-new-privileges
+compose_cap_drop_all,PASS,cap_drop ALL
+compose_has_resource_limits,PASS,resource limits
 docker_helper_scripts_exist,PASS,helper scripts
 makefile_docker_targets,PASS,Makefile targets
 public_mini_job_config,PASS,job config

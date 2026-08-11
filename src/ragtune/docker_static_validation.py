@@ -30,12 +30,16 @@ def validate_docker_static(root: Path, *, output_root: Path) -> dict[str, Any]:
     docker_text = dockerfile.read_text(encoding="utf-8") if dockerfile.exists() else ""
     ignore_text = dockerignore.read_text(encoding="utf-8") if dockerignore.exists() else ""
     make_text = makefile.read_text(encoding="utf-8") if makefile.exists() else ""
+    compose_text = (root / "docker/compose.public-mini.yml").read_text(encoding="utf-8") if (root / "docker/compose.public-mini.yml").exists() else ""
     checks = [
         ("dockerfile_exists", dockerfile.exists(), "Dockerfile"),
         ("dockerfile_has_entrypoint_or_cmd", "ENTRYPOINT" in docker_text or "CMD" in docker_text, "ENTRYPOINT or CMD"),
+        ("dockerfile_has_oci_labels", "org.opencontainers.image.title" in docker_text, "OCI labels"),
         ("dockerfile_sets_container_env", "RAGTUNE_CONTAINER=1" in docker_text, "RAGTUNE_CONTAINER=1"),
+        ("dockerfile_disables_pip_cache", "PIP_NO_CACHE_DIR=1" in docker_text, "PIP_NO_CACHE_DIR=1"),
         ("dockerfile_supports_outputs", "/outputs" in docker_text, "/outputs"),
-        ("dockerfile_non_root", re.search(r"^USER\s+\w+", docker_text, re.M) is not None, "USER ragtune"),
+        ("dockerfile_fixed_non_root_uid", "--uid 10001" in docker_text and re.search(r"^USER\s+\w+", docker_text, re.M) is not None, "fixed non-root user"),
+        ("dockerfile_has_stopsignal", "STOPSIGNAL SIGTERM" in docker_text, "STOPSIGNAL"),
         ("dockerfile_no_local_data_copy", ".local_data" not in docker_text, ".local_data absent"),
         ("dockerfile_no_git_copy", "COPY . " not in docker_text and not re.search(r"\.git(?:/|\s|$)", docker_text), "no broad copy"),
         ("dockerfile_copies_gitattributes", ".gitattributes" in docker_text, ".gitattributes"),
@@ -48,6 +52,11 @@ def validate_docker_static(root: Path, *, output_root: Path) -> dict[str, Any]:
         ("dockerignore_excludes_key_files", "*.key" in ignore_text and "*.pem" in ignore_text, "key patterns"),
         ("dockerignore_excludes_large_artifacts", "*.safetensors" in ignore_text and "*.onnx" in ignore_text and "*.arrow" in ignore_text, "large data/model patterns"),
         ("compose_public_mini_exists", (root / "docker/compose.public-mini.yml").exists(), "docker/compose.public-mini.yml"),
+        ("compose_network_disabled", 'network_mode: "none"' in compose_text, "network_mode none"),
+        ("compose_read_only_rootfs", "read_only: true" in compose_text, "read_only"),
+        ("compose_no_new_privileges", "no-new-privileges:true" in compose_text, "no-new-privileges"),
+        ("compose_cap_drop_all", "cap_drop:" in compose_text and "ALL" in compose_text, "cap_drop ALL"),
+        ("compose_has_resource_limits", "pids_limit:" in compose_text and "mem_limit:" in compose_text and "cpus:" in compose_text, "resource limits"),
         ("docker_helper_scripts_exist", all((root / path).exists() for path in ["docker/run_public_mini.sh", "docker/run_governance_job.sh", "docker/healthcheck.sh"]), "helper scripts"),
         ("makefile_docker_targets", all(target in make_text for target in ["docker-build", "docker-validate", "docker-run-public-mini", "docker-compose-public-mini"]), "Makefile targets"),
         ("public_mini_job_config", (root / "configs/jobs/public_mini_governance_job.yaml").exists(), "job config"),

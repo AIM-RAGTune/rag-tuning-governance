@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import shutil
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -18,11 +19,17 @@ SECURITY_SCAN_RESULT_CLASSES = {
 
 
 def run_optional_container_security_scans(root: Path, *, output_root: Path) -> dict[str, Any]:
-    tools = ["hadolint", "trivy", "grype", "syft"]
+    tools = ["hadolint", "trivy", "grype", "syft", "docker_scout"]
     rows: list[dict[str, Any]] = []
     available = 0
     for tool in tools:
-        present = shutil.which(tool) is not None
+        if tool == "docker_scout":
+            present = (
+                shutil.which("docker") is not None
+                and subprocess.run(["docker", "scout", "version"], cwd=root, capture_output=True, text=True, check=False).returncode == 0
+            )
+        else:
+            present = shutil.which(tool) is not None
         available += 1 if present else 0
         rows.append({"tool": tool, "status": "AVAILABLE_NOT_RUN" if present else "SKIPPED_TOOL_UNAVAILABLE", "detail": "optional scanner"})
     result_class = "CONTAINER_SECURITY_SCANS_SKIPPED_TOOLS_UNAVAILABLE" if available == 0 else "CONTAINER_SECURITY_SCANS_PARTIAL"

@@ -18,6 +18,18 @@ def test_dockerfile_has_entrypoint() -> None:
     assert 'ENTRYPOINT ["ragtune"]' in (ROOT / "Dockerfile").read_text(encoding="utf-8")
 
 
+def test_dockerfile_uses_fixed_non_root_uid() -> None:
+    text = (ROOT / "Dockerfile").read_text(encoding="utf-8")
+    assert "--uid 10001" in text
+    assert "USER ragtune" in text
+
+
+def test_dockerfile_has_runtime_metadata_and_stopsignal() -> None:
+    text = (ROOT / "Dockerfile").read_text(encoding="utf-8")
+    assert "org.opencontainers.image.title" in text
+    assert "STOPSIGNAL SIGTERM" in text
+
+
 def test_dockerfile_supports_outputs_mount() -> None:
     assert "/outputs" in (ROOT / "Dockerfile").read_text(encoding="utf-8")
 
@@ -29,6 +41,21 @@ def test_dockerfile_does_not_copy_local_data() -> None:
 def test_docker_compose_public_mini_exists() -> None:
     assert (ROOT / "docker/compose.public-mini.yml").exists()
     assert (ROOT / "docker-compose.yml").exists()
+
+
+def test_docker_compose_public_mini_is_hardened() -> None:
+    text = (ROOT / "docker/compose.public-mini.yml").read_text(encoding="utf-8")
+    for expected in [
+        'network_mode: "none"',
+        "read_only: true",
+        "no-new-privileges:true",
+        "cap_drop:",
+        "ALL",
+        "pids_limit:",
+        "mem_limit:",
+        "cpus:",
+    ]:
+        assert expected in text
 
 
 def test_docker_helper_scripts_exist() -> None:

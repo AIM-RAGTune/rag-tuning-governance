@@ -26,8 +26,20 @@ RAGTune can run as a local containerized governance job. RAGTune is not the chat
 ```bash
 docker build -t ragtune:local .
 mkdir -p docker_outputs
-docker run --rm -v "$(pwd)/docker_outputs:/outputs" ragtune:local run-governance-job --config configs/jobs/public_mini_governance_job.yaml --output-root /outputs --decision-out /outputs/promotion_decision.json
+docker run --rm \
+  --network none \
+  --read-only \
+  --tmpfs /tmp:rw,noexec,nosuid,size=64m \
+  --security-opt no-new-privileges \
+  --cap-drop ALL \
+  --pids-limit 256 \
+  --memory 1g \
+  --cpus 2 \
+  -v "$(pwd)/docker_outputs:/outputs" \
+  ragtune:local run-governance-job --config configs/jobs/public_mini_governance_job.yaml --output-root /outputs --decision-out /outputs/promotion_decision.json
 ```
+
+The smoke-test runner validates the same hardened runtime posture: no container network, read-only root filesystem, writable `/outputs` mount only, tmpfs `/tmp`, `no-new-privileges`, all Linux capabilities dropped, and bounded CPU, memory, and process counts.
 
 ## Docker Compose
 

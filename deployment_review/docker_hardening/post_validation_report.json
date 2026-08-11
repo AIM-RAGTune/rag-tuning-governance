@@ -15,7 +15,7 @@
   },
   "docker_static_validation": {
     "result_class": "DOCKER_STATIC_VALIDATION_PASSED",
-    "checks_passed": 21,
+    "checks_passed": 29,
     "checks_failed": 0
   },
   "container_smoke_test": {
@@ -27,8 +27,21 @@
     "public_mini_job_result": "PASS",
     "docker_compose_public_mini_result": "PASS"
   },
+  "hardened_runtime_flags": {
+    "network_none": true,
+    "read_only_root_filesystem": true,
+    "tmpfs_tmp": true,
+    "no_new_privileges": true,
+    "cap_drop_all": true,
+    "pids_limit": 256,
+    "memory_limit": "1g",
+    "cpus": "2"
+  },
   "optional_security_scans": {
-    "result_class": "CONTAINER_SECURITY_SCANS_SKIPPED_TOOLS_UNAVAILABLE",
+    "result_class": "CONTAINER_SECURITY_SCANS_PARTIAL",
+    "tools_available": 1,
+    "docker_scout_available": true,
+    "image_scan_completed": false,
     "critical_findings": 0
   },
   "deployment_readiness": {

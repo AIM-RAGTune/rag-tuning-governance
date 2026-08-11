@@ -22,10 +22,12 @@ The local runtime path completed after Docker Desktop was started and the Docker
 ## Static Docker Validation
 
 - Result class: `DOCKER_STATIC_VALIDATION_PASSED`
-- Checks passed: 21 / 21
+- Checks passed: 29 / 29
 - Checks failed: 0
 
 Static checks cover the Dockerfile, `.dockerignore`, Docker Compose public-mini path, helper scripts, Makefile Docker targets, public-mini job config, promotion decision schema, and Docker documentation boundaries.
+
+Additional hardening checks cover OCI image labels, fixed non-root UID, explicit stop signal, disabled pip cache, no-network execution, read-only root filesystem, tmpfs `/tmp`, no-new-privileges, dropped Linux capabilities, and bounded process, memory, and CPU limits.
 
 ## Container Smoke Test
 
@@ -37,12 +39,15 @@ Static checks cover the Dockerfile, `.dockerignore`, Docker Compose public-mini 
 - Public-mini governance job in container: passed
 - Docker Compose public-mini: passed
 
+The validated runtime uses no network, a read-only root filesystem, tmpfs `/tmp`, `no-new-privileges`, all Linux capabilities dropped, process limit `256`, memory limit `1g`, CPU limit `2`, and writable `/outputs` as the only mounted output path.
+
 ## Optional Security Scans
 
-- Result class: `CONTAINER_SECURITY_SCANS_SKIPPED_TOOLS_UNAVAILABLE`
+- Result class: `CONTAINER_SECURITY_SCANS_PARTIAL`
+- Docker Scout plugin: available, not run
 - Critical findings: 0
 
-Optional scanners were not installed locally. Their absence is recorded as skipped and does not upgrade or weaken the runtime validation claim.
+Most optional scanners were not installed locally. Docker Scout was detected as available, but no large scanner output or SBOM was committed. Optional scanner availability does not upgrade the runtime validation claim.
 
 ## Deployment Readiness
 

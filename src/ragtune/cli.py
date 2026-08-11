@@ -137,7 +137,11 @@ def cmd_run_governance_job(args: argparse.Namespace) -> int:
     artifacts: list[str] = []
     mini_result: dict[str, object] | None = None
     if "public_mini_reproduction" in steps:
-        mini_result = run_public_mini_reproduction(ROOT, output_root=output_root / "public_mini_reproduction")
+        mini_result = run_public_mini_reproduction(
+            ROOT,
+            output_root=output_root / "public_mini_reproduction",
+            write_repository_results=False,
+        )
         artifacts.append("public_mini_reproduction/mini_reproduction_manifest.json")
     if "selector_ablation" in steps:
         run_selector_ablation_matrix(ROOT, output_root=output_root / "selector_ablation_matrix")
