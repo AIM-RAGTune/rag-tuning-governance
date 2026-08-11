@@ -1,0 +1,19 @@
+{
+  "buildx_available": true,
+  "colima_cli_present": false,
+  "colima_ready": false,
+  "docker_cli_present": true,
+  "docker_compose_legacy_available": true,
+  "docker_compose_plugin_available": true,
+  "docker_daemon_available": false,
+  "docker_socket_user_access": false,
+  "hostnames_exported": false,
+  "ip_addresses_exported": false,
+  "nerdctl_cli_present": false,
+  "podman_cli_present": false,
+  "podman_ready": false,
+  "private_paths_exported": false,
+  "result_class": "CONTAINER_RUNTIME_CLI_PRESENT_DAEMON_UNAVAILABLE",
+  "schema_version": "1.0",
+  "secrets_exported": false
+}

@@ -1,0 +1,19 @@
+{
+  "docker_build_result": "not_run",
+  "docker_compose_public_mini_result": "not_run",
+  "docker_public_mini_result": "not_run",
+  "docker_validate_result": "not_run",
+  "engine_selected": "docker",
+  "live_cloud_validation_claimed": false,
+  "official_platform_benchmarking_claimed": false,
+  "private_paths_committed": false,
+  "production_readiness_claimed": false,
+  "raw_data_committed": false,
+  "raw_generated_answers_committed": false,
+  "raw_prompts_committed": false,
+  "result_class": "CONTAINER_RUNTIME_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE",
+  "schema_version": "1.0",
+  "secrets_committed": false,
+  "skip_reason": "container CLI present but usable daemon/machine unavailable",
+  "static_validation_required": true
+}

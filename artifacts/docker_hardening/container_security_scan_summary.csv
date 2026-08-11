@@ -1,0 +1,5 @@
+tool,status,detail
+hadolint,SKIPPED_TOOL_UNAVAILABLE,optional scanner
+trivy,SKIPPED_TOOL_UNAVAILABLE,optional scanner
+grype,SKIPPED_TOOL_UNAVAILABLE,optional scanner
+syft,SKIPPED_TOOL_UNAVAILABLE,optional scanner

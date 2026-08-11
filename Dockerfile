@@ -2,6 +2,8 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# RAGTune runs as a finite governance job: read configs, write /outputs,
+# emit promotion_decision.json, validate claim boundaries, then exit.
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV RAGTUNE_CONTAINER=1
@@ -26,6 +28,8 @@ RUN pip install --no-cache-dir -r requirements.txt \
     && chown -R ragtune:ragtune /outputs /inputs /configs /data /app
 
 USER ragtune
+
+HEALTHCHECK --interval=5m --timeout=30s --start-period=30s --retries=1 CMD ["ragtune", "inspect-environment"]
 
 ENTRYPOINT ["ragtune"]
 CMD ["--help"]

@@ -125,6 +125,8 @@ Deployment examples are included for Docker Compose, GitHub Actions, Kubernetes 
 
 Deployment-readiness result: `DEPLOYMENT_READINESS_SUPPORTED_WITH_BOUNDARIES`. Live cloud execution is marked `NOT_RUN_NO_CREDENTIALS`; the examples do not claim official cloud platform benchmarking or production operation.
 
+Docker runtime hardening adds static Docker validation and a smoke-test runner for the public-mini governance job. If Docker daemon access is unavailable, the smoke-test result is explicitly skipped rather than fabricated. See `docs/docker_runtime_validation.md`.
+
 ## Key Results
 
 See `results/run_index.csv`, `results/evidence_summary.json`, and `results/claim_status/claim_status_table.csv`.

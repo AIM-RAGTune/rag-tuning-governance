@@ -30,3 +30,5 @@ The job always writes a local `promotion_decision.json` before attempting any op
 ## Boundary
 
 The templates in this repository are deployment examples and portability checks. They are not official Azure, AWS, GCP, Kubernetes, or GitHub performance benchmarks.
+
+Container runtime validation is local Docker/Podman validation only. It validates the public-mini governance job when an engine is available and records a skip when the daemon or engine is unavailable.

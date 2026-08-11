@@ -1,0 +1,12 @@
+{
+  "checks_passed": 17,
+  "checks_total": 17,
+  "failures": [],
+  "live_cloud_validation_claimed": false,
+  "private_paths_committed": false,
+  "production_readiness_claimed": false,
+  "raw_data_committed": false,
+  "result_class": "DOCKER_STATIC_VALIDATION_PASSED",
+  "schema_version": "1.0",
+  "secrets_committed": false
+}

@@ -1,0 +1,71 @@
+{
+  "repository_path": "<public-ragtune-repository>",
+  "branch": "codex/docker-runtime-hardening",
+  "starting_commit": "f9a67ac89bfe75b0dcd286d5b9bc22c839ee317f",
+  "post_validation_commit": "<created-after-validation>",
+  "runtime_diagnostics": {
+    "result_class": "CONTAINER_RUNTIME_CLI_PRESENT_DAEMON_UNAVAILABLE",
+    "docker_cli_present": true,
+    "docker_daemon_available": false,
+    "docker_compose_plugin_available": true,
+    "docker_compose_legacy_available": true,
+    "podman_ready": false,
+    "colima_ready": false,
+    "buildx_available": true
+  },
+  "docker_static_validation": {
+    "result_class": "DOCKER_STATIC_VALIDATION_PASSED",
+    "checks_passed": 17,
+    "checks_failed": 0
+  },
+  "container_smoke_test": {
+    "result_class": "CONTAINER_RUNTIME_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE",
+    "skip_reason": "container CLI present but usable daemon/machine unavailable",
+    "docker_build_result": "not_run",
+    "container_help_result": "not_run",
+    "container_validate_bundle_result": "not_run",
+    "public_mini_job_result": "not_run",
+    "docker_compose_public_mini_result": "not_run"
+  },
+  "optional_security_scans": {
+    "result_class": "CONTAINER_SECURITY_SCANS_SKIPPED_TOOLS_UNAVAILABLE",
+    "critical_findings": 0
+  },
+  "deployment_readiness": {
+    "result_class": "DEPLOYMENT_READINESS_SUPPORTED_WITH_BOUNDARIES",
+    "cloud_templates_ready": true,
+    "live_cloud_execution": "not_run_no_credentials",
+    "production_readiness_claimed": false,
+    "official_platform_benchmarking_claimed": false
+  },
+  "validation": {
+    "publication_validator": "passed",
+    "pytest_publication": "169 passed",
+    "make_validate_publication": "passed",
+    "make_test": "169 passed",
+    "compileall": "passed",
+    "git_diff_check": "passed"
+  },
+  "hygiene_scans": {
+    "large_file_scan": "passed_for_tracked_files; ignored .local_data cache file present locally",
+    "raw_text_scan": "passed_with_expected_sanitized_field_names_scanner_patterns_and_false_flags",
+    "secret_scan": "passed_with_expected_env_var_names_scanner_patterns_and local-not-secret placeholder only",
+    "private_path_scan": "passed_with_expected_negative-test-string-only",
+    "overclaim_scan": "passed_with_explicit_unsupported_claim_statements_and_scanner_definitions"
+  },
+  "publication_boundaries": {
+    "raw_crag_questions_committed": false,
+    "raw_evidence_committed": false,
+    "raw_api_responses_committed": false,
+    "raw_prompts_committed": false,
+    "raw_generated_answers_committed": false,
+    "secrets_committed": false,
+    "private_paths_committed": false,
+    "live_cloud_validation_claimed": false,
+    "official_platform_benchmarking_claimed": false,
+    "production_readiness_claimed": false,
+    "rag_compass_superiority_claimed": false,
+    "human_validation_claimed": false
+  },
+  "github_actions_readiness": "ready_to_push_and_run_ci"
+}

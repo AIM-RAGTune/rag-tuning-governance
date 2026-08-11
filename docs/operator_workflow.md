@@ -21,3 +21,13 @@ ragtune run-governance-job \
 ```
 
 Operators should not commit mounted raw datasets, local evaluator inputs, prompts, generated answers, API responses, secrets, or private paths.
+
+For Docker runtime checks:
+
+```bash
+python3 scripts/diagnose_container_runtime.py --output-root artifacts/docker_hardening --force
+python3 scripts/validate_docker_static.py --output-root artifacts/docker_hardening --force
+python3 scripts/run_container_smoke_tests.py --config configs/experiments/ragtune_container_smoke_tests_v1.yaml --output-root artifacts/docker_hardening --force
+```
+
+If the smoke test is skipped because the daemon is unavailable, static validation still documents the container contract.

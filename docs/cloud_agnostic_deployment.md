@@ -21,3 +21,5 @@ ragtune run-governance-job --config /configs/job.yaml --output-root /outputs --d
 Cloud-specific templates are examples for operator adaptation. They intentionally use placeholders for image names, storage buckets, registries, service accounts, identities, and regions. No cloud credentials are committed, and live cloud execution is not claimed by this repository.
 
 The deployment-readiness validator checks that examples are present and publication-safe. It marks live cloud runs as `NOT_RUN_NO_CREDENTIALS` unless operator-provided evidence exists.
+
+Docker runtime hardening adds container-engine diagnostics, static Docker validation, and a public-mini smoke-test runner. If the local daemon is unavailable, the smoke-test runner records an explicit skip while preserving static validation.

@@ -1,0 +1,2 @@
+step,status,detail
+runtime,SKIP,container CLI present but usable daemon/machine unavailable

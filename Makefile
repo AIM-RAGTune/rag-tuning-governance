@@ -1,4 +1,4 @@
-.PHONY: setup test reproduce-crag reproduce-multihop reproduce-public-mini tables figures validate-publication validate-deployment-readiness docker-build docker-validate docker-run-public-mini docker-run-external-evaluator-demo clean
+.PHONY: setup test reproduce-crag reproduce-multihop reproduce-public-mini tables figures validate-publication validate-deployment-readiness docker-build docker-validate docker-run-public-mini docker-compose-public-mini docker-run-external-evaluator-demo clean
 
 setup:
 	pip install -r requirements.txt
@@ -39,9 +39,15 @@ docker-validate:
 	docker run --rm ragtune-governance:local validate-bundle
 
 docker-run-public-mini:
+	mkdir -p docker_outputs
 	docker run --rm -v "$$(pwd)/docker_outputs:/outputs" ragtune-governance:local run-governance-job --config configs/jobs/public_mini_governance_job.yaml --output-root /outputs --decision-out /outputs/promotion_decision.json
 
+docker-compose-public-mini:
+	mkdir -p docker_outputs
+	docker compose -f docker/compose.public-mini.yml up --build --abort-on-container-exit --exit-code-from ragtune-public-mini
+
 docker-run-external-evaluator-demo:
+	mkdir -p docker_outputs
 	docker run --rm -v "$$(pwd)/docker_outputs:/outputs" ragtune-governance:local run-external-evaluator-demo --output-root /outputs/external_evaluator_adapters
 
 package-for-approval:

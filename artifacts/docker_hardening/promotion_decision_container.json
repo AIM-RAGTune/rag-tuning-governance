@@ -1,0 +1,6 @@
+{
+  "decision": "INCONCLUSIVE",
+  "decision_reason": "container runtime validation did not produce a runtime promotion decision",
+  "result_class": "CONTAINER_RUNTIME_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE",
+  "schema_version": "1.0"
+}
