@@ -16,6 +16,9 @@ dependencies = [
   "pytest",
 ]
 
+[project.scripts]
+ragtune = "ragtune.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 

@@ -1,0 +1,12 @@
+name: Example AWS ECS Or Batch
+on:
+  workflow_dispatch:
+jobs:
+  validate-container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build local image
+        run: docker build -t ragtune-governance:ci .
+      - name: Run publication check
+        run: docker run --rm ragtune-governance:ci validate-bundle

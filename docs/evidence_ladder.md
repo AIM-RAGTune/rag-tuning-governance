@@ -47,3 +47,7 @@ This level would require stronger independent reproduction and validation layers
 ## Open-Source Readiness Layer
 
 The current open-source readiness layer adds a public mini reproduction, external evaluator input adapters, selector ablations, CRAG evaluator-mapping diagnostics, and local AIM hardware characterization. This strengthens reproducibility and tooling maturity without changing the conservative generative synthesis, which remains mixed.
+
+## Deployment Readiness Layer
+
+The deployment-readiness layer adds a CLI, container contract, Docker and Docker Compose support, cloud example templates, artifact storage abstractions, machine-readable promotion decisions, and validator checks. It strengthens operational portability of the governance engine but does not move scientific evidence to a higher validation level by itself.

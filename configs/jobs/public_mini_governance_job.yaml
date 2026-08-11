@@ -1,0 +1,16 @@
+suite: ragtune_cloud_agnostic_governance_job_v1
+run_id: public_mini_governance_job
+steps:
+  - public_mini_reproduction
+run_publication_validator: true
+inputs:
+  require_crag_raw_data: false
+  require_hotpotqa_raw_data: false
+  require_generator_credentials: false
+outputs:
+  decision_out: promotion_decision.json
+claim_boundaries:
+  rag_compass_superiority: unsupported
+  human_validation: unsupported
+  official_platform_benchmarking: unsupported
+  production_readiness: unsupported

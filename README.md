@@ -101,6 +101,30 @@ The local AIM hardware characterization records sanitized runtime and artifact-s
 
 The readiness synthesis is `OPEN_SOURCE_ARXIV_READINESS_SUPPORTED_WITH_BOUNDARIES`: the repo has a public mini reproduction path, strict validator checks, external evaluator adapters, selector ablations, sanitized local hardware characterization, and preserved negative/mixed generative evidence. See `docs/open_source_arxiv_readiness.md`.
 
+## Cloud-Agnostic Deployment Readiness
+
+RAGTune now has a deployable open-source governance-job contract. The CLI can run a finite job that starts, evaluates or imports policy metrics, writes audit artifacts, emits `promotion_decision.json`, validates publication claim boundaries, and exits.
+
+Quick local command:
+
+```bash
+python3 -m ragtune.cli run-governance-job \
+  --config configs/jobs/public_mini_governance_job.yaml \
+  --output-root artifacts/public_mini_governance_job \
+  --decision-out artifacts/public_mini_governance_job/promotion_decision.json
+```
+
+Docker command:
+
+```bash
+docker build -t ragtune-governance:local .
+docker run --rm -v "$(pwd)/docker_outputs:/outputs" ragtune-governance:local run-governance-job --config configs/jobs/public_mini_governance_job.yaml --output-root /outputs --decision-out /outputs/promotion_decision.json
+```
+
+Deployment examples are included for Docker Compose, GitHub Actions, Kubernetes Job, Kubernetes CronJob, Azure Container Apps Job, AWS ECS/Fargate, AWS Batch, and Google Cloud Run Job. See `docs/product_contract.md`, `docs/deployment_architecture.md`, `docs/operator_workflow.md`, `docs/cloud_agnostic_deployment.md`, `docs/artifact_storage.md`, and `docs/promotion_decision_schema.md`.
+
+Deployment-readiness result: `DEPLOYMENT_READINESS_SUPPORTED_WITH_BOUNDARIES`. Live cloud execution is marked `NOT_RUN_NO_CREDENTIALS`; the examples do not claim official cloud platform benchmarking or production operation.
+
 ## Key Results
 
 See `results/run_index.csv`, `results/evidence_summary.json`, and `results/claim_status/claim_status_table.csv`.

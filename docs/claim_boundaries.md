@@ -34,3 +34,7 @@ This repository does not grant CRAG redistribution rights. The CRAG mock-API res
 ## Open-Source Readiness Boundary
 
 The open-source/arXiv readiness synthesis supports a systems and methods framing for RAGTune as evidence-preserving governance infrastructure. It does not upgrade mixed generative evidence into broad generative superiority, does not claim RAG Compass superiority, and does not claim human validation, official platform benchmarking, production readiness, or hallucination elimination.
+
+## Deployment Boundary
+
+The cloud-agnostic deployment layer supports RAGTune as a finite open-source governance job with Docker, Docker Compose, GitHub Actions, Kubernetes, Azure, AWS, and GCP example templates. The deployment-readiness result is `DEPLOYMENT_READINESS_SUPPORTED_WITH_BOUNDARIES`: templates and local job contracts are present, but live cloud execution remains `NOT_RUN_NO_CREDENTIALS`. This does not claim official platform benchmarking, human validation, production operation, hallucination elimination, or RAG Compass superiority.

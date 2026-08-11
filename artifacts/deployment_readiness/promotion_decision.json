@@ -1,0 +1,33 @@
+{
+  "artifact_uris": [
+    "artifacts/deployment_readiness/deployment_readiness_manifest.json",
+    "artifacts/deployment_readiness/deployment_target_matrix.csv",
+    "results/deployment_readiness/claim_update.json"
+  ],
+  "baseline_policy": "manual_local_only",
+  "claim_boundaries": {
+    "hallucination_elimination_claimed": false,
+    "human_validation": "unsupported",
+    "human_validation_claimed": false,
+    "official_platform_benchmarking": "unsupported",
+    "official_platform_benchmarking_claimed": false,
+    "production_readiness": "unsupported",
+    "production_readiness_claimed": false,
+    "rag_compass_superiority": "unsupported",
+    "rag_compass_superiority_claimed": false
+  },
+  "cost_delta": 0.0,
+  "decision": "PROMOTE",
+  "decision_reason": "deployment hardening assets are ready with conservative cloud and production claim boundaries",
+  "evidence_support_delta": 0.0,
+  "latency_delta": 0.0,
+  "quality_delta": 0.0,
+  "result_class": "DEPLOYMENT_READINESS_SUPPORTED_WITH_BOUNDARIES",
+  "risk_flags": [],
+  "run_id": "ragtune_deployment_readiness_v1_20260811-public",
+  "schema_version": "1.0",
+  "selected_policy": "deployment_templates",
+  "suite": "ragtune_deployment_readiness_v1",
+  "timestamp_utc": "2026-08-11T17:17:17+00:00",
+  "validator_status": "pending_publication_validator"
+}

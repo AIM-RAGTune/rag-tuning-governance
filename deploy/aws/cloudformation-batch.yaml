@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Example RAGTune AWS Batch job definition
+Parameters:
+  ContainerImage:
+    Type: String
+    Default: ghcr.io/example/ragtune-governance:latest
+Resources:
+  JobDefinition:
+    Type: AWS::Batch::JobDefinition
+    Properties:
+      JobDefinitionName: ragtune-governance-batch
+      Type: container
+      PlatformCapabilities:
+        - FARGATE
+      ContainerProperties:
+        Image: !Ref ContainerImage
+        Command:
+          - run-governance-job
+          - --config
+          - configs/jobs/public_mini_governance_job.yaml
+          - --output-root
+          - /outputs
+          - --decision-out
+          - /outputs/promotion_decision.json
+        ResourceRequirements:
+          - Type: VCPU
+            Value: "1"
+          - Type: MEMORY
+            Value: "2048"

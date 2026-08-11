@@ -1,0 +1,5 @@
+check,status,detail
+required_files,PASS,
+dockerignore,PASS,
+claim_boundaries,PASS,
+cloud_live_runs,NOT_RUN,templates only; no cloud credentials required or used

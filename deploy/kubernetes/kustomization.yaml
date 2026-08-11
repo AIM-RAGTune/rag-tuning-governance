@@ -1,0 +1,5 @@
+resources:
+  - ragtune-configmap.example.yaml
+  - ragtune-pvc.example.yaml
+  - ragtune-job.yaml
+  - ragtune-cronjob.yaml

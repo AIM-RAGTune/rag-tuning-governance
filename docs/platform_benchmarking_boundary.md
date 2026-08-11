@@ -14,3 +14,7 @@ Human validation and production validation also remain separate unsupported clai
 ## AIM Hardware Characterization Boundary
 
 The AIM hardware characterization is local runtime documentation only. It is not an official platform benchmark, not a cloud benchmark, and not evidence of production readiness.
+
+## Cloud Deployment Templates
+
+The Docker, Kubernetes, Azure, AWS, GCP, and GitHub Actions files in `deploy/` are portability templates for the finite RAGTune governance job. They are not platform-native benchmark artifacts and do not imply live cloud validation.

@@ -59,3 +59,7 @@ When generative validation runs, raw prompts and raw generated answers are writt
 The public mini reproduction and external evaluator adapter demo use synthetic in-code data only. They do not require or redistribute CRAG, HotpotQA, raw prompts, raw generated answers, raw source text, or proprietary evaluator traces.
 
 The CRAG evaluator-mapping diagnostics rely on sanitized committed metrics and, when available locally, uncommitted evaluator inputs under a gitignored local data area. The public repository includes only hashes, counts, result classes, and aggregate metrics.
+
+## Deployment Artifacts
+
+Docker images and cloud job templates in this repository are configured for sanitized governance jobs. They do not bundle raw CRAG data, raw HotpotQA data, local generator outputs, prompts, credentials, or local caches. Operators must mount approved local data separately when a job requires it.

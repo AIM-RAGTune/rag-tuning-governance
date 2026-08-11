@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RAGTune Deployment Readiness",
+  "type": "object",
+  "required": ["suite", "result_class", "targets"],
+  "properties": {
+    "suite": {"type": "string"},
+    "result_class": {
+      "enum": [
+        "DEPLOYMENT_READINESS_SUPPORTED_WITH_BOUNDARIES",
+        "DEPLOYMENT_READINESS_PARTIAL",
+        "DEPLOYMENT_READINESS_BLOCKED",
+        "DEPLOYMENT_READINESS_FAILED_HYGIENE"
+      ]
+    },
+    "targets": {"type": "object"}
+  }
+}
