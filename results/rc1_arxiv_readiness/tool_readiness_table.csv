@@ -1,0 +1,10 @@
+tool,status
+fresh_clone,available
+docker_runtime,available
+release_candidate,available
+crag_mapping_v2,available
+hotpotqa_audit_v2,available
+selector_stress_v2,available
+verify_run,available
+external_adapters_v2,available
+aim_hardware_matrix,available

@@ -1,0 +1,9 @@
+policy_id,mean_quality,row_count
+adaptive_routing_on_insufficient_evidence,0.23981481481481481,12
+bm25_high_k,0.28452780145874773,12
+bm25_low_k,0.20481858555387966,12
+expanded_retrieval_multi_context,0.42575373836403246,12
+low_retrieval_single_context,0.23981481481481481,12
+rag_compass_optional,0.40114102564102566,12
+rerank_top_k,0.24372549019607845,12
+static_default_policy,0.13847222222222222,12

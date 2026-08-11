@@ -1,0 +1,5 @@
+check,status,detail
+prior_v1_nonconstant_signal,PASS,CRAG_GENERATED_QUALITY_LOCAL_EVALUATOR_ACTIVE
+current_env_crag_root,BLOCKED,not configured
+current_env_local_evaluator,BLOCKED,not available in current shell
+public_artifact_hygiene,PASS,hashes and scores only

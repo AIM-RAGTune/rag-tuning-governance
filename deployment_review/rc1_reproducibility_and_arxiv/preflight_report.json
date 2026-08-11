@@ -1,0 +1,12 @@
+{
+  "repository_path": "<public-ragtune-repository>",
+  "starting_commit": "3f27039b8470d7b50fcde48d23a8658612421d30",
+  "starting_branch": "main",
+  "working_branch": "codex/rc1-reproducibility-arxiv-hardening",
+  "remote_url": "https://github.com/AIM-RAGTune/rag-tuning-governance-public.git",
+  "working_tree_status": "clean before branch creation",
+  "baseline_publication_validator": "passed",
+  "baseline_pytest_publication": "175 passed",
+  "baseline_deployment_readiness": "DEPLOYMENT_READINESS_SUPPORTED_WITH_BOUNDARIES",
+  "branch_strategy": "created new branch from updated main"
+}

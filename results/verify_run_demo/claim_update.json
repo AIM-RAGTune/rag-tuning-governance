@@ -1,0 +1,10 @@
+{
+  "artifact_count": 0,
+  "hashes_match": false,
+  "private_paths_present": false,
+  "raw_text_files_present": false,
+  "result_class": "VERIFY_RUN_FAILED_MISSING_ARTIFACT",
+  "run_dir_name": "missing",
+  "secret_like_strings_present": false,
+  "suite": "ragtune_verify_run_v1"
+}

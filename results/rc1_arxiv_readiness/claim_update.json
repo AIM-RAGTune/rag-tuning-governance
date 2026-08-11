@@ -1,0 +1,23 @@
+{
+  "ci_status": "local_validation_required_before_merge",
+  "claim_boundary_validator": "strict",
+  "does_not_claim_hallucination_elimination": true,
+  "does_not_claim_human_validation": true,
+  "does_not_claim_official_platform_benchmarking": true,
+  "does_not_claim_production_readiness": true,
+  "does_not_claim_rag_compass_superiority": true,
+  "evidence": {
+    "aim_hardware_matrix": "AIM_HARDWARE_MATRIX_COMPLETED",
+    "crag_mapping_v2": "CRAG_EVALUATOR_MAPPING_V2_ACTIVE_NONCONSTANT_SIGNAL",
+    "docker_runtime": "DOCKER_RUNTIME_VALIDATED_PUBLIC_MINI",
+    "external_adapters_v2": "EXTERNAL_EVALUATOR_ADAPTER_V2_PROMOTION_DECISION_GENERATED",
+    "fresh_clone": "FRESH_CLONE_REPRODUCTION_PASSED_GIT_CLONE",
+    "hotpotqa_audit_v2": "HOTPOTQA_GEN_QUALITY_AUDIT_V2_CONFIRMED_NONCONSTANT_SIGNAL",
+    "release_candidate": "RELEASE_CANDIDATE_READY",
+    "selector_stress_v2": "SELECTOR_ABLATION_STRESS_V2_GOVERNANCE_BLOCKS_UNSAFE_SELECTORS",
+    "verify_run": "VERIFY_RUN_PASSED"
+  },
+  "paper_draft_status": "assembled_scaffold",
+  "result_class": "RC1_ARXIV_READINESS_SUPPORTED_WITH_BOUNDARIES",
+  "suite": "ragtune_rc1_arxiv_readiness_synthesis_v1"
+}

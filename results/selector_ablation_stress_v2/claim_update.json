@@ -1,0 +1,28 @@
+{
+  "input_artifacts": {
+    "crag_evaluator_mapping_v2": "available",
+    "crag_frozen_observation": "available",
+    "external_evaluator_demo": "available",
+    "fresh_crag_live_proxy_only": "available",
+    "guardrail_v2": "available",
+    "hotpotqa_behavioral": "available",
+    "hotpotqa_generative": "available",
+    "hotpotqa_quality_audit_v2": "available",
+    "public_mini": "available"
+  },
+  "rag_compass_superiority_claimed": false,
+  "result_class": "SELECTOR_ABLATION_STRESS_V2_GOVERNANCE_BLOCKS_UNSAFE_SELECTORS",
+  "selectors": [
+    "quality_only",
+    "cost_only",
+    "latency_only",
+    "random_eligible",
+    "static_default",
+    "rag_compass_optional",
+    "governed_noninferiority_selector",
+    "risk_guarded_selector",
+    "oracle_ceiling"
+  ],
+  "suite": "ragtune_selector_ablation_stress_v2",
+  "universal_superiority_claimed": false
+}

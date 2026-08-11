@@ -101,6 +101,29 @@ The local AIM hardware characterization records sanitized runtime and artifact-s
 
 The readiness synthesis is `OPEN_SOURCE_ARXIV_READINESS_SUPPORTED_WITH_BOUNDARIES`: the repo has a public mini reproduction path, strict validator checks, external evaluator adapters, selector ablations, sanitized local hardware characterization, and preserved negative/mixed generative evidence. See `docs/open_source_arxiv_readiness.md`.
 
+## RC1 Reproducibility And arXiv Package
+
+RAGTune is an open-source RAG governance and promotion-control framework. It does not replace RAG evaluation or observability tools; it consumes evaluation metrics and operational telemetry, then emits auditable promotion, rejection, blocked, or inconclusive decisions.
+
+The `v0.1.0-rc1` readiness package adds:
+
+- Fresh clone reproduction: `docs/fresh_clone_reproducibility.md`
+- Docker public-mini run: `docs/docker_runtime_validation.md`
+- Release candidate status: `docs/release_process.md`
+- Verify-run command: `docs/artifact_integrity.md`
+- External evaluator adapters: `docs/external_evaluator_adapters.md`
+- Selector ablation stress test: `docs/selector_ablation_stress_v2.md`
+- AIM hardware matrix: `docs/aim_hardware_matrix.md`
+- arXiv paper draft status: `docs/arxiv_paper_plan.md`
+
+Example integrity check:
+
+```bash
+ragtune verify-run --run-dir artifacts/public_mini_reproduction
+```
+
+The RC1 package preserves unsupported claims explicitly: RAG Compass superiority, stable generative cost/latency superiority, broad generative governance superiority, human validation, official platform benchmarking, production readiness, and hallucination elimination remain unsupported.
+
 ## Cloud-Agnostic Deployment Readiness
 
 RAGTune now has a deployable open-source governance-job contract. The CLI can run a finite job that starts, evaluates or imports policy metrics, writes audit artifacts, emits `promotion_decision.json`, validates publication claim boundaries, and exits.

@@ -1,0 +1,19 @@
+{
+  "available_memory_coarsened": "not_collected",
+  "container_runtime_status": "CONTAINER_RUNTIME_DOCKER_READY",
+  "cpu_architecture": "arm64",
+  "duration_s": 0.057,
+  "gpu_count": 0,
+  "gpu_names_detected": [],
+  "hostnames_exported": false,
+  "ip_addresses_exported": false,
+  "machine_role": "mac-orchestrator",
+  "official_platform_benchmark": false,
+  "os_family": "Darwin",
+  "private_paths_exported": false,
+  "public_machine_label": "AIM local node",
+  "python_version": "3.13.5",
+  "result_class": "AIM_HARDWARE_MATRIX_COMPLETED",
+  "serial_numbers_exported": false,
+  "suite": "ragtune_aim_hardware_matrix_v1"
+}

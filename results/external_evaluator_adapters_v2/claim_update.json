@@ -1,0 +1,19 @@
+{
+  "evaluator_shapes": [
+    "ragas",
+    "deepeval",
+    "langsmith",
+    "phoenix",
+    "generic_csv",
+    "generic_jsonl"
+  ],
+  "normalized_metric_count": 12,
+  "official_integration_claimed": false,
+  "promotion_decision_generated": true,
+  "raw_contexts_committed": false,
+  "raw_questions_committed": false,
+  "result_class": "EXTERNAL_EVALUATOR_ADAPTER_V2_PROMOTION_DECISION_GENERATED",
+  "selected_policy": "quality_policy",
+  "suite": "ragtune_external_evaluator_adapter_demo_v2",
+  "tool_replacement_claimed": false
+}

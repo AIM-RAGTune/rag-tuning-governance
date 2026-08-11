@@ -1,0 +1,3 @@
+policy_id,metric_count,mean_metric_value
+cost_policy,6,0.735
+quality_policy,6,0.7949999999999999
