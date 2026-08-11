@@ -62,6 +62,11 @@ def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[s
         "",
     )
     answer_emission_comparison_class = str(answer_emission_comparison.get("result_class", ""))
+    learned_risk_comparison = load_result(
+        root / "results/generative_llm_validation/crag_learned_quality_risk_predictor_comparison.json",
+        "",
+    )
+    learned_risk_comparison_class = str(learned_risk_comparison.get("result_class", ""))
     crag_usable = bool(crag.get("usable_quality_signal", crag_class in POSITIVE))
     hotpotqa_usable = bool(hotpotqa.get("usable_quality_signal", hotpotqa_class in POSITIVE))
     crag_positive = crag_class in POSITIVE and crag_usable
@@ -102,6 +107,8 @@ def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[s
                 interpretation += " A faster non-thinking instruct model repaired answer emission; the follow-up latency-endpoint selector comparison was mixed across fixed offsets."
             else:
                 interpretation += " A faster non-thinking instruct model repaired answer emission, but still did not recover a stable cost result."
+        if learned_risk_comparison_class:
+            interpretation += " A validation-trained deployable quality-risk predictor reduced expansions, but confirmatory quality protection did not persist across fixed offsets."
     elif repeat_comparison_class == "CRAG_GEN_LLM_COST_RESULT_NOT_REPLICATED":
         result_class = "GEN_LLM_SYNTHESIS_MIXED"
         if stability_comparison_class in {
@@ -148,6 +155,7 @@ def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[s
         "crag_stability_comparison_result": stability_comparison_class,
         "crag_second_model_comparison_result": second_model_comparison_class,
         "crag_answer_emission_model_comparison_result": answer_emission_comparison_class,
+        "crag_learned_quality_risk_predictor_comparison_result": learned_risk_comparison_class,
         "interpretation": interpretation,
         "unsupported_claims": [
             "official platform benchmarking",
@@ -197,6 +205,11 @@ No raw prompts, raw generated answers, raw dataset questions, raw source documen
                 + (
                     ", a faster non-thinking instruct model repaired answer emission and the latency-endpoint selector comparison was mixed across fixed offsets"
                     if answer_emission_comparison_class and stability_endpoint_label == "latency" and stability_comparison_class != "CRAG_GEN_LLM_LATENCY_RESULT_INCONCLUSIVE_ACROSS_REPEATS"
+                    else ""
+                )
+                + (
+                    ", and a validation-trained deployable quality-risk predictor reduced expansions but did not reliably prevent confirmatory generated-quality loss"
+                    if learned_risk_comparison_class
                     else ""
                 )
                 + (", a faster non-thinking instruct model repaired answer emission but still did not recover a stable cost result" if answer_emission_comparison_class and stability_endpoint_label != "latency" else "")

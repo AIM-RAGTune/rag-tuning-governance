@@ -1,0 +1,4 @@
+selector,winner,reason
+governed_selection,learned_quality_risk_latency_adaptive_expansion,validation-trained deployable quality-risk predictor allowed learned guarded latency rerun with lowest latency within generated-quality noninferiority margin
+quality_only_best_on_validation,expanded_retrieval_multi_endpoint,highest validation generated quality among predeclared high-evidence quality-only candidates; ignores cost and latency
+constrained_quality_optimizer,learned_quality_risk_latency_adaptive_expansion,deployment-aware validation selector over deployable policies

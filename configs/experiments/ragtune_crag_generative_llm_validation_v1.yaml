@@ -31,6 +31,25 @@ selector:
   latency_guardrail_env: RAGTUNE_CRAG_GEN_LATENCY_GUARDRAIL
   quality_risk_guardrail_policy: quality_guarded_latency_adaptive_expansion
   quality_risk_guardrail_rule: start with two evidence items and expand to five when local CRAG answer/alternate-answer containment is absent
+  learned_quality_risk_guardrail_policy: learned_quality_risk_latency_adaptive_expansion
+  learned_quality_risk_guardrail_rule: learn a deployable expansion rule from validation generated-quality loss and rerun only if it reduces expansions while preserving validation noninferiority
+  learned_quality_risk_allowed_features:
+    - domain
+    - question_type
+    - static_or_dynamic
+    - result_count
+    - low_context_item_count
+    - low_context_token_count
+    - low_context_char_count
+    - expanded_context_token_count
+    - expanded_context_char_count
+    - low_title_hash_diversity
+  learned_quality_risk_disallowed_features:
+    - raw_question_text
+    - raw_answer_text
+    - raw_source_text
+    - raw_api_response
+    - generated_answer_text
   export_raw_guardrail_text: false
 
 output:

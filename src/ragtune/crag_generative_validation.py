@@ -22,6 +22,7 @@ from ragtune.generators.factory import discover_generator
 from ragtune.publication_sanitization import stable_hash
 
 QUALITY_GUARDED_LATENCY_POLICY = "quality_guarded_latency_adaptive_expansion"
+LEARNED_QUALITY_RISK_LATENCY_POLICY = "learned_quality_risk_latency_adaptive_expansion"
 DEPLOYABLE_CRAG_GENERATIVE_POLICIES = {
     "low_retrieval_single_endpoint",
     "expanded_retrieval_multi_endpoint",
@@ -31,6 +32,7 @@ DEPLOYABLE_CRAG_GENERATIVE_POLICIES = {
 }
 GUARDED_LATENCY_CRAG_GENERATIVE_POLICIES = {
     QUALITY_GUARDED_LATENCY_POLICY,
+    LEARNED_QUALITY_RISK_LATENCY_POLICY,
     "adaptive_routing_on_insufficient_evidence",
     "rag_compass_optional",
 }
@@ -39,6 +41,47 @@ QUALITY_ONLY_CRAG_GENERATIVE_POLICIES = {
     "quality_only_best_on_validation",
 }
 CRAG_GENERATIVE_POLICIES = list(CRAG_LIVE_POLICIES) + [QUALITY_GUARDED_LATENCY_POLICY]
+
+
+class QualityRiskPredictor:
+    def __init__(
+        self,
+        *,
+        rule_id: str,
+        feature_name: str,
+        operator: str,
+        threshold: float | str,
+        positive_values: set[str] | None = None,
+    ) -> None:
+        self.rule_id = rule_id
+        self.feature_name = feature_name
+        self.operator = operator
+        self.threshold = threshold
+        self.positive_values = positive_values or set()
+
+    def predict_expand(self, row: dict[str, Any]) -> bool:
+        features = deployable_quality_risk_features(row)
+        value = features[self.feature_name]
+        if self.operator == "<=":
+            return float(value) <= float(self.threshold)
+        if self.operator == ">=":
+            return float(value) >= float(self.threshold)
+        if self.operator == "==":
+            return str(value) == str(self.threshold)
+        if self.operator == "in":
+            return str(value) in self.positive_values
+        return False
+
+    def to_public_dict(self) -> dict[str, object]:
+        return {
+            "rule_id": self.rule_id,
+            "feature_name": self.feature_name,
+            "operator": self.operator,
+            "threshold": self.threshold,
+            "positive_values": sorted(self.positive_values),
+            "deployable_features_only": True,
+            "raw_text_features_used": False,
+        }
 
 
 def crag_data_file() -> Path | None:
@@ -86,7 +129,219 @@ def evidence_supports_references(items: list[dict[str, Any]], references: list[s
     return any(containment(evidence_text, ref) > 0.0 for ref in references)
 
 
-def select_crag_evidence(row: dict[str, Any], policy_id: str) -> tuple[list[dict[str, str]], float, float]:
+def deployable_quality_risk_features(row: dict[str, Any]) -> dict[str, object]:
+    results = list(row.get("search_results", []))
+    first_two = results[:2]
+    first_two_text = [
+        f"{item.get('page_name', '')} {item.get('page_snippet', '')} {item.get('page_result', '')}"
+        for item in first_two
+    ]
+    first_five_text = [
+        f"{item.get('page_name', '')} {item.get('page_snippet', '')} {item.get('page_result', '')}"
+        for item in results[:5]
+    ]
+    title_hashes = {stable_hash(str(item.get("page_name", "")))[:8] for item in first_two if item.get("page_name")}
+    return {
+        "domain": str(row.get("domain", "")),
+        "question_type": str(row.get("question_type", "")),
+        "static_or_dynamic": str(row.get("static_or_dynamic", "")),
+        "result_count": len(results),
+        "low_context_item_count": len(first_two),
+        "low_context_token_count": sum(len(text.split()) for text in first_two_text),
+        "low_context_char_count": sum(len(text) for text in first_two_text),
+        "expanded_context_token_count": sum(len(text.split()) for text in first_five_text),
+        "expanded_context_char_count": sum(len(text) for text in first_five_text),
+        "low_title_hash_diversity": len(title_hashes),
+    }
+
+
+def _policy_quality_by_example(rows: list[dict[str, object]], policy_id: str) -> dict[str, float]:
+    return {
+        str(row["example_id"]): float(row["final_generated_quality_score"])
+        for row in rows
+        if row["policy_id"] == policy_id
+    }
+
+
+def _policy_api_calls_by_example(rows: list[dict[str, object]], policy_id: str) -> dict[str, float]:
+    return {
+        str(row["example_id"]): float(row["api_call_count"])
+        for row in rows
+        if row["policy_id"] == policy_id
+    }
+
+
+def _candidate_predictors(validation_crag_rows: list[dict[str, Any]]) -> list[QualityRiskPredictor]:
+    numeric_features = [
+        "result_count",
+        "low_context_token_count",
+        "low_context_char_count",
+        "expanded_context_token_count",
+        "expanded_context_char_count",
+        "low_title_hash_diversity",
+    ]
+    categorical_features = ["domain", "question_type", "static_or_dynamic"]
+    predictors = [
+        QualityRiskPredictor(
+            rule_id="never_expand",
+            feature_name="result_count",
+            operator=">=",
+            threshold=10**9,
+        ),
+        QualityRiskPredictor(
+            rule_id="always_expand",
+            feature_name="result_count",
+            operator=">=",
+            threshold=0,
+        ),
+    ]
+    feature_rows = [deployable_quality_risk_features(row) for row in validation_crag_rows]
+    for feature in numeric_features:
+        values = sorted({float(row[feature]) for row in feature_rows})
+        for threshold in values:
+            predictors.append(
+                QualityRiskPredictor(
+                    rule_id=f"expand_when_{feature}_le_{threshold:g}",
+                    feature_name=feature,
+                    operator="<=",
+                    threshold=threshold,
+                )
+            )
+            predictors.append(
+                QualityRiskPredictor(
+                    rule_id=f"expand_when_{feature}_ge_{threshold:g}",
+                    feature_name=feature,
+                    operator=">=",
+                    threshold=threshold,
+                )
+            )
+    for feature in categorical_features:
+        values = sorted({str(row[feature]) for row in feature_rows if row[feature] != ""})
+        for value in values:
+            predictors.append(
+                QualityRiskPredictor(
+                    rule_id=f"expand_when_{feature}_is_{stable_hash(value)[:8]}",
+                    feature_name=feature,
+                    operator="==",
+                    threshold=value,
+                )
+            )
+    return predictors
+
+
+def learn_quality_risk_predictor(
+    *,
+    crag_rows: list[dict[str, Any]],
+    result_rows: list[dict[str, object]],
+    margin: float = 0.01,
+) -> tuple[QualityRiskPredictor | None, dict[str, object]]:
+    validation_rows = [row for row in crag_rows if split_for_row(row) == "validation"]
+    if not validation_rows:
+        validation_rows = [row for row in crag_rows if split_for_row(row) == "calibration"] or crag_rows
+    expanded_quality = _policy_quality_by_example(result_rows, "expanded_retrieval_multi_endpoint")
+    two_item_quality = _policy_quality_by_example(result_rows, "pareto_frontier_selector")
+    old_guardrail_calls = _policy_api_calls_by_example(result_rows, QUALITY_GUARDED_LATENCY_POLICY)
+    training_examples = []
+    for row in validation_rows:
+        example_id = stable_hash(str(row["interaction_id"]))
+        if example_id not in expanded_quality or example_id not in two_item_quality:
+            continue
+        old_expanded = float(old_guardrail_calls.get(example_id, 2.0)) > 2.0
+        training_examples.append(
+            {
+                "row": row,
+                "example_id": example_id,
+                "expanded_quality": expanded_quality[example_id],
+                "two_item_quality": two_item_quality[example_id],
+                "old_guardrail_expanded": old_expanded,
+                "label_quality_risk": two_item_quality[example_id] < expanded_quality[example_id] - margin,
+            }
+        )
+    if not training_examples:
+        return None, {
+            "predictor_result_class": "CRAG_GEN_LLM_RISK_PREDICTOR_BLOCKED_NO_VALIDATION_ROWS",
+            "training_row_count": 0,
+            "deployable_features_only": True,
+            "raw_text_features_used": False,
+        }
+    old_expansion_rate = mean([1.0 if item["old_guardrail_expanded"] else 0.0 for item in training_examples])
+    candidates: list[tuple[QualityRiskPredictor, dict[str, object]]] = []
+    for predictor in _candidate_predictors([item["row"] for item in training_examples]):
+        predicted_expansions = [predictor.predict_expand(item["row"]) for item in training_examples]
+        expansion_rate = mean([1.0 if value else 0.0 for value in predicted_expansions])
+        learned_quality = [
+            float(item["expanded_quality"]) if expand else float(item["two_item_quality"])
+            for item, expand in zip(training_examples, predicted_expansions)
+        ]
+        quality_only = [float(item["expanded_quality"]) for item in training_examples]
+        quality_delta = mean([learned - baseline for learned, baseline in zip(learned_quality, quality_only)])
+        protected_quality_loss_count = sum(
+            1
+            for item, expand in zip(training_examples, predicted_expansions)
+            if not expand and float(item["two_item_quality"]) < float(item["expanded_quality"]) - margin
+        )
+        candidates.append(
+            (
+                predictor,
+                {
+                    "validation_expansion_rate": expansion_rate,
+                    "old_guardrail_validation_expansion_rate": old_expansion_rate,
+                    "validation_generated_quality_delta_vs_expanded": quality_delta,
+                    "validation_quality_risk_count": sum(1 for item in training_examples if item["label_quality_risk"]),
+                    "validation_unprotected_quality_risk_count": protected_quality_loss_count,
+                    "validation_predicted_expansion_count": sum(1 for value in predicted_expansions if value),
+                },
+            )
+        )
+    feasible = [
+        (predictor, metrics)
+        for predictor, metrics in candidates
+        if float(metrics["validation_expansion_rate"]) < old_expansion_rate
+        and float(metrics["validation_generated_quality_delta_vs_expanded"]) >= -margin
+        and int(metrics["validation_unprotected_quality_risk_count"]) == 0
+    ]
+    if not feasible:
+        best_predictor, best_metrics = max(
+            candidates,
+            key=lambda item: (
+                float(item[1]["validation_generated_quality_delta_vs_expanded"]),
+                -float(item[1]["validation_expansion_rate"]),
+            ),
+        )
+        return None, {
+            **best_predictor.to_public_dict(),
+            **best_metrics,
+            "predictor_result_class": "CRAG_GEN_LLM_RISK_PREDICTOR_VALIDATION_GATE_FAILED",
+            "training_row_count": len(training_examples),
+            "quality_noninferiority_margin": margin,
+            "gate_requires_reduced_expansions": True,
+            "gate_requires_validation_noninferiority": True,
+        }
+    selected_predictor, selected_metrics = min(
+        feasible,
+        key=lambda item: (
+            float(item[1]["validation_expansion_rate"]),
+            -float(item[1]["validation_generated_quality_delta_vs_expanded"]),
+            item[0].rule_id,
+        ),
+    )
+    return selected_predictor, {
+        **selected_predictor.to_public_dict(),
+        **selected_metrics,
+        "predictor_result_class": "CRAG_GEN_LLM_RISK_PREDICTOR_VALIDATION_GATE_PASSED",
+        "training_row_count": len(training_examples),
+        "quality_noninferiority_margin": margin,
+        "gate_requires_reduced_expansions": True,
+        "gate_requires_validation_noninferiority": True,
+    }
+
+
+def select_crag_evidence(
+    row: dict[str, Any],
+    policy_id: str,
+    *,
+    quality_risk_predictor: QualityRiskPredictor | None = None,
+) -> tuple[list[dict[str, str]], float, float]:
     results = list(row.get("search_results", []))
     if policy_id in {"low_retrieval_single_endpoint", "measured_cost_minimizer_at_quality_floor"}:
         selected = results[:1]
@@ -109,6 +364,8 @@ def select_crag_evidence(row: dict[str, Any], policy_id: str) -> tuple[list[dict
         selected = results[:2]
         if references and not evidence_supports_references(selected, references):
             selected = results[:5]
+    elif policy_id == LEARNED_QUALITY_RISK_LATENCY_POLICY:
+        selected = results[:5] if quality_risk_predictor and quality_risk_predictor.predict_expand(row) else results[:2]
     else:
         selected = results[:2]
     evidence = [
@@ -222,112 +479,154 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
         primary_endpoint = "cost"
     latency_guardrail = os.environ.get("RAGTUNE_CRAG_GEN_LATENCY_GUARDRAIL", "").strip().lower()
     guardrail_enabled = primary_endpoint == "latency" and latency_guardrail in {"quality_risk", "quality_risk_adaptive_expansion", "true", "1", "yes", "on"}
+    learned_guardrail_enabled = primary_endpoint == "latency" and latency_guardrail in {
+        "learned_quality_risk_predictor",
+        "learned_quality_risk",
+        "learned",
+    }
     rows = load_crag_rows(max_examples, offset=sample_offset)
     result_rows: list[dict[str, object]] = []
     empty_answer_retry_count = 0
     empty_answer_retry_success_count = 0
-    for row in rows:
-        split = split_for_row(row)
+
+    def generate_policy_result(
+        row: dict[str, Any],
+        *,
+        policy_id: str,
+        split: str,
+        quality_risk_predictor: QualityRiskPredictor | None = None,
+    ) -> None:
+        nonlocal empty_answer_retry_count, empty_answer_retry_success_count
         references = row_references(row)
-        for policy_id in CRAG_GENERATIVE_POLICIES:
-            evidence_items, retrieval_cost, context_tokens = select_crag_evidence(row, policy_id)
-            prompt, prompt_hash = build_rag_prompt(question_text=str(row["query"]), evidence_items=evidence_items)
-            generation = discovery.generator.generate(
-                prompt,
+        evidence_items, retrieval_cost, context_tokens = select_crag_evidence(
+            row,
+            policy_id,
+            quality_risk_predictor=quality_risk_predictor,
+        )
+        prompt, prompt_hash = build_rag_prompt(question_text=str(row["query"]), evidence_items=evidence_items)
+        generation = discovery.generator.generate(
+            prompt,
+            model=discovery.model,
+            temperature=0.0,
+            max_tokens=max_tokens,
+            timeout_s=timeout_s,
+        )
+        raw_answer = (root / str(generation.raw_answer_local_path)).read_text(encoding="utf-8").strip() if generation.raw_answer_local_path else ""
+        generation_latency_ms = generation.latency_ms
+        generation_cost_units = generation.cost_units
+        generator_call_count = 1
+        output_token_estimate = generation.output_token_estimate
+        input_token_estimate = generation.input_token_estimate
+        if retry_empty_answers and not raw_answer:
+            empty_answer_retry_count += 1
+            repair_prompt, repair_prompt_hash = build_answer_emission_repair_prompt(
+                question_text=str(row["query"]),
+                evidence_items=evidence_items,
+            )
+            repair_generation = discovery.generator.generate(
+                repair_prompt,
                 model=discovery.model,
                 temperature=0.0,
-                max_tokens=max_tokens,
+                max_tokens=max(max_tokens, 96),
                 timeout_s=timeout_s,
             )
-            raw_answer = (root / str(generation.raw_answer_local_path)).read_text(encoding="utf-8").strip() if generation.raw_answer_local_path else ""
-            generation_latency_ms = generation.latency_ms
-            generation_cost_units = generation.cost_units
-            generator_call_count = 1
-            output_token_estimate = generation.output_token_estimate
-            input_token_estimate = generation.input_token_estimate
-            if retry_empty_answers and not raw_answer:
-                empty_answer_retry_count += 1
-                repair_prompt, repair_prompt_hash = build_answer_emission_repair_prompt(
-                    question_text=str(row["query"]),
-                    evidence_items=evidence_items,
-                )
-                repair_generation = discovery.generator.generate(
-                    repair_prompt,
-                    model=discovery.model,
-                    temperature=0.0,
-                    max_tokens=max(max_tokens, 96),
-                    timeout_s=timeout_s,
-                )
-                repair_answer = (
-                    (root / str(repair_generation.raw_answer_local_path)).read_text(encoding="utf-8").strip()
-                    if repair_generation.raw_answer_local_path
-                    else ""
-                )
-                generation_latency_ms += repair_generation.latency_ms
-                generation_cost_units += repair_generation.cost_units
-                generator_call_count += 1
-                input_token_estimate += repair_generation.input_token_estimate
-                output_token_estimate += repair_generation.output_token_estimate
-                if repair_answer:
-                    empty_answer_retry_success_count += 1
-                    generation = repair_generation
-                    prompt_hash = repair_prompt_hash
-                    raw_answer = repair_answer
-            answer_f1 = max([token_f1(raw_answer, ref) for ref in references], default=0.0)
-            answer_em = max([exact_match(raw_answer, ref) for ref in references], default=0.0)
-            answer_containment = max([containment(raw_answer, ref) for ref in references], default=0.0)
-            evidence_text = " ".join(item["text"] for item in evidence_items)
-            evidence_support = max([containment(evidence_text, ref) for ref in references], default=0.0)
-            citation_support = 1.0 if evidence_items and evidence_support > 0.0 else 0.0
-            abstained = "INSUFFICIENT_EVIDENCE" in raw_answer.upper()
-            abstention_correctness = 1.0 if not references and abstained else (0.0 if abstained else 1.0)
-            quality = generated_quality_score(
-                answer_correctness_f1=answer_f1,
-                answer_exact_match=answer_em,
-                answer_containment=answer_containment,
-                evidence_support_score=evidence_support,
-                citation_support_score=citation_support,
-                abstention_correctness=abstention_correctness,
+            repair_answer = (
+                (root / str(repair_generation.raw_answer_local_path)).read_text(encoding="utf-8").strip()
+                if repair_generation.raw_answer_local_path
+                else ""
             )
-            result_rows.append(
-                {
-                    "example_id": stable_hash(str(row["interaction_id"])),
-                    "question_hash": stable_hash(str(row["query"])),
-                    "split": split,
-                    "dataset": "crag",
-                    "policy_id": policy_id,
-                    "provider": generation.provider,
-                    "model": generation.model,
-                    "prompt_hash": prompt_hash,
-                    "generated_answer_hash": stable_hash(raw_answer),
-                    "generated_answer_char_count": len(raw_answer),
-                    "generated_answer_token_estimate": output_token_estimate,
-                    "retrieval_latency_ms": 0.0,
-                    "generation_latency_ms": generation_latency_ms,
-                    "total_latency_ms": generation_latency_ms,
-                    "retrieval_cost_units": retrieval_cost,
-                    "generation_cost_units": generation_cost_units,
-                    "total_cost_units": retrieval_cost + generation_cost_units,
-                    "input_token_estimate": input_token_estimate,
-                    "output_token_estimate": output_token_estimate,
-                    "api_call_count": len(evidence_items),
-                    "generator_call_count": generator_call_count,
-                    "answer_correctness_f1": answer_f1,
-                    "answer_exact_match": answer_em,
-                    "answer_containment": answer_containment,
-                    "evidence_support_score": evidence_support,
-                    "citation_support_score": citation_support,
-                    "abstention_correctness": abstention_correctness,
-                    "final_generated_quality_score": quality,
-                    "raw_prompt_exported": False,
-                    "raw_generated_answer_exported": False,
-                }
-            )
+            generation_latency_ms += repair_generation.latency_ms
+            generation_cost_units += repair_generation.cost_units
+            generator_call_count += 1
+            input_token_estimate += repair_generation.input_token_estimate
+            output_token_estimate += repair_generation.output_token_estimate
+            if repair_answer:
+                empty_answer_retry_success_count += 1
+                generation = repair_generation
+                prompt_hash = repair_prompt_hash
+                raw_answer = repair_answer
+        answer_f1 = max([token_f1(raw_answer, ref) for ref in references], default=0.0)
+        answer_em = max([exact_match(raw_answer, ref) for ref in references], default=0.0)
+        answer_containment = max([containment(raw_answer, ref) for ref in references], default=0.0)
+        evidence_text = " ".join(item["text"] for item in evidence_items)
+        evidence_support = max([containment(evidence_text, ref) for ref in references], default=0.0)
+        citation_support = 1.0 if evidence_items and evidence_support > 0.0 else 0.0
+        abstained = "INSUFFICIENT_EVIDENCE" in raw_answer.upper()
+        abstention_correctness = 1.0 if not references and abstained else (0.0 if abstained else 1.0)
+        quality = generated_quality_score(
+            answer_correctness_f1=answer_f1,
+            answer_exact_match=answer_em,
+            answer_containment=answer_containment,
+            evidence_support_score=evidence_support,
+            citation_support_score=citation_support,
+            abstention_correctness=abstention_correctness,
+        )
+        result_rows.append(
+            {
+                "example_id": stable_hash(str(row["interaction_id"])),
+                "question_hash": stable_hash(str(row["query"])),
+                "split": split,
+                "dataset": "crag",
+                "policy_id": policy_id,
+                "provider": generation.provider,
+                "model": generation.model,
+                "prompt_hash": prompt_hash,
+                "generated_answer_hash": stable_hash(raw_answer),
+                "generated_answer_char_count": len(raw_answer),
+                "generated_answer_token_estimate": output_token_estimate,
+                "retrieval_latency_ms": 0.0,
+                "generation_latency_ms": generation_latency_ms,
+                "total_latency_ms": generation_latency_ms,
+                "retrieval_cost_units": retrieval_cost,
+                "generation_cost_units": generation_cost_units,
+                "total_cost_units": retrieval_cost + generation_cost_units,
+                "input_token_estimate": input_token_estimate,
+                "output_token_estimate": output_token_estimate,
+                "api_call_count": len(evidence_items),
+                "generator_call_count": generator_call_count,
+                "answer_correctness_f1": answer_f1,
+                "answer_exact_match": answer_em,
+                "answer_containment": answer_containment,
+                "evidence_support_score": evidence_support,
+                "citation_support_score": citation_support,
+                "abstention_correctness": abstention_correctness,
+                "final_generated_quality_score": quality,
+                "raw_prompt_exported": False,
+                "raw_generated_answer_exported": False,
+            }
+        )
+
+    for row in rows:
+        split = split_for_row(row)
+        for policy_id in CRAG_GENERATIVE_POLICIES:
+            generate_policy_result(row, policy_id=policy_id, split=split)
+
+    learned_predictor: QualityRiskPredictor | None = None
+    predictor_metrics: dict[str, object] = {
+        "predictor_result_class": "CRAG_GEN_LLM_RISK_PREDICTOR_NOT_REQUESTED",
+        "deployable_features_only": True,
+        "raw_text_features_used": False,
+    }
+    if learned_guardrail_enabled:
+        learned_predictor, predictor_metrics = learn_quality_risk_predictor(crag_rows=rows, result_rows=result_rows)
+        if learned_predictor is not None:
+            for row in rows:
+                generate_policy_result(
+                    row,
+                    policy_id=LEARNED_QUALITY_RISK_LATENCY_POLICY,
+                    split=split_for_row(row),
+                    quality_risk_predictor=learned_predictor,
+                )
     summaries = summarize_policy(result_rows)
     validation_selection_rows = [row for row in result_rows if row["split"] == "validation"]
     if not validation_selection_rows:
         validation_selection_rows = [row for row in result_rows if row["split"] == "calibration"] or result_rows
-    governed_policy_ids = {QUALITY_GUARDED_LATENCY_POLICY} if guardrail_enabled else DEPLOYABLE_CRAG_GENERATIVE_POLICIES
+    if learned_guardrail_enabled:
+        governed_policy_ids = {LEARNED_QUALITY_RISK_LATENCY_POLICY}
+    elif guardrail_enabled:
+        governed_policy_ids = {QUALITY_GUARDED_LATENCY_POLICY}
+    else:
+        governed_policy_ids = DEPLOYABLE_CRAG_GENERATIVE_POLICIES
     selection_policy_ids = governed_policy_ids | QUALITY_ONLY_CRAG_GENERATIVE_POLICIES
     selection_summaries = summarize_policy(validation_selection_rows, policy_ids=selection_policy_ids)
     governed, quality_only, constrained, frontier = choose_winners(
@@ -357,7 +656,9 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
     equivalent_quality = bool(quality_deltas) and simple_ci(quality_deltas)["mean"] >= -0.01
     lower_cost = bool(cost_deltas) and simple_ci(cost_deltas)["ci_high"] < 0
     lower_latency = bool(latency_deltas) and simple_ci(latency_deltas)["ci_high"] < 0
-    if not diagnostics["usable_quality_signal"]:
+    if learned_guardrail_enabled and learned_predictor is None:
+        result_class = "GEN_LLM_VALIDATION_BLOCKED_PREDICTOR_GATE_CRAG"
+    elif not diagnostics["usable_quality_signal"]:
         result_class = "GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL_CRAG"
     elif primary_endpoint == "latency" and equivalent_quality and lower_latency:
         result_class = "GEN_LLM_GOVERNANCE_REDUCES_LATENCY_AT_EQUIVALENT_GENERATED_QUALITY_CRAG"
@@ -385,6 +686,9 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
         "generator_model": discovery.model,
         "primary_endpoint": primary_endpoint,
         "selector_design": (
+            "validation_learned_deployable_quality_risk_predictor_vs_quality_only_high_evidence_confirmatory_eval"
+            if learned_guardrail_enabled
+            else
             "validation_split_quality_only_high_evidence_vs_quality_guarded_latency_confirmatory_eval"
             if guardrail_enabled
             else "validation_split_quality_only_high_evidence_vs_governed_latency_feasible_confirmatory_eval"
@@ -393,26 +697,56 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
         "selector_candidate_policies": [str(row["policy_id"]) for row in selection_summaries],
         "governed_candidate_policies": sorted(governed_policy_ids),
         "quality_only_candidate_policies": sorted(QUALITY_ONLY_CRAG_GENERATIVE_POLICIES),
-        "quality_risk_guardrail_enabled": guardrail_enabled,
-        "quality_risk_guardrail_policy": QUALITY_GUARDED_LATENCY_POLICY if guardrail_enabled else "",
+        "quality_risk_guardrail_enabled": guardrail_enabled or learned_guardrail_enabled,
+        "quality_risk_guardrail_policy": (
+            LEARNED_QUALITY_RISK_LATENCY_POLICY
+            if learned_guardrail_enabled
+            else QUALITY_GUARDED_LATENCY_POLICY
+            if guardrail_enabled
+            else ""
+        ),
         "quality_risk_guardrail_rule": (
+            "learn deployable expansion rule on validation generated-quality loss; expand only when predictor flags quality risk"
+            if learned_guardrail_enabled
+            else
             "start with two evidence items and expand to five when local CRAG answer/alternate-answer containment is absent"
             if guardrail_enabled
             else ""
         ),
+        "quality_risk_predictor": predictor_metrics,
+        "quality_risk_predictor_trained": learned_guardrail_enabled,
+        "quality_risk_predictor_gate_passed": bool(learned_guardrail_enabled and learned_predictor is not None),
+        "quality_risk_predictor_result_class": predictor_metrics.get("predictor_result_class", ""),
+        "quality_risk_predictor_deployable_features_only": bool(predictor_metrics.get("deployable_features_only", True)),
+        "quality_risk_predictor_raw_text_features_used": bool(predictor_metrics.get("raw_text_features_used", False)),
         "quality_risk_guardrail_expansion_count": sum(
             1
             for row in result_rows
-            if row["policy_id"] == QUALITY_GUARDED_LATENCY_POLICY and int(row["api_call_count"]) > 2
+            if row["policy_id"] == (
+                LEARNED_QUALITY_RISK_LATENCY_POLICY if learned_guardrail_enabled else QUALITY_GUARDED_LATENCY_POLICY
+            )
+            and int(row["api_call_count"]) > 2
         ),
         "quality_risk_guardrail_expansion_rate": (
             sum(
                 1
                 for row in result_rows
-                if row["policy_id"] == QUALITY_GUARDED_LATENCY_POLICY and int(row["api_call_count"]) > 2
+                if row["policy_id"] == (
+                    LEARNED_QUALITY_RISK_LATENCY_POLICY if learned_guardrail_enabled else QUALITY_GUARDED_LATENCY_POLICY
+                )
+                and int(row["api_call_count"]) > 2
             )
-            / max(1, sum(1 for row in result_rows if row["policy_id"] == QUALITY_GUARDED_LATENCY_POLICY))
-            if guardrail_enabled
+            / max(
+                1,
+                sum(
+                    1
+                    for row in result_rows
+                    if row["policy_id"] == (
+                        LEARNED_QUALITY_RISK_LATENCY_POLICY if learned_guardrail_enabled else QUALITY_GUARDED_LATENCY_POLICY
+                    )
+                ),
+            )
+            if guardrail_enabled or learned_guardrail_enabled
             else 0.0
         ),
         "generator_available": True,
@@ -456,6 +790,9 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
             "selector": "governed_selection",
             "winner": governed,
             "reason": (
+                f"validation-trained deployable quality-risk predictor allowed learned guarded latency rerun with lowest {primary_endpoint} within generated-quality noninferiority margin"
+                if learned_guardrail_enabled
+                else
                 f"validation quality-risk guarded latency policy with lowest {primary_endpoint} within generated-quality noninferiority margin"
                 if guardrail_enabled
                 else f"validation deployable policy with lowest {primary_endpoint} within generated-quality noninferiority margin"
