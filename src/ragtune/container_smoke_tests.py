@@ -21,6 +21,24 @@ SMOKE_RESULT_CLASSES = {
     "CONTAINER_RUNTIME_VALIDATION_FAILED_PUBLICATION_HYGIENE",
 }
 
+DOCKER_HARDENED_RUN_FLAGS = [
+    "--network",
+    "none",
+    "--read-only",
+    "--tmpfs",
+    "/tmp:rw,noexec,nosuid,size=64m",
+    "--security-opt",
+    "no-new-privileges",
+    "--cap-drop",
+    "ALL",
+    "--pids-limit",
+    "256",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+]
+
 
 def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -52,9 +70,9 @@ def run_container_smoke_tests(root: Path, *, output_root: Path) -> dict[str, Any
         steps.append({"step": "docker_build", "status": "PASS" if build_ok else "FAIL", "detail": build_detail})
         help_ok = validate_ok = mini_ok = compose_ok = False
         if build_ok:
-            help_ok, help_detail = _run(["docker", "run", "--rm", "ragtune:local", "--help"], root)
+            help_ok, help_detail = _run(["docker", "run", "--rm", *DOCKER_HARDENED_RUN_FLAGS, "ragtune:local", "--help"], root)
             steps.append({"step": "container_help", "status": "PASS" if help_ok else "FAIL", "detail": help_detail})
-            validate_ok, validate_detail = _run(["docker", "run", "--rm", "ragtune:local", "validate-bundle"], root)
+            validate_ok, validate_detail = _run(["docker", "run", "--rm", *DOCKER_HARDENED_RUN_FLAGS, "ragtune:local", "validate-bundle"], root)
             steps.append({"step": "container_validate_bundle", "status": "PASS" if validate_ok else "FAIL", "detail": validate_detail})
             (root / "docker_outputs").mkdir(exist_ok=True)
             mini_ok, mini_detail = _run(
@@ -62,6 +80,7 @@ def run_container_smoke_tests(root: Path, *, output_root: Path) -> dict[str, Any
                     "docker",
                     "run",
                     "--rm",
+                    *DOCKER_HARDENED_RUN_FLAGS,
                     "-v",
                     f"{root / 'docker_outputs'}:/outputs",
                     "ragtune:local",
@@ -140,6 +159,16 @@ def run_container_smoke_tests(root: Path, *, output_root: Path) -> dict[str, Any
         "live_cloud_validation_claimed": False,
         "production_readiness_claimed": False,
         "official_platform_benchmarking_claimed": False,
+        "hardened_runtime_flags": {
+            "network_none": True,
+            "read_only_root_filesystem": True,
+            "tmpfs_tmp": True,
+            "no_new_privileges": True,
+            "cap_drop_all": True,
+            "pids_limit": 256,
+            "memory_limit": "1g",
+            "cpus": "2",
+        },
     }
     write_json(output_root / "container_smoke_test_manifest.json", manifest)
     _write_csv(output_root / "container_smoke_test_results.csv", steps)

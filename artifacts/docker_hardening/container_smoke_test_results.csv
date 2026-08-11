@@ -1,5 +1,5 @@
 step,status,detail
-docker_build,PASS,#22 DONE 4.4s
+docker_build,PASS,#22 DONE 4.3s
 container_help,PASS,"  -h, --help            show this help message and exit"
 container_validate_bundle,PASS,publication validation passed
 container_public_mini,PASS,publication validation passed

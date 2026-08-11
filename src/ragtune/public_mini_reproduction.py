@@ -63,7 +63,7 @@ def _summaries(rows: list[dict[str, object]]) -> list[dict[str, object]]:
     return out
 
 
-def run_public_mini_reproduction(root: Path, *, output_root: Path) -> dict[str, object]:
+def run_public_mini_reproduction(root: Path, *, output_root: Path, write_repository_results: bool = True) -> dict[str, object]:
     rows = _rows()
     summaries = _summaries(rows)
     quality_only = max(summaries, key=lambda row: float(row["mean_quality"]))
@@ -137,8 +137,9 @@ The mini reproduction uses a tiny synthetic dataset generated in code. It demons
 No CRAG data, HotpotQA raw text, prompts, generated answers, secrets, or private paths are used.
 """,
     )
-    results_root = root / "results/public_mini_reproduction"
-    write_json(results_root / "claim_update.json", stats)
-    write_md(results_root / "executive_summary.md", "Public mini reproduction result: `PUBLIC_MINI_REPRODUCTION_FAIL_CLOSED`.")
-    write_md(results_root / "reproduction_report.md", "Run `make reproduce-public-mini` from the repository root.")
+    if write_repository_results:
+        results_root = root / "results/public_mini_reproduction"
+        write_json(results_root / "claim_update.json", stats)
+        write_md(results_root / "executive_summary.md", "Public mini reproduction result: `PUBLIC_MINI_REPRODUCTION_FAIL_CLOSED`.")
+        write_md(results_root / "reproduction_report.md", "Run `make reproduce-public-mini` from the repository root.")
     return stats

@@ -14,3 +14,8 @@ def test_optional_security_scans_have_skip_or_result() -> None:
     assert payload["result_class"] in SECURITY_SCAN_RESULT_CLASSES
     assert payload["secrets_exported"] is False
     assert payload["private_paths_exported"] is False
+
+
+def test_optional_security_scans_include_docker_scout_detection() -> None:
+    payload = json.loads((ROOT / "artifacts/docker_hardening/container_security_scan_manifest.json").read_text(encoding="utf-8"))
+    assert "docker_scout" in payload["tools_checked"]

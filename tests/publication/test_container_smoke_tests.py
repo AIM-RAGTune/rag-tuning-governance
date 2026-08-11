@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from ragtune.container_smoke_tests import SMOKE_RESULT_CLASSES
+from ragtune.container_smoke_tests import DOCKER_HARDENED_RUN_FLAGS, SMOKE_RESULT_CLASSES
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -35,6 +35,34 @@ def test_container_smoke_test_does_not_claim_cloud_validation() -> None:
 def test_container_smoke_test_does_not_claim_production_readiness() -> None:
     payload = json.loads((ROOT / "artifacts/docker_hardening/container_smoke_test_manifest.json").read_text(encoding="utf-8"))
     assert payload["production_readiness_claimed"] is False
+
+
+def test_container_smoke_runner_uses_hardened_runtime_flags() -> None:
+    text = " ".join(DOCKER_HARDENED_RUN_FLAGS)
+    for expected in [
+        "--network none",
+        "--read-only",
+        "/tmp:rw,noexec,nosuid,size=64m",
+        "--security-opt no-new-privileges",
+        "--cap-drop ALL",
+        "--pids-limit 256",
+        "--memory 1g",
+        "--cpus 2",
+    ]:
+        assert expected in text
+
+
+def test_container_smoke_manifest_records_hardened_runtime_flags() -> None:
+    payload = json.loads((ROOT / "artifacts/docker_hardening/container_smoke_test_manifest.json").read_text(encoding="utf-8"))
+    flags = payload.get("hardened_runtime_flags", {})
+    for key in [
+        "network_none",
+        "read_only_root_filesystem",
+        "tmpfs_tmp",
+        "no_new_privileges",
+        "cap_drop_all",
+    ]:
+        assert flags.get(key) is True
 
 
 def test_promotion_decision_container_exists_if_runtime_validated() -> None:

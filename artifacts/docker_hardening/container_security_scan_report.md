@@ -1,5 +1,5 @@
 # Optional Container Security Scans
 
-Result class: `CONTAINER_SECURITY_SCANS_SKIPPED_TOOLS_UNAVAILABLE`.
+Result class: `CONTAINER_SECURITY_SCANS_PARTIAL`.
 
 Optional scanners are not required for publication validation.

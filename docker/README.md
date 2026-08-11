@@ -6,12 +6,24 @@ Default command:
 
 ```bash
 docker build -t ragtune-governance:local .
-docker run --rm -v "$(pwd)/docker_outputs:/outputs" ragtune-governance:local run-governance-job --config configs/jobs/public_mini_governance_job.yaml --output-root /outputs --decision-out /outputs/promotion_decision.json
+docker run --rm \
+  --network none \
+  --read-only \
+  --tmpfs /tmp:rw,noexec,nosuid,size=64m \
+  --security-opt no-new-privileges \
+  --cap-drop ALL \
+  --pids-limit 256 \
+  --memory 1g \
+  --cpus 2 \
+  -v "$(pwd)/docker_outputs:/outputs" \
+  ragtune-governance:local run-governance-job --config configs/jobs/public_mini_governance_job.yaml --output-root /outputs --decision-out /outputs/promotion_decision.json
 ```
 
 The image does not include raw CRAG or HotpotQA datasets, local caches, credentials, prompts, or generated answers. Mount approved local data at `/data` only for local experiments that require it.
 
 Docker runtime validation is local deployment validation, not cloud validation. Cloud templates are deployment examples, not official platform benchmarks. Production operation is not claimed unless separately validated.
+
+The public-mini runtime path is intentionally hardened: no network, read-only root filesystem, `/tmp` as tmpfs, no new privileges, all Linux capabilities dropped, and bounded CPU/memory/process limits. `/outputs` remains writable because it is the only required runtime output mount.
 
 Compose:
 

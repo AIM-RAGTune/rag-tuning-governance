@@ -4,6 +4,16 @@
   "docker_public_mini_result": "PASS",
   "docker_validate_result": "PASS",
   "engine_selected": "docker",
+  "hardened_runtime_flags": {
+    "cap_drop_all": true,
+    "cpus": "2",
+    "memory_limit": "1g",
+    "network_none": true,
+    "no_new_privileges": true,
+    "pids_limit": 256,
+    "read_only_root_filesystem": true,
+    "tmpfs_tmp": true
+  },
   "live_cloud_validation_claimed": false,
   "official_platform_benchmarking_claimed": false,
   "private_paths_committed": false,

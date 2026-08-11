@@ -2,7 +2,7 @@
 
 Hardens the local Docker/container runtime path for the public RAGTune repository. This adds safe runtime diagnostics, static Docker validation, a public-mini container smoke-test runner, optional security-scan reporting, Docker Compose documentation, and deployment-readiness integration.
 
-Docker Desktop was started locally and the daemon became readable from the validation shell. The PR records a completed public-mini Docker runtime validation after repairing the image copy contract needed for in-container publication validation.
+Docker Desktop was started locally and the daemon became readable from the validation shell. The PR records a completed public-mini Docker runtime validation after hardening the runtime posture and repairing the image copy/output contract needed for in-container publication validation.
 
 ## Runtime diagnostics
 
@@ -18,10 +18,12 @@ Docker Desktop was started locally and the daemon became readable from the valid
 ## Docker static validation
 
 - Result class: `DOCKER_STATIC_VALIDATION_PASSED`
-- Checks passed: 21 / 21
+- Checks passed: 29 / 29
 - Dockerfile: hardened with container contract, non-root runtime, `/outputs` support, and healthcheck
+- Dockerfile hardening: OCI labels, fixed non-root UID, disabled pip cache, explicit stop signal
 - `.dockerignore`: hardened for local data, env files, secrets, caches, model/data binaries, and raw artifact patterns
 - Compose path: `docker/compose.public-mini.yml` plus root `docker-compose.yml`
+- Runtime hardening: no network, read-only root filesystem, tmpfs `/tmp`, no-new-privileges, all Linux capabilities dropped, process/memory/CPU limits
 - Helper scripts/docs/tests: added or updated
 
 ## Container smoke test
@@ -33,12 +35,14 @@ Docker Desktop was started locally and the daemon became readable from the valid
 - `ragtune validate-bundle` in container: passed
 - Public-mini governance job in container: passed
 - Compose public-mini: passed
+- Hardened runtime flags: passed
 
 ## Optional security scans
 
-- Result class: `CONTAINER_SECURITY_SCANS_SKIPPED_TOOLS_UNAVAILABLE`
+- Result class: `CONTAINER_SECURITY_SCANS_PARTIAL`
+- Docker Scout plugin: available, not run
 - Critical findings: 0
-- Scanner absence is recorded as skipped, not treated as a hard failure.
+- Scanner absence or non-execution is recorded, not treated as a hard failure.
 
 ## Deployment readiness
 
@@ -50,9 +54,9 @@ Docker Desktop was started locally and the daemon became readable from the valid
 ## Validation
 
 - publication validator: passed
-- pytest: `169 passed`
+- pytest: `175 passed`
 - make validate-publication: passed
-- make test: `169 passed`
+- make test: `175 passed`
 - compile: passed
 - git diff check: passed
 - tracked large-file scan: passed
