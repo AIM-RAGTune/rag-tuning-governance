@@ -55,6 +55,11 @@ def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[s
         "",
     )
     second_model_comparison_class = str(second_model_comparison.get("result_class", ""))
+    answer_emission_comparison = load_result(
+        root / "results/generative_llm_validation/crag_answer_emission_model_comparison.json",
+        "",
+    )
+    answer_emission_comparison_class = str(answer_emission_comparison.get("result_class", ""))
     crag_usable = bool(crag.get("usable_quality_signal", crag_class in POSITIVE))
     hotpotqa_usable = bool(hotpotqa.get("usable_quality_signal", hotpotqa_class in POSITIVE))
     crag_positive = crag_class in POSITIVE and crag_usable
@@ -78,6 +83,8 @@ def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[s
             interpretation = "CRAG generative cost reduction was not stable across independent deterministic repeats and was not recovered by a second pinned local generator."
         else:
             interpretation = "CRAG generative cost reduction was not stable across independent deterministic repeats."
+        if answer_emission_comparison_class == "CRAG_GEN_LLM_ANSWER_EMISSION_REPAIRED_NO_COST_RESULT":
+            interpretation += " A faster non-thinking instruct model repaired answer emission, but still did not recover a stable cost result."
     elif repeat_comparison_class == "CRAG_GEN_LLM_COST_RESULT_NOT_REPLICATED":
         result_class = "GEN_LLM_SYNTHESIS_MIXED"
         interpretation = "The primary CRAG slice produced generative support, but an independent deterministic CRAG repeat did not reproduce the cost result."
@@ -104,6 +111,7 @@ def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[s
         "crag_repeat_comparison_result": repeat_comparison_class,
         "crag_stability_comparison_result": stability_comparison_class,
         "crag_second_model_comparison_result": second_model_comparison_class,
+        "crag_answer_emission_model_comparison_result": answer_emission_comparison_class,
         "interpretation": interpretation,
         "unsupported_claims": [
             "official platform benchmarking",
@@ -145,6 +153,7 @@ No raw prompts, raw generated answers, raw dataset questions, raw source documen
                 "a cost-reduction signal, but the CRAG stability comparison did not show stable cost reduction "
                 "across independent deterministic repeats"
                 + (", a second pinned local generator did not recover a stable cost result" if second_model_comparison_class else "")
+                + (", a faster non-thinking instruct model repaired answer emission but still did not recover a stable cost result" if answer_emission_comparison_class else "")
                 + ", and HotpotQA remained inconclusive. This is not broad generative validation, not official "
                 "platform benchmarking, not human validation, and not production readiness."
             )

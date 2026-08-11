@@ -1,0 +1,5 @@
+policy_id,frontier_reason
+constrained_quality_optimizer,"nondominated on generated quality, cost, and latency"
+measured_latency_minimizer_at_quality_floor,"nondominated on generated quality, cost, and latency"
+quality_only_best_on_validation,"nondominated on generated quality, cost, and latency"
+static_default_policy,"nondominated on generated quality, cost, and latency"
