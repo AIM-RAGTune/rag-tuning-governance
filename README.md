@@ -66,11 +66,40 @@ pip install -e .
 ## Quickstart
 
 ```bash
+make reproduce-public-mini
 make validate-publication
 make test
 ```
 
 Full CRAG reproduction requires externally obtained CRAG data mounted according to `data/DATA_AVAILABILITY.md` and `reproduction/docker/README.md`. CRAG query wording is redacted from publication artifacts; reviewers with approved CRAG access can match local data through query IDs and `query_text_hash` values.
+
+## What RAGTune Is
+
+RAGTune is an open-source RAG governance and promotion-control framework. It consumes quality, evidence, cost, latency, and risk metrics and converts them into auditable promotion, rejection, blocked, or inconclusive decisions.
+
+## What RAGTune Is Not
+
+RAGTune does not replace RAG evaluation, observability, or platform benchmarking tools. It does not claim RAG Compass superiority, human validation, official platform benchmarking, production readiness, hallucination elimination, or broad universal generative governance superiority.
+
+## Public Mini Reproduction
+
+`make reproduce-public-mini` runs a tiny deterministic synthetic example that requires no CRAG data, HotpotQA raw data, local generator, hosted credentials, or cloud services. The current mini result is `PUBLIC_MINI_REPRODUCTION_FAIL_CLOSED`, demonstrating that a lower-cost selector is blocked when it crosses the quality-risk boundary.
+
+## External Evaluator Adapters
+
+The adapter demo normalizes synthetic Ragas-like and DeepEval-like exports into the RAGTune canonical metric schema. This shows interoperability: RAGTune can consume evaluator outputs as promotion-control inputs without claiming to replace those evaluators.
+
+## Selector Ablation Matrix
+
+The selector ablation matrix compares naive quality-only, cost-only, latency-only, random, static, RAG Compass optional, governed, risk-guarded, and oracle-ceiling selectors over sanitized summary artifacts. The result is `SELECTOR_ABLATION_GOVERNANCE_BLOCKS_UNSAFE_SELECTORS`.
+
+## AIM Hardware Characterization
+
+The local AIM hardware characterization records sanitized runtime and artifact-size checks. It is not official platform benchmarking.
+
+## Open-Source And arXiv Readiness
+
+The readiness synthesis is `OPEN_SOURCE_ARXIV_READINESS_SUPPORTED_WITH_BOUNDARIES`: the repo has a public mini reproduction path, strict validator checks, external evaluator adapters, selector ablations, sanitized local hardware characterization, and preserved negative/mixed generative evidence. See `docs/open_source_arxiv_readiness.md`.
 
 ## Key Results
 

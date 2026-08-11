@@ -54,3 +54,8 @@ HotpotQA is the preferred alternate public corpus for stronger answer-label and 
 ## Generative Validation Data Handling
 
 When generative validation runs, raw prompts and raw generated answers are written only to gitignored local paths under `.local_data/`. Committed artifacts contain hashes, counts, model identifiers, policy identifiers, and metrics only. Raw CRAG and HotpotQA text remains governed by the original dataset licenses and is not redistributed here.
+## Public Mini And Adapter Demos
+
+The public mini reproduction and external evaluator adapter demo use synthetic in-code data only. They do not require or redistribute CRAG, HotpotQA, raw prompts, raw generated answers, raw source text, or proprietary evaluator traces.
+
+The CRAG evaluator-mapping diagnostics rely on sanitized committed metrics and, when available locally, uncommitted evaluator inputs under a gitignored local data area. The public repository includes only hashes, counts, result classes, and aggregate metrics.

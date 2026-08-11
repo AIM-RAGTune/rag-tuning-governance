@@ -1,0 +1,5 @@
+policy_id,mean_quality,mean_cost_units,mean_latency_ms,quality_loss_rate
+low_cost_sparse_evidence,0.81,1.0,110.0,1.0
+balanced_evidence_policy,0.865,1.8,170.0,0.0
+expanded_quality_policy,0.88,3.2,260.0,0.0
+risk_guarded_governance,0.872,1.9,175.0,0.0

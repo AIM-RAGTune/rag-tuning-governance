@@ -1,0 +1,18 @@
+{
+  "cost_only_winner": "low_cost_sparse_evidence",
+  "example_count": 4,
+  "governed_cost_delta_vs_quality_only": -1.3,
+  "governed_quality_delta_vs_quality_only": -0.008,
+  "governed_winner": "risk_guarded_governance",
+  "policy_count": 4,
+  "quality_noninferiority_margin": 0.01,
+  "quality_only_winner": "expanded_quality_policy",
+  "raw_external_data_used": false,
+  "raw_text_exported": false,
+  "requires_crag_raw_data": false,
+  "requires_generator_credentials": false,
+  "requires_hotpotqa_raw_data": false,
+  "result_class": "PUBLIC_MINI_REPRODUCTION_FAIL_CLOSED",
+  "suite": "ragtune_public_mini_reproduction_v1",
+  "unsafe_low_cost_policy_blocked": true
+}

@@ -19,3 +19,6 @@ Generative LLM Validation v1.1 adds bounded local HotpotQA and CRAG quality-sign
 Unsupported areas remain: RAG Compass superiority, broad generative LLM governance validation beyond the current mixed bounded local CRAG/HotpotQA evidence, human-evaluation validation, official external-platform benchmarking, production readiness, broad governance superiority across many public datasets, and SQUARE hardware/quantum advantage.
 
 No raw datasets, raw CRAG query wording, raw source documents, raw API responses, or private paths are included in the historical ledger.
+## Open-Source And arXiv Readiness Update
+
+The latest readiness package preserves the historical negative and mixed results while adding a deterministic public mini reproduction, external evaluator adapter demo, selector ablation matrix, CRAG evaluator-mapping diagnostics, and sanitized AIM hardware characterization. The package supports presenting RAGTune as a governance and promotion-control framework, not as a universal optimizer.

@@ -1,0 +1,25 @@
+{
+  "input_availability": {
+    "crag_generative_primary": true,
+    "crag_guardrail_v2": true,
+    "hotpotqa_quality_signal_audit": true,
+    "public_mini_reproduction": true
+  },
+  "missing_inputs_marked_unavailable": true,
+  "raw_text_exported": false,
+  "result_class": "SELECTOR_ABLATION_GOVERNANCE_BLOCKS_UNSAFE_SELECTORS",
+  "selectors_compared": [
+    "quality_only",
+    "cost_only",
+    "latency_only",
+    "random_eligible",
+    "static_default",
+    "rag_compass_optional",
+    "governed_noninferiority_selector",
+    "risk_guarded_selector",
+    "oracle_ceiling"
+  ],
+  "suite": "ragtune_selector_ablation_matrix_v1",
+  "universal_superiority_claimed": false,
+  "unsafe_selector_cases": 2
+}

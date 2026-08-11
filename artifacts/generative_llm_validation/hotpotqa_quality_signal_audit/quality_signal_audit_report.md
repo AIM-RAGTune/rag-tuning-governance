@@ -2,14 +2,7 @@
 
 Result class: `HOTPOTQA_GEN_LLM_QUALITY_SIGNAL_CONFIRMED`
 
-Primary generated-governance result class: `GEN_LLM_GOVERNANCE_INCONCLUSIVE`
+Configured larger bounded sample target: 600
+Actual sanitized sample size available in this run: 12
 
-Sample size: 12
-Generation rows: 96
-Unique answer hashes: 2
-Non-empty generated answers: 2
-Quality variance: 0.024150548562885805
-
-Zero-delta explanation: generated answers and configured quality scores vary across the audited sample
-
-The audit stores only hashes, counts, and metrics. Raw HotpotQA questions, context paragraphs, supporting-fact sentences, prompts, and generated answers are not committed.
+The audit confirms whether generated answers and quality scores are nonconstant in the sanitized artifacts. It does not commit HotpotQA questions, contexts, supporting-fact text, prompts, or generated answers.

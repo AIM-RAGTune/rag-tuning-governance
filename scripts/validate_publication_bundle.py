@@ -39,6 +39,26 @@ REQUIRED = [
     "artifacts/generative_llm_validation/crag_quality_risk_guardrail_v2/audit_manifest.json",
     "results/generative_llm_validation/crag_quality_risk_guardrail_v2_comparison.json",
     "deployment_review/generative_llm_validation_quality_signal_audit/generator_access_diagnosis.json",
+    "configs/experiments/ragtune_public_mini_reproduction_v1.yaml",
+    "artifacts/public_mini_reproduction/mini_reproduction_manifest.json",
+    "results/public_mini_reproduction/claim_update.json",
+    "docs/quickstart.md",
+    "docs/public_mini_reproduction.md",
+    "configs/experiments/ragtune_crag_generated_answer_evaluator_mapping_v1.yaml",
+    "artifacts/generative_llm_validation/crag_evaluator_mapping/evaluator_mapping_result.json",
+    "docs/crag_generated_answer_evaluator_mapping.md",
+    "configs/experiments/ragtune_external_evaluator_adapter_demo_v1.yaml",
+    "artifacts/external_evaluator_adapters/external_evaluator_manifest.json",
+    "docs/external_evaluator_adapters.md",
+    "configs/experiments/ragtune_selector_ablation_matrix_v1.yaml",
+    "artifacts/selector_ablation_matrix/selector_ablation_manifest.json",
+    "docs/selector_ablation_matrix.md",
+    "configs/experiments/ragtune_aim_hardware_characterization_v1.yaml",
+    "artifacts/aim_hardware_characterization/hardware_manifest.json",
+    "docs/aim_hardware_characterization.md",
+    "configs/experiments/ragtune_open_source_arxiv_readiness_synthesis_v1.yaml",
+    "results/open_source_arxiv_readiness/synthesis_result.json",
+    "docs/open_source_arxiv_readiness.md",
 ]
 
 EXPORT_REQUIRED = [
@@ -311,6 +331,45 @@ def validate_generative_artifacts() -> None:
         fail("local or hosted generative validation is described as official platform benchmarking")
 
 
+def validate_open_source_readiness_artifacts() -> None:
+    mini = json.loads((ROOT / "artifacts/public_mini_reproduction/mini_reproduction_manifest.json").read_text(encoding="utf-8"))
+    if mini.get("raw_external_data_used") or mini.get("raw_text_exported"):
+        fail("public mini reproduction exported raw external data or text")
+    if mini.get("result_class") not in {
+        "PUBLIC_MINI_REPRODUCTION_PASSED",
+        "PUBLIC_MINI_REPRODUCTION_GOVERNANCE_PROMOTES_SAFE_POLICY",
+        "PUBLIC_MINI_REPRODUCTION_FAIL_CLOSED",
+        "PUBLIC_MINI_REPRODUCTION_INCONCLUSIVE",
+        "PUBLIC_MINI_REPRODUCTION_BLOCKED",
+    }:
+        fail("public mini reproduction has unknown result class")
+    crag_mapping = json.loads((ROOT / "artifacts/generative_llm_validation/crag_evaluator_mapping/evaluator_mapping_result.json").read_text(encoding="utf-8"))
+    if crag_mapping.get("raw_crag_text_committed") or crag_mapping.get("raw_generated_answers_committed"):
+        fail("CRAG evaluator mapping committed raw text")
+    external = json.loads((ROOT / "artifacts/external_evaluator_adapters/external_evaluator_manifest.json").read_text(encoding="utf-8"))
+    if external.get("tool_replacement_claimed"):
+        fail("external evaluator adapter claims to replace evaluator tools")
+    selector = json.loads((ROOT / "artifacts/selector_ablation_matrix/selector_ablation_manifest.json").read_text(encoding="utf-8"))
+    if selector.get("universal_superiority_claimed"):
+        fail("selector ablation claims universal superiority")
+    hardware = json.loads((ROOT / "artifacts/aim_hardware_characterization/hardware_manifest.json").read_text(encoding="utf-8"))
+    if hardware.get("official_platform_benchmark"):
+        fail("AIM hardware characterization claims official platform benchmark")
+    if hardware.get("private_paths_exported") or hardware.get("hostnames_exported") or hardware.get("ip_addresses_exported"):
+        fail("AIM hardware characterization exported private machine details")
+    readiness = json.loads((ROOT / "results/open_source_arxiv_readiness/synthesis_result.json").read_text(encoding="utf-8"))
+    if readiness.get("result_class") not in {
+        "OPEN_SOURCE_ARXIV_READINESS_SUPPORTED_WITH_BOUNDARIES",
+        "OPEN_SOURCE_ARXIV_READINESS_DIRECTIONAL",
+        "OPEN_SOURCE_ARXIV_READINESS_MIXED",
+        "OPEN_SOURCE_ARXIV_READINESS_INCONCLUSIVE",
+        "OPEN_SOURCE_ARXIV_READINESS_BLOCKED",
+    }:
+        fail("open-source/arXiv readiness synthesis has unknown result class")
+    if not readiness.get("does_not_claim_rag_compass_superiority"):
+        fail("readiness synthesis does not preserve RAG Compass claim boundary")
+
+
 def main() -> None:
     missing = [path for path in REQUIRED if not (ROOT / path).exists()]
     if missing:
@@ -354,6 +413,7 @@ def main() -> None:
 
     validate_no_crag_raw_text_fields()
     validate_generative_artifacts()
+    validate_open_source_readiness_artifacts()
 
     try:
         remotes = subprocess.check_output(["git", "remote", "-v"], cwd=ROOT, text=True)
