@@ -1,0 +1,3 @@
+model_role,generator_model,run_count,generation_rows,parse_failures,parse_failure_rate,positive_cost_result_count
+baseline,gpt-oss:20b,4,528,362,0.6856060606060606,0
+candidate,llama3.2:3b,4,704,0,0.0,0

@@ -8,7 +8,7 @@ from typing import Any
 
 from ragtune.fresh_live_behavioral_governance import CRAG_LIVE_POLICIES, inspect_crag_environment
 from ragtune.generated_answer_quality import containment, exact_match, generated_quality_score, token_f1
-from ragtune.generative_prompts import build_rag_prompt
+from ragtune.generative_prompts import build_answer_emission_repair_prompt, build_rag_prompt
 from ragtune.generative_validation_common import (
     GENERATION_FIELDNAMES,
     mean,
@@ -149,8 +149,11 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
     sample_offset = int(os.environ.get("RAGTUNE_CRAG_GEN_OFFSET", "0"))
     max_tokens = int(os.environ.get("RAGTUNE_GENERATOR_MAX_TOKENS", "48"))
     timeout_s = float(os.environ.get("RAGTUNE_GENERATOR_TIMEOUT_S", "120"))
+    retry_empty_answers = os.environ.get("RAGTUNE_RETRY_EMPTY_GENERATED_ANSWERS", "true").strip().lower() in {"1", "true", "yes", "on"}
     rows = load_crag_rows(max_examples, offset=sample_offset)
     result_rows: list[dict[str, object]] = []
+    empty_answer_retry_count = 0
+    empty_answer_retry_success_count = 0
     for row in rows:
         split = split_for_row(row)
         references = [str(row.get("answer", ""))] + [str(value) for value in row.get("alt_ans", [])]
@@ -165,7 +168,40 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
                 max_tokens=max_tokens,
                 timeout_s=timeout_s,
             )
-            raw_answer = (root / str(generation.raw_answer_local_path)).read_text(encoding="utf-8") if generation.raw_answer_local_path else ""
+            raw_answer = (root / str(generation.raw_answer_local_path)).read_text(encoding="utf-8").strip() if generation.raw_answer_local_path else ""
+            generation_latency_ms = generation.latency_ms
+            generation_cost_units = generation.cost_units
+            generator_call_count = 1
+            output_token_estimate = generation.output_token_estimate
+            input_token_estimate = generation.input_token_estimate
+            if retry_empty_answers and not raw_answer:
+                empty_answer_retry_count += 1
+                repair_prompt, repair_prompt_hash = build_answer_emission_repair_prompt(
+                    question_text=str(row["query"]),
+                    evidence_items=evidence_items,
+                )
+                repair_generation = discovery.generator.generate(
+                    repair_prompt,
+                    model=discovery.model,
+                    temperature=0.0,
+                    max_tokens=max(max_tokens, 96),
+                    timeout_s=timeout_s,
+                )
+                repair_answer = (
+                    (root / str(repair_generation.raw_answer_local_path)).read_text(encoding="utf-8").strip()
+                    if repair_generation.raw_answer_local_path
+                    else ""
+                )
+                generation_latency_ms += repair_generation.latency_ms
+                generation_cost_units += repair_generation.cost_units
+                generator_call_count += 1
+                input_token_estimate += repair_generation.input_token_estimate
+                output_token_estimate += repair_generation.output_token_estimate
+                if repair_answer:
+                    empty_answer_retry_success_count += 1
+                    generation = repair_generation
+                    prompt_hash = repair_prompt_hash
+                    raw_answer = repair_answer
             answer_f1 = max([token_f1(raw_answer, ref) for ref in references], default=0.0)
             answer_em = max([exact_match(raw_answer, ref) for ref in references], default=0.0)
             answer_containment = max([containment(raw_answer, ref) for ref in references], default=0.0)
@@ -192,19 +228,19 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
                     "provider": generation.provider,
                     "model": generation.model,
                     "prompt_hash": prompt_hash,
-                    "generated_answer_hash": generation.answer_hash,
-                    "generated_answer_char_count": generation.answer_char_count,
-                    "generated_answer_token_estimate": generation.answer_token_estimate,
+                    "generated_answer_hash": stable_hash(raw_answer),
+                    "generated_answer_char_count": len(raw_answer),
+                    "generated_answer_token_estimate": output_token_estimate,
                     "retrieval_latency_ms": 0.0,
-                    "generation_latency_ms": generation.latency_ms,
-                    "total_latency_ms": generation.latency_ms,
+                    "generation_latency_ms": generation_latency_ms,
+                    "total_latency_ms": generation_latency_ms,
                     "retrieval_cost_units": retrieval_cost,
-                    "generation_cost_units": generation.cost_units,
-                    "total_cost_units": retrieval_cost + generation.cost_units,
-                    "input_token_estimate": generation.input_token_estimate,
-                    "output_token_estimate": generation.output_token_estimate,
+                    "generation_cost_units": generation_cost_units,
+                    "total_cost_units": retrieval_cost + generation_cost_units,
+                    "input_token_estimate": input_token_estimate,
+                    "output_token_estimate": output_token_estimate,
                     "api_call_count": len(evidence_items),
-                    "generator_call_count": 1,
+                    "generator_call_count": generator_call_count,
                     "answer_correctness_f1": answer_f1,
                     "answer_exact_match": answer_em,
                     "answer_containment": answer_containment,
@@ -282,6 +318,10 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
         "unique_answer_hash_count": diagnostics["unique_answer_hash_count"],
         "quality_variance": diagnostics["quality_variance"],
         "usable_quality_signal": diagnostics["usable_quality_signal"],
+        "answer_emission_repair_enabled": retry_empty_answers,
+        "empty_answer_retry_count": empty_answer_retry_count,
+        "empty_answer_retry_success_count": empty_answer_retry_success_count,
+        "empty_answer_retry_success_rate": empty_answer_retry_success_count / empty_answer_retry_count if empty_answer_retry_count else 0.0,
         "raw_prompts_committed": False,
         "raw_generated_answers_committed": False,
         "raw_questions_committed": False,

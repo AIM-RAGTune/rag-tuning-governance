@@ -1,0 +1,139 @@
+{
+  "baseline": {
+    "generation_rows": 528,
+    "generator_model": "gpt-oss:20b",
+    "generator_provider": "ollama",
+    "parse_failure_rate": 0.6856060606060606,
+    "parse_failures": 362,
+    "positive_cost_result_count": 0,
+    "run_count": 4,
+    "runs": [
+      {
+        "example_count": 12,
+        "generation_rows": 132,
+        "non_empty_generated_answers": 45,
+        "parse_failure_rate": 0.6590909090909091,
+        "parse_failures": 87,
+        "path": "artifacts/generative_llm_validation/crag_second_model_gpt_oss_20b_offset_0/primary_outcome_statistics.json",
+        "positive_cost_result": false,
+        "result_class": "GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG",
+        "sample_offset": 0,
+        "unique_answer_hash_count": 14,
+        "usable_quality_signal": true
+      },
+      {
+        "example_count": 12,
+        "generation_rows": 132,
+        "non_empty_generated_answers": 55,
+        "parse_failure_rate": 0.5833333333333334,
+        "parse_failures": 77,
+        "path": "artifacts/generative_llm_validation/crag_second_model_gpt_oss_20b_offset_24/primary_outcome_statistics.json",
+        "positive_cost_result": false,
+        "result_class": "GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG",
+        "sample_offset": 24,
+        "unique_answer_hash_count": 15,
+        "usable_quality_signal": true
+      },
+      {
+        "example_count": 12,
+        "generation_rows": 132,
+        "non_empty_generated_answers": 36,
+        "parse_failure_rate": 0.7272727272727273,
+        "parse_failures": 96,
+        "path": "artifacts/generative_llm_validation/crag_second_model_gpt_oss_20b_offset_36/primary_outcome_statistics.json",
+        "positive_cost_result": false,
+        "result_class": "GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG",
+        "sample_offset": 36,
+        "unique_answer_hash_count": 8,
+        "usable_quality_signal": true
+      },
+      {
+        "example_count": 12,
+        "generation_rows": 132,
+        "non_empty_generated_answers": 30,
+        "parse_failure_rate": 0.7727272727272727,
+        "parse_failures": 102,
+        "path": "artifacts/generative_llm_validation/crag_second_model_gpt_oss_20b_offset_60/primary_outcome_statistics.json",
+        "positive_cost_result": false,
+        "result_class": "GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG",
+        "sample_offset": 60,
+        "unique_answer_hash_count": 9,
+        "usable_quality_signal": true
+      }
+    ],
+    "usable_quality_signal_run_count": 4
+  },
+  "candidate": {
+    "generation_rows": 704,
+    "generator_model": "llama3.2:3b",
+    "generator_provider": "ollama",
+    "parse_failure_rate": 0.0,
+    "parse_failures": 0,
+    "positive_cost_result_count": 0,
+    "run_count": 4,
+    "runs": [
+      {
+        "example_count": 16,
+        "generation_rows": 176,
+        "non_empty_generated_answers": 176,
+        "parse_failure_rate": 0.0,
+        "parse_failures": 0,
+        "path": "artifacts/generative_llm_validation/crag_llama3_2_3b_offset_0/primary_outcome_statistics.json",
+        "positive_cost_result": false,
+        "result_class": "GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG",
+        "sample_offset": 0,
+        "unique_answer_hash_count": 71,
+        "usable_quality_signal": true
+      },
+      {
+        "example_count": 16,
+        "generation_rows": 176,
+        "non_empty_generated_answers": 176,
+        "parse_failure_rate": 0.0,
+        "parse_failures": 0,
+        "path": "artifacts/generative_llm_validation/crag_llama3_2_3b_offset_24/primary_outcome_statistics.json",
+        "positive_cost_result": false,
+        "result_class": "GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG",
+        "sample_offset": 24,
+        "unique_answer_hash_count": 77,
+        "usable_quality_signal": true
+      },
+      {
+        "example_count": 16,
+        "generation_rows": 176,
+        "non_empty_generated_answers": 176,
+        "parse_failure_rate": 0.0,
+        "parse_failures": 0,
+        "path": "artifacts/generative_llm_validation/crag_llama3_2_3b_offset_36/primary_outcome_statistics.json",
+        "positive_cost_result": false,
+        "result_class": "GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG",
+        "sample_offset": 36,
+        "unique_answer_hash_count": 75,
+        "usable_quality_signal": true
+      },
+      {
+        "example_count": 16,
+        "generation_rows": 176,
+        "non_empty_generated_answers": 176,
+        "parse_failure_rate": 0.0,
+        "parse_failures": 0,
+        "path": "artifacts/generative_llm_validation/crag_llama3_2_3b_offset_60/primary_outcome_statistics.json",
+        "positive_cost_result": false,
+        "result_class": "GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG",
+        "sample_offset": 60,
+        "unique_answer_hash_count": 76,
+        "usable_quality_signal": true
+      }
+    ],
+    "usable_quality_signal_run_count": 4
+  },
+  "interpretation": "The faster non-thinking instruct model repaired answer emission but did not recover a stable cost-at-equivalent-generated-quality result.",
+  "materially_reduced_parse_failures": true,
+  "parse_failure_rate_delta": -0.6856060606060606,
+  "raw_evidence_committed": false,
+  "raw_generated_answers_committed": false,
+  "raw_prompts_committed": false,
+  "raw_questions_committed": false,
+  "result_class": "CRAG_GEN_LLM_ANSWER_EMISSION_REPAIRED_NO_COST_RESULT",
+  "suite": "ragtune_crag_answer_emission_model_comparison_v1"
+}

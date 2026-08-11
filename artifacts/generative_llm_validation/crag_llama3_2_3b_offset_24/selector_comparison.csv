@@ -1,0 +1,3 @@
+selector,winner,reason
+governed_selection,rag_compass_optional,lowest cost within generated-quality noninferiority margin
+quality_only_best_on_validation,rag_compass_optional,highest generated quality

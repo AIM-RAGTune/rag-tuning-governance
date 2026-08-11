@@ -61,8 +61,21 @@ def test_crag_generator_uses_shared_generator_factory() -> None:
 def test_qwen3_ollama_disables_thinking_by_default() -> None:
     source = (ROOT / "src/ragtune/generators/ollama.py").read_text(encoding="utf-8")
     assert "RAGTUNE_OLLAMA_THINK" in source
-    assert 'model.lower().startswith("qwen3")' in source
+    assert 'model.lower().startswith(("qwen3", "gpt-oss"))' in source
     assert 'payload["think"] = think' in source
+
+
+def test_gpt_oss_ollama_uses_chat_endpoint_by_default() -> None:
+    source = (ROOT / "src/ragtune/generators/ollama.py").read_text(encoding="utf-8")
+    assert "RAGTUNE_OLLAMA_ENDPOINT" in source
+    assert 'model.lower().startswith("gpt-oss")' in source
+    assert "api/{'chat' if use_chat else 'generate'}" in source
+
+
+def test_crag_prompt_forbids_blank_answers() -> None:
+    source = (ROOT / "src/ragtune/generative_prompts.py").read_text(encoding="utf-8")
+    assert "Never return a blank response" in source
+    assert "build_answer_emission_repair_prompt" in source
 
 
 def test_crag_evaluator_mapping_result_class_machine_readable() -> None:
@@ -156,6 +169,26 @@ def test_crag_second_model_comparison_result_class_machine_readable() -> None:
     }
     assert comparison["raw_prompts_committed"] is False
     assert comparison["raw_generated_answers_committed"] is False
+
+
+def test_crag_answer_emission_model_comparison_machine_readable() -> None:
+    comparison = load_json("results/generative_llm_validation/crag_answer_emission_model_comparison.json")
+    assert comparison["result_class"] in {
+        "CRAG_GEN_LLM_ANSWER_EMISSION_REPAIRED_NO_COST_RESULT",
+        "CRAG_GEN_LLM_ANSWER_EMISSION_REPAIRED_WITH_COST_SIGNAL",
+        "CRAG_GEN_LLM_ANSWER_EMISSION_NOT_REPAIRED",
+    }
+    assert comparison["materially_reduced_parse_failures"] is True
+    assert comparison["raw_prompts_committed"] is False
+    assert comparison["raw_generated_answers_committed"] is False
+
+
+def test_llama3_crag_offsets_have_no_parse_failures() -> None:
+    for offset in ["0", "24", "36", "60"]:
+        stats = load_json(f"artifacts/generative_llm_validation/crag_llama3_2_3b_offset_{offset}/primary_outcome_statistics.json")
+        assert stats["generator_model"] == "llama3.2:3b"
+        assert stats["non_empty_generated_answers"] == stats["generation_rows"]
+        assert stats["usable_quality_signal"] is True
 
 
 def test_no_official_platform_benchmark_claim_from_local_generator() -> None:

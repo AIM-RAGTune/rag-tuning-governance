@@ -28,9 +28,15 @@ class OllamaGenerator:
         configured = os.environ.get("RAGTUNE_OLLAMA_THINK")
         if configured is not None:
             return configured.strip().lower() in {"1", "true", "yes", "on"}
-        if model.lower().startswith("qwen3"):
+        if model.lower().startswith(("qwen3", "gpt-oss")):
             return False
         return None
+
+    def use_chat_endpoint(self, model: str) -> bool:
+        configured = os.environ.get("RAGTUNE_OLLAMA_ENDPOINT")
+        if configured is not None:
+            return configured.strip().lower() == "chat"
+        return model.lower().startswith("gpt-oss")
 
     def generate(
         self,
@@ -43,17 +49,27 @@ class OllamaGenerator:
     ) -> GenerationResult:
         if model not in self.available_models(timeout_s=timeout_s):
             raise GeneratorUnavailable(f"ollama model not available: {model}")
-        payload = {
-            "model": model,
-            "prompt": prompt,
-            "stream": False,
-            "options": {"temperature": temperature, "num_predict": max_tokens},
-        }
+        use_chat = self.use_chat_endpoint(model)
+        payload = (
+            {
+                "model": model,
+                "messages": [{"role": "user", "content": prompt}],
+                "stream": False,
+                "options": {"temperature": temperature, "num_predict": max_tokens},
+            }
+            if use_chat
+            else {
+                "model": model,
+                "prompt": prompt,
+                "stream": False,
+                "options": {"temperature": temperature, "num_predict": max_tokens},
+            }
+        )
         think = self.thinking_enabled(model)
         if think is not None:
             payload["think"] = think
         request = urllib.request.Request(
-            f"{self.base_url}/api/generate",
+            f"{self.base_url}/api/{'chat' if use_chat else 'generate'}",
             data=json.dumps(payload).encode("utf-8"),
             headers={"Content-Type": "application/json"},
             method="POST",
@@ -65,7 +81,7 @@ class OllamaGenerator:
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
             raise GeneratorUnavailable(str(exc)) from exc
         latency_ms = (time.perf_counter() - start) * 1000.0
-        answer = body.get("response", "")
+        answer = body.get("message", {}).get("content", "") if use_chat else body.get("response", "")
         local_path = write_local_answer(self.provider, model, answer)
         input_tokens = estimate_tokens(prompt)
         output_tokens = estimate_tokens(answer)

@@ -1,4 +1,5 @@
 {
+  "crag_answer_emission_model_comparison_result": "CRAG_GEN_LLM_ANSWER_EMISSION_REPAIRED_NO_COST_RESULT",
   "crag_repeat_comparison_result": "CRAG_GEN_LLM_COST_RESULT_NOT_REPLICATED",
   "crag_result_class": "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY_CRAG",
   "crag_second_model_comparison_result": "CRAG_GEN_LLM_COST_RESULT_MIXED_OR_INCONCLUSIVE_ACROSS_MODELS",
@@ -6,7 +7,7 @@
   "fresh_live_crag_proxy_result": "FRESH_CRAG_BLOCKED_QUALITY_MEASURE_PROXY_ONLY",
   "hotpotqa_non_generative_result": "HOTPOTQA_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS",
   "hotpotqa_result_class": "GEN_LLM_GOVERNANCE_INCONCLUSIVE",
-  "interpretation": "CRAG generative cost reduction was not stable across independent deterministic repeats and was not recovered by a second pinned local generator.",
+  "interpretation": "CRAG generative cost reduction was not stable across independent deterministic repeats and was not recovered by a second pinned local generator. A faster non-thinking instruct model repaired answer emission, but still did not recover a stable cost result.",
   "prior_frozen_crag_behavioral_result": "GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_QUALITY",
   "result_class": "GEN_LLM_SYNTHESIS_MIXED",
   "suite": "ragtune_generative_llm_validation_synthesis_v1",
