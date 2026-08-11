@@ -266,6 +266,51 @@ def test_crag_learned_risk_predictor_comparison_is_mixed() -> None:
     assert comparison["raw_generated_answers_committed"] is False
 
 
+def test_crag_quality_risk_guardrail_v2_uses_pooled_heldout_protocol() -> None:
+    comparison = load_json("results/generative_llm_validation/crag_quality_risk_guardrail_v2_comparison.json")
+    assert comparison["suite"] == "ragtune_crag_generative_quality_risk_guardrail_v2"
+    assert comparison["pooled_cross_offset_validation"] is True
+    assert comparison["heldout_offset_testing"] is True
+    assert comparison["strict_quality_loss_blocking"] is True
+    assert comparison["heldout_offset_count"] == 4
+    assert comparison["offsets"] == [0, 24, 36, 60]
+
+
+def test_crag_quality_risk_guardrail_v2_uses_deployable_features_only() -> None:
+    comparison = load_json("results/generative_llm_validation/crag_quality_risk_guardrail_v2_comparison.json")
+    assert comparison["deployable_features_only"] is True
+    assert comparison["raw_text_features_used"] is False
+    rows = list(csv.DictReader((ROOT / "artifacts/generative_llm_validation/crag_quality_risk_guardrail_v2/heldout_offset_results.csv").open(newline="", encoding="utf-8")))
+    allowed_features = {
+        "low_context_token_estimate",
+        "expanded_context_token_estimate",
+        "context_token_gap",
+        "retrieval_cost_gap",
+        "low_input_token_estimate",
+        "expanded_input_token_estimate",
+        "input_token_gap",
+    }
+    assert {row["feature_name"] for row in rows if row["feature_name"]} <= allowed_features
+
+
+def test_crag_quality_risk_guardrail_v2_blocks_on_heldout_quality_loss() -> None:
+    comparison = load_json("results/generative_llm_validation/crag_quality_risk_guardrail_v2_comparison.json")
+    assert comparison["result_class"] == "CRAG_GEN_LLM_QUALITY_RISK_GUARDRAIL_V2_BLOCKED_HELDOUT_QUALITY_LOSS"
+    assert comparison["predictor_gate_passed_count"] == 4
+    assert comparison["quality_loss_blocked_count"] == 3
+    assert comparison["positive_latency_result_count"] == 0
+    assert comparison["raw_prompts_committed"] is False
+    assert comparison["raw_generated_answers_committed"] is False
+    assert comparison["raw_questions_committed"] is False
+    assert comparison["raw_evidence_committed"] is False
+
+
+def test_generative_synthesis_includes_guardrail_v2_conservatively() -> None:
+    synthesis = load_json("results/generative_llm_validation/synthesis_result.json")
+    assert synthesis["crag_quality_risk_guardrail_v2_comparison_result"] == "CRAG_GEN_LLM_QUALITY_RISK_GUARDRAIL_V2_BLOCKED_HELDOUT_QUALITY_LOSS"
+    assert synthesis["result_class"] == "GEN_LLM_SYNTHESIS_MIXED"
+
+
 def test_crag_generative_selector_uses_deployable_validation_candidates() -> None:
     source = (ROOT / "src/ragtune/crag_generative_validation.py").read_text(encoding="utf-8")
     assert "DEPLOYABLE_CRAG_GENERATIVE_POLICIES" in source

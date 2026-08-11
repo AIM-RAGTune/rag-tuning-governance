@@ -34,7 +34,10 @@ REQUIRED = [
     "docs/generator_configuration.md",
     "docs/platform_benchmarking_boundary.md",
     "configs/experiments/ragtune_hotpotqa_generative_quality_signal_audit_v1.yaml",
+    "configs/experiments/ragtune_crag_generative_quality_risk_guardrail_v2.yaml",
     "artifacts/generative_llm_validation/hotpotqa_quality_signal_audit/audit_manifest.json",
+    "artifacts/generative_llm_validation/crag_quality_risk_guardrail_v2/audit_manifest.json",
+    "results/generative_llm_validation/crag_quality_risk_guardrail_v2_comparison.json",
     "deployment_review/generative_llm_validation_quality_signal_audit/generator_access_diagnosis.json",
 ]
 
@@ -279,6 +282,23 @@ def validate_generative_artifacts() -> None:
         audit = json.loads(audit_manifest.read_text(encoding="utf-8"))
         if "zero" in str(audit.get("prior_zero_delta_explanation", "")).lower() and not audit.get("result_class"):
             fail("HotpotQA quality-signal audit lacks a machine-readable result class")
+    guardrail_v2_path = ROOT / "results/generative_llm_validation/crag_quality_risk_guardrail_v2_comparison.json"
+    if guardrail_v2_path.exists():
+        guardrail_v2 = json.loads(guardrail_v2_path.read_text(encoding="utf-8"))
+        if not guardrail_v2.get("pooled_cross_offset_validation"):
+            fail("CRAG quality-risk guardrail v2 lacks pooled cross-offset validation")
+        if not guardrail_v2.get("heldout_offset_testing"):
+            fail("CRAG quality-risk guardrail v2 lacks held-out-offset testing")
+        if not guardrail_v2.get("deployable_features_only"):
+            fail("CRAG quality-risk guardrail v2 does not declare deployable-only features")
+        if guardrail_v2.get("raw_text_features_used"):
+            fail("CRAG quality-risk guardrail v2 used raw text features")
+        if guardrail_v2.get("raw_prompts_committed") or guardrail_v2.get("raw_generated_answers_committed"):
+            fail("CRAG quality-risk guardrail v2 committed raw prompt or generated-answer text")
+        if int(guardrail_v2.get("quality_loss_blocked_count", 0)) > 0:
+            blocked_class = "CRAG_GEN_LLM_QUALITY_RISK_GUARDRAIL_V2_BLOCKED_HELDOUT_QUALITY_LOSS"
+            if guardrail_v2.get("result_class") != blocked_class:
+                fail("CRAG quality-risk guardrail v2 did not block promotion after held-out quality loss")
     docs_text = "\n".join(
         path.read_text(encoding="utf-8").lower()
         for path in [
