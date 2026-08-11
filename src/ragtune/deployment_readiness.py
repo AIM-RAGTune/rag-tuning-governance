@@ -31,6 +31,19 @@ REQUIRED_DEPLOYABLE_FILES = [
     "docker/run_governance_job.sh",
     "docker/healthcheck.sh",
     "docker/docker-compose.public-mini.yml",
+    "docker/compose.public-mini.yml",
+    "docker-compose.yml",
+    "docs/docker_runtime_validation.md",
+    "docs/container_security_scans.md",
+    "scripts/diagnose_container_runtime.py",
+    "scripts/validate_docker_static.py",
+    "scripts/run_container_smoke_tests.py",
+    "scripts/run_optional_container_security_scans.py",
+    "configs/experiments/ragtune_container_smoke_tests_v1.yaml",
+    "artifacts/docker_hardening/container_runtime_diagnostics.json",
+    "artifacts/docker_hardening/docker_static_validation.json",
+    "artifacts/docker_hardening/container_smoke_test_manifest.json",
+    "artifacts/docker_hardening/container_security_scan_manifest.json",
     "docs/product_contract.md",
     "docs/deployment_architecture.md",
     "docs/operator_workflow.md",
@@ -117,6 +130,29 @@ def validate_deployment_readiness(root: Path, *, output_root: Path, config_path:
     missing_files = [path for path in REQUIRED_DEPLOYABLE_FILES if not (root / path).exists()]
     dockerignore_missing = _check_dockerignore(root)
     claim_hits = _scan_for_forbidden_phrases(root)
+    static_payload = {}
+    smoke_payload = {}
+    diagnostics_payload = {}
+    security_payload = {}
+    for name, target in [
+        ("static", root / "artifacts/docker_hardening/docker_static_validation.json"),
+        ("smoke", root / "artifacts/docker_hardening/container_smoke_test_manifest.json"),
+        ("diagnostics", root / "artifacts/docker_hardening/container_runtime_diagnostics.json"),
+        ("security", root / "artifacts/docker_hardening/container_security_scan_manifest.json"),
+    ]:
+        if target.exists():
+            try:
+                payload = json.loads(target.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                payload = {"result_class": "INVALID_JSON"}
+            if name == "static":
+                static_payload = payload
+            elif name == "smoke":
+                smoke_payload = payload
+            elif name == "diagnostics":
+                diagnostics_payload = payload
+            else:
+                security_payload = payload
     docker_cli_available = shutil.which("docker") is not None
     docker_daemon_available = False
     if docker_cli_available:
@@ -143,8 +179,18 @@ def validate_deployment_readiness(root: Path, *, output_root: Path, config_path:
                 "production_readiness_claimed": False,
             }
         )
+    static_ok = static_payload.get("result_class") == "DOCKER_STATIC_VALIDATION_PASSED"
+    smoke_class = str(smoke_payload.get("result_class", ""))
+    smoke_ok_or_skipped = smoke_class in {
+        "DOCKER_RUNTIME_VALIDATED_PUBLIC_MINI",
+        "PODMAN_RUNTIME_VALIDATED_PUBLIC_MINI",
+        "COLIMA_DOCKER_RUNTIME_VALIDATED_PUBLIC_MINI",
+        "CONTAINER_RUNTIME_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE",
+        "CONTAINER_RUNTIME_VALIDATION_SKIPPED_ENGINE_UNAVAILABLE",
+        "CONTAINER_RUNTIME_STATIC_VALIDATION_ONLY",
+    }
     result_class = "DEPLOYMENT_READINESS_SUPPORTED_WITH_BOUNDARIES"
-    if missing_files or dockerignore_missing or claim_hits:
+    if missing_files or dockerignore_missing or claim_hits or not static_ok or not smoke_ok_or_skipped:
         result_class = "DEPLOYMENT_READINESS_BLOCKED_PUBLICATION_HYGIENE"
     manifest = {
         "schema_version": "1.0",
@@ -161,6 +207,11 @@ def validate_deployment_readiness(root: Path, *, output_root: Path, config_path:
             if docker_cli_available
             else "DOCKER_VALIDATION_SKIPPED_DOCKER_UNAVAILABLE"
         ),
+        "container_runtime_diagnostic_result": diagnostics_payload.get("result_class", "missing"),
+        "docker_static_validation_result": static_payload.get("result_class", "missing"),
+        "container_smoke_test_result": smoke_payload.get("result_class", "missing"),
+        "container_smoke_test_skip_reason": smoke_payload.get("skip_reason", ""),
+        "optional_security_scan_result": security_payload.get("result_class", "missing"),
         "cloud_templates_ready": all(row["template_status"] == "TEMPLATE_READY" for row in target_rows),
         "live_cloud_validation_status": "NOT_RUN_NO_CREDENTIALS",
         "official_platform_benchmarking_claimed": False,
@@ -180,6 +231,9 @@ def validate_deployment_readiness(root: Path, *, output_root: Path, config_path:
         {"check": "dockerignore", "status": "PASS" if not dockerignore_missing else "FAIL", "detail": ",".join(dockerignore_missing)},
         {"check": "claim_boundaries", "status": "PASS" if not claim_hits else "FAIL", "detail": ",".join(claim_hits)},
         {"check": "cloud_live_runs", "status": "NOT_RUN", "detail": "templates only; no cloud credentials required or used"},
+        {"check": "docker_static_validation", "status": "PASS" if static_ok else "FAIL", "detail": str(static_payload.get("result_class", "missing"))},
+        {"check": "container_smoke_test", "status": "PASS" if smoke_ok_or_skipped else "FAIL", "detail": smoke_class or "missing"},
+        {"check": "optional_security_scans", "status": "PASS" if security_payload else "SKIP", "detail": str(security_payload.get("result_class", "missing"))},
     ]
     decision = build_promotion_decision(
         run_id="ragtune_deployment_readiness_v1_20260811-public",

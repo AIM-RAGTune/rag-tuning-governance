@@ -1,0 +1,5 @@
+services:
+  ragtune-public-mini:
+    extends:
+      file: docker/compose.public-mini.yml
+      service: ragtune-public-mini

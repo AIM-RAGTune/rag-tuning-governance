@@ -87,6 +87,21 @@ REQUIRED = [
     "artifacts/deployment_readiness/deployment_readiness_manifest.json",
     "artifacts/deployment_readiness/promotion_decision.json",
     "results/deployment_readiness/claim_update.json",
+    "docker-compose.yml",
+    "docker/compose.public-mini.yml",
+    "docs/docker_runtime_validation.md",
+    "docs/container_security_scans.md",
+    "scripts/diagnose_container_runtime.py",
+    "scripts/validate_docker_static.py",
+    "scripts/run_container_smoke_tests.py",
+    "scripts/run_optional_container_security_scans.py",
+    "configs/experiments/ragtune_container_smoke_tests_v1.yaml",
+    "artifacts/docker_hardening/container_runtime_diagnostics.json",
+    "artifacts/docker_hardening/docker_static_validation.json",
+    "artifacts/docker_hardening/container_smoke_test_manifest.json",
+    "artifacts/docker_hardening/container_security_scan_manifest.json",
+    "results/docker_hardening/claim_update.json",
+    "docs/docker_runtime_validation.md",
 ]
 
 EXPORT_REQUIRED = [
@@ -400,7 +415,7 @@ def validate_open_source_readiness_artifacts() -> None:
 
 def validate_deployment_artifacts() -> None:
     dockerignore = (ROOT / ".dockerignore").read_text(encoding="utf-8")
-    for required in [".git", ".local_data", ".env", "*.pem", "*.key", "artifacts/raw"]:
+    for required in [".git", ".local_data", ".env", "*.pem", "*.key", "*.onnx", "*.ckpt", "artifacts/**/raw*", "results/**/raw*"]:
         if required not in dockerignore:
             fail(f".dockerignore does not exclude {required}")
     manifest = json.loads((ROOT / "artifacts/deployment_readiness/deployment_readiness_manifest.json").read_text(encoding="utf-8"))
@@ -428,12 +443,50 @@ def validate_deployment_artifacts() -> None:
             ROOT / "docs/deployment_architecture.md",
             ROOT / "docs/cloud_agnostic_deployment.md",
             ROOT / "docs/operator_workflow.md",
+            ROOT / "docs/docker_runtime_validation.md",
+            ROOT / "docker/README.md",
         ]
     )
     if "official platform benchmarking completed" in docs_text:
         fail("deployment docs claim official platform benchmarking")
     if "validated in production" in docs_text:
         fail("deployment docs claim production validation")
+    static = json.loads((ROOT / "artifacts/docker_hardening/docker_static_validation.json").read_text(encoding="utf-8"))
+    if static.get("result_class") != "DOCKER_STATIC_VALIDATION_PASSED":
+        fail("Docker static validation did not pass")
+    runtime = json.loads((ROOT / "artifacts/docker_hardening/container_runtime_diagnostics.json").read_text(encoding="utf-8"))
+    if runtime.get("private_paths_exported") or runtime.get("secrets_exported"):
+        fail("container runtime diagnostics exported private paths or secrets")
+    smoke = json.loads((ROOT / "artifacts/docker_hardening/container_smoke_test_manifest.json").read_text(encoding="utf-8"))
+    allowed_smoke = {
+        "DOCKER_RUNTIME_VALIDATED_PUBLIC_MINI",
+        "PODMAN_RUNTIME_VALIDATED_PUBLIC_MINI",
+        "COLIMA_DOCKER_RUNTIME_VALIDATED_PUBLIC_MINI",
+        "CONTAINER_RUNTIME_STATIC_VALIDATION_ONLY",
+        "CONTAINER_RUNTIME_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE",
+        "CONTAINER_RUNTIME_VALIDATION_SKIPPED_ENGINE_UNAVAILABLE",
+        "CONTAINER_RUNTIME_VALIDATION_FAILED",
+        "CONTAINER_RUNTIME_VALIDATION_FAILED_PUBLICATION_HYGIENE",
+    }
+    if smoke.get("result_class") not in allowed_smoke:
+        fail("unknown container smoke-test result class")
+    if "SKIPPED" in str(smoke.get("result_class")) and not smoke.get("skip_reason"):
+        fail("container runtime skip lacks explicit reason")
+    if smoke.get("live_cloud_validation_claimed") or smoke.get("production_readiness_claimed") or smoke.get("official_platform_benchmarking_claimed"):
+        fail("container smoke test overclaims deployment status")
+    security = json.loads((ROOT / "artifacts/docker_hardening/container_security_scan_manifest.json").read_text(encoding="utf-8"))
+    allowed_security = {
+        "CONTAINER_SECURITY_SCANS_COMPLETED",
+        "CONTAINER_SECURITY_SCANS_PARTIAL",
+        "CONTAINER_SECURITY_SCANS_SKIPPED_TOOLS_UNAVAILABLE",
+        "CONTAINER_SECURITY_SCANS_SKIPPED_IMAGE_UNAVAILABLE",
+        "CONTAINER_SECURITY_SCANS_FAILED_CRITICAL_FINDINGS",
+    }
+    if security.get("result_class") not in allowed_security:
+        fail("unknown container security-scan result class")
+    for helper in ["docker/run_public_mini.sh", "docker/run_governance_job.sh", "docker/healthcheck.sh"]:
+        if not os.access(ROOT / helper, os.X_OK):
+            fail(f"Docker helper script is not executable: {helper}")
 
 
 def main() -> None:

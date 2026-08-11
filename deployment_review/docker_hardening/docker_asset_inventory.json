@@ -1,0 +1,15 @@
+{
+  "dockerfile": "present",
+  "dockerignore": "present",
+  "docker_readme": "present",
+  "docker_helper_scripts": "present",
+  "docker_compose_file": "present",
+  "root_docker_compose": "present",
+  "makefile_docker_targets": "present",
+  "cli_entrypoint": "present",
+  "public_mini_governance_job_config": "present",
+  "promotion_decision_schema": "present",
+  "deployment_readiness_artifacts": "present",
+  "private_paths_exported": false,
+  "secrets_exported": false
+}

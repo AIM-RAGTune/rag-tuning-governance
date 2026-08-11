@@ -1,0 +1,16 @@
+{
+  "critical_findings": 0,
+  "image_scan_completed": false,
+  "large_scan_outputs_committed": false,
+  "private_paths_exported": false,
+  "result_class": "CONTAINER_SECURITY_SCANS_SKIPPED_TOOLS_UNAVAILABLE",
+  "schema_version": "1.0",
+  "secrets_exported": false,
+  "tools_available": 0,
+  "tools_checked": [
+    "hadolint",
+    "trivy",
+    "grype",
+    "syft"
+  ]
+}

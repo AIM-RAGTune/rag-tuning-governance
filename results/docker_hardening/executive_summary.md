@@ -1,0 +1,1 @@
+Docker/container smoke-test result: `CONTAINER_RUNTIME_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE`.

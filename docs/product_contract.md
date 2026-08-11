@@ -45,3 +45,5 @@ RAGTune is not the chatbot. RAGTune is not a model. RAGTune is not a replacement
 - `ERROR`: a runtime failure prevented an auditable decision.
 
 This contract supports deployable open-source governance jobs. It does not assert live cloud certification, human validation, official platform benchmarking, or production operation.
+
+The Docker runtime contract is a local deployment validation path. A passing Docker public-mini job shows the container can execute the governance contract locally; it is not a live cloud validation or production certification.

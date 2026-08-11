@@ -4,7 +4,10 @@
 .local_data
 __pycache__
 .pytest_cache
+.mypy_cache
 .ruff_cache
+.coverage
+htmlcov
 *.pyc
 *.pyo
 .DS_Store
@@ -19,6 +22,8 @@ docker_outputs
 *.pem
 *.key
 *.crt
+*.p12
+*.pfx
 *.sqlite
 *.db
 *.parquet
@@ -26,5 +31,9 @@ docker_outputs
 *.pt
 *.safetensors
 *.bin
+*.onnx
+*.ckpt
 id_rsa
 id_ed25519
+artifacts/**/raw*
+results/**/raw*
