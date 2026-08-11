@@ -26,6 +26,13 @@ quality:
   generated_quality_noninferiority_margin: 0.01
   block_constant_zero_signal: true
 
+selector:
+  primary_endpoint_env: RAGTUNE_CRAG_GEN_PRIMARY_ENDPOINT
+  latency_guardrail_env: RAGTUNE_CRAG_GEN_LATENCY_GUARDRAIL
+  quality_risk_guardrail_policy: quality_guarded_latency_adaptive_expansion
+  quality_risk_guardrail_rule: start with two evidence items and expand to five when local CRAG answer/alternate-answer containment is absent
+  export_raw_guardrail_text: false
+
 output:
   sanitize_raw_text: true
   append_only: true

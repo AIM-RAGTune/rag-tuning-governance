@@ -104,7 +104,26 @@ def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[s
                 interpretation += " A faster non-thinking instruct model repaired answer emission, but still did not recover a stable cost result."
     elif repeat_comparison_class == "CRAG_GEN_LLM_COST_RESULT_NOT_REPLICATED":
         result_class = "GEN_LLM_SYNTHESIS_MIXED"
-        interpretation = "The primary CRAG slice produced generative support, but an independent deterministic CRAG repeat did not reproduce the cost result."
+        if stability_comparison_class in {
+            "CRAG_GEN_LLM_COST_RESULT_INCONCLUSIVE_ACROSS_REPEATS",
+            "CRAG_GEN_LLM_LATENCY_RESULT_INCONCLUSIVE_ACROSS_REPEATS",
+        }:
+            interpretation = (
+                "The primary CRAG slice produced generative support, an independent deterministic CRAG repeat did not "
+                f"reproduce the cost result, and the latest {stability_endpoint_label}-endpoint fixed-offset comparison "
+                "was inconclusive."
+            )
+        else:
+            interpretation = "The primary CRAG slice produced generative support, but an independent deterministic CRAG repeat did not reproduce the cost result."
+    elif stability_comparison_class in {
+        "CRAG_GEN_LLM_COST_RESULT_INCONCLUSIVE_ACROSS_REPEATS",
+        "CRAG_GEN_LLM_LATENCY_RESULT_INCONCLUSIVE_ACROSS_REPEATS",
+    } and crag_positive:
+        result_class = "GEN_LLM_SYNTHESIS_MIXED"
+        interpretation = (
+            f"The primary CRAG slice produced bounded generative support, but the latest {stability_endpoint_label}-endpoint "
+            "stability comparison was inconclusive across deterministic fixed offsets."
+        )
     elif crag_positive and hotpotqa_positive:
         result_class = "GEN_LLM_SYNTHESIS_GENERATIVE_VALIDATION_SUPPORTED"
         interpretation = "Both datasets produced generative validation support."
@@ -167,10 +186,19 @@ No raw prompts, raw generated answers, raw dataset questions, raw source documen
         if stability_comparison_class:
             limitation_text = (
                 "Generative validation is currently mixed bounded local evidence. The primary CRAG slice produced "
-                f"a cost-reduction signal, but the CRAG stability comparison did not show stable {stability_endpoint_label} reduction "
+                f"a cost-reduction signal, but the latest CRAG stability comparison did not show stable {stability_endpoint_label} reduction "
                 "across independent deterministic repeats"
                 + (", and a second pinned local generator did not recover a stable cost result" if second_model_comparison_class else "")
-                + (", a faster non-thinking instruct model repaired answer emission and the latency-endpoint selector comparison was mixed across fixed offsets" if answer_emission_comparison_class and stability_endpoint_label == "latency" else "")
+                + (
+                    ", a faster non-thinking instruct model repaired answer emission and the guarded latency-endpoint selector comparison was inconclusive across fixed offsets"
+                    if answer_emission_comparison_class and stability_comparison_class == "CRAG_GEN_LLM_LATENCY_RESULT_INCONCLUSIVE_ACROSS_REPEATS"
+                    else ""
+                )
+                + (
+                    ", a faster non-thinking instruct model repaired answer emission and the latency-endpoint selector comparison was mixed across fixed offsets"
+                    if answer_emission_comparison_class and stability_endpoint_label == "latency" and stability_comparison_class != "CRAG_GEN_LLM_LATENCY_RESULT_INCONCLUSIVE_ACROSS_REPEATS"
+                    else ""
+                )
                 + (", a faster non-thinking instruct model repaired answer emission but still did not recover a stable cost result" if answer_emission_comparison_class and stability_endpoint_label != "latency" else "")
                 + ", and HotpotQA remained inconclusive. This is not broad generative validation, not official "
                 "platform benchmarking, not human validation, and not production readiness."
