@@ -1,0 +1,10 @@
+selector,blocked_rate,quality_loss_rate,unsafe_selector_flag
+quality_only,0.0,0.25,False
+cost_only,0.0,0.25,True
+latency_only,0.0,0.25,True
+random_eligible,0.0,0.25,True
+static_default,0.0,0.25,False
+rag_compass_optional,0.0,0.25,False
+governed_noninferiority_selector,0.66,0.0,False
+risk_guarded_selector,0.66,0.0,False
+oracle_ceiling,0.0,0.0,False

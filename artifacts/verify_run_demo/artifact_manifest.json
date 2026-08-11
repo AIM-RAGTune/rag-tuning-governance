@@ -1,0 +1,36 @@
+{
+  "artifact_count": 6,
+  "artifacts": [
+    {
+      "bytes": 668,
+      "path": "mini_reproduction_manifest.json",
+      "sha256": "5a4550587cd7a83daae93d4742d329b77fba69c8495c2cdcbd7161c606dc7b95"
+    },
+    {
+      "bytes": 1873,
+      "path": "per_query_policy_results.csv",
+      "sha256": "4aaf763abb0b3069ce279ae794218379e9d88b75be19bee7b001144309aee443"
+    },
+    {
+      "bytes": 249,
+      "path": "policy_summary_metrics.csv",
+      "sha256": "45ec463dac7aaba70db4733a4fbff244b514a29624a090ff593dd40efc925418"
+    },
+    {
+      "bytes": 460,
+      "path": "primary_outcome_report.md",
+      "sha256": "24f70d9a71e99bf7bfd4bbf2d25e13659664fe7b5a32554889ae122094b7caec"
+    },
+    {
+      "bytes": 668,
+      "path": "primary_outcome_statistics.json",
+      "sha256": "5a4550587cd7a83daae93d4742d329b77fba69c8495c2cdcbd7161c606dc7b95"
+    },
+    {
+      "bytes": 218,
+      "path": "selector_comparison.csv",
+      "sha256": "991c45f57ca56f6d39867e356cb5216ef4cd5782d15c32abfc754a1de0a4a071"
+    }
+  ],
+  "run_dir": "public_mini_reproduction"
+}

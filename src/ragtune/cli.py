@@ -14,6 +14,7 @@ from ragtune.generative_validation_common import write_json, write_md
 from ragtune.open_source_arxiv_readiness_synthesis import run_open_source_arxiv_readiness_synthesis
 from ragtune.promotion_decision import build_promotion_decision, write_promotion_decision
 from ragtune.public_mini_reproduction import run_public_mini_reproduction
+from ragtune.rc1_maturity import verify_run
 from ragtune.selector_ablation_matrix import run_selector_ablation_matrix
 
 
@@ -118,6 +119,11 @@ def cmd_export_decision(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_verify_run(args: argparse.Namespace) -> int:
+    result = verify_run(ROOT, run_dir=ROOT / args.run_dir, output_root=ROOT / args.output_root)
+    return 0 if result["result_class"] == "VERIFY_RUN_PASSED" else 1
+
+
 def cmd_run_governance_job(args: argparse.Namespace) -> int:
     config_path = Path(args.config)
     if not config_path.exists():
@@ -187,6 +193,7 @@ def build_parser() -> argparse.ArgumentParser:
         "run-governance-job": cmd_run_governance_job,
         "export-decision": cmd_export_decision,
         "inspect-environment": cmd_inspect_environment,
+        "verify-run": cmd_verify_run,
     }
     for name, func in commands.items():
         child = sub.add_parser(name)
@@ -199,6 +206,9 @@ def build_parser() -> argparse.ArgumentParser:
     sub.choices["run-selector-ablation"].set_defaults(output_root="artifacts/selector_ablation_matrix")
     sub.choices["run-external-evaluator-demo"].set_defaults(output_root="artifacts/external_evaluator_adapters")
     sub.choices["synthesize-readiness"].set_defaults(output_root="results/open_source_arxiv_readiness")
+    verify = sub.choices["verify-run"]
+    verify.add_argument("--run-dir", default="artifacts/public_mini_reproduction")
+    verify.set_defaults(output_root="artifacts/verify_run_demo")
     export = sub.choices["export-decision"]
     export.add_argument("--run-id", default="manual_export")
     export.add_argument("--suite", default="manual")

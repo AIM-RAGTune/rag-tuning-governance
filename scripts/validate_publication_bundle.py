@@ -102,6 +102,42 @@ REQUIRED = [
     "artifacts/docker_hardening/container_security_scan_manifest.json",
     "results/docker_hardening/claim_update.json",
     "docs/docker_runtime_validation.md",
+    "configs/experiments/ragtune_fresh_clone_reproducibility_v1.yaml",
+    "artifacts/fresh_clone_reproducibility/fresh_clone_manifest.json",
+    "results/fresh_clone_reproducibility/claim_update.json",
+    "docs/fresh_clone_reproducibility.md",
+    "configs/experiments/ragtune_release_candidate_v1.yaml",
+    "artifacts/release_candidate/v0.1.0-rc1/release_candidate_manifest.json",
+    "artifacts/release_candidate/v0.1.0-rc1/release_checksums.sha256",
+    "docs/release_process.md",
+    "docs/release_notes_v0.1.0-rc1.md",
+    "configs/experiments/ragtune_crag_evaluator_mapping_diagnostic_v2.yaml",
+    "artifacts/crag_evaluator_mapping_v2/evaluator_mapping_v2_result.json",
+    "docs/crag_evaluator_mapping_v2.md",
+    "configs/experiments/ragtune_hotpotqa_generative_quality_signal_audit_v2.yaml",
+    "artifacts/hotpotqa_quality_signal_audit_v2/audit_manifest.json",
+    "docs/hotpotqa_quality_signal_audit_v2.md",
+    "configs/experiments/ragtune_selector_ablation_stress_v2.yaml",
+    "artifacts/selector_ablation_stress_v2/selector_ablation_stress_manifest.json",
+    "docs/selector_ablation_stress_v2.md",
+    "schemas/artifact_manifest.schema.json",
+    "artifacts/verify_run_demo/verify_run_manifest.json",
+    "docs/artifact_integrity.md",
+    "artifacts/external_evaluator_adapters_v2/external_evaluator_manifest.json",
+    "docs/external_evaluator_adapters.md",
+    "configs/experiments/ragtune_aim_hardware_matrix_v1.yaml",
+    "artifacts/aim_hardware_matrix/hardware_matrix_manifest.json",
+    "docs/aim_hardware_matrix.md",
+    "docs/arxiv_paper_plan.md",
+    "docs/arxiv_reproducibility_appendix.md",
+    "paper/main.tex",
+    "paper/tables/result_taxonomy_table.tex",
+    "paper/tables/claim_boundary_table.tex",
+    "paper/tables/selector_ablation_summary.tex",
+    "paper/tables/deployment_readiness_table.tex",
+    "paper/tables/reproducibility_table.tex",
+    "configs/experiments/ragtune_rc1_arxiv_readiness_synthesis_v1.yaml",
+    "results/rc1_arxiv_readiness/synthesis_result.json",
 ]
 
 EXPORT_REQUIRED = [
@@ -489,6 +525,113 @@ def validate_deployment_artifacts() -> None:
             fail(f"Docker helper script is not executable: {helper}")
 
 
+def validate_rc1_arxiv_readiness_artifacts() -> None:
+    allowed = {
+        "fresh_clone": {
+            "FRESH_CLONE_REPRODUCTION_PASSED_GIT_CLONE",
+            "FRESH_CLONE_REPRODUCTION_PASSED_LOCAL_COPY",
+            "FRESH_CLONE_REPRODUCTION_PARTIAL",
+            "FRESH_CLONE_REPRODUCTION_BLOCKED_NETWORK",
+            "FRESH_CLONE_REPRODUCTION_BLOCKED_INSTALL",
+            "FRESH_CLONE_REPRODUCTION_BLOCKED_VALIDATION",
+            "FRESH_CLONE_REPRODUCTION_FAILED",
+        },
+        "release_candidate": {
+            "RELEASE_CANDIDATE_READY",
+            "RELEASE_CANDIDATE_PARTIAL",
+            "RELEASE_CANDIDATE_BLOCKED_VALIDATION",
+            "RELEASE_CANDIDATE_BLOCKED_HYGIENE",
+            "RELEASE_CANDIDATE_BLOCKED_MISSING_ARTIFACTS",
+        },
+        "crag_mapping_v2": {
+            "CRAG_EVALUATOR_MAPPING_V2_ACTIVE_NONCONSTANT_SIGNAL",
+            "CRAG_EVALUATOR_MAPPING_V2_PARTIAL",
+            "CRAG_EVALUATOR_MAPPING_V2_PROXY_ONLY",
+            "CRAG_EVALUATOR_MAPPING_V2_BLOCKED_NO_CRAG_DATA",
+            "CRAG_EVALUATOR_MAPPING_V2_BLOCKED_NO_EVALUATOR",
+            "CRAG_EVALUATOR_MAPPING_V2_BLOCKED_SCHEMA_MAPPING",
+            "CRAG_EVALUATOR_MAPPING_V2_BLOCKED_NO_USABLE_SIGNAL",
+            "CRAG_EVALUATOR_MAPPING_V2_BLOCKED_PUBLICATION_HYGIENE",
+        },
+        "hotpotqa_audit_v2": {
+            "HOTPOTQA_GEN_QUALITY_AUDIT_V2_CONFIRMED_NONCONSTANT_SIGNAL",
+            "HOTPOTQA_GEN_QUALITY_AUDIT_V2_TRUE_EQUIVALENCE",
+            "HOTPOTQA_GEN_QUALITY_AUDIT_V2_SCORER_ISSUE_FOUND",
+            "HOTPOTQA_GEN_QUALITY_AUDIT_V2_GENERATOR_INSENSITIVE",
+            "HOTPOTQA_GEN_QUALITY_AUDIT_V2_QUALITY_LOSS",
+            "HOTPOTQA_GEN_QUALITY_AUDIT_V2_INCONCLUSIVE",
+            "HOTPOTQA_GEN_QUALITY_AUDIT_V2_BLOCKED_NO_GENERATOR",
+            "HOTPOTQA_GEN_QUALITY_AUDIT_V2_BLOCKED_NO_DATA",
+            "HOTPOTQA_GEN_QUALITY_AUDIT_V2_BLOCKED_PUBLICATION_HYGIENE",
+        },
+        "selector_stress_v2": {
+            "SELECTOR_ABLATION_STRESS_V2_GOVERNANCE_BLOCKS_UNSAFE_SELECTORS",
+            "SELECTOR_ABLATION_STRESS_V2_GOVERNANCE_NOT_SUPERIOR",
+            "SELECTOR_ABLATION_STRESS_V2_MIXED",
+            "SELECTOR_ABLATION_STRESS_V2_INCONCLUSIVE",
+            "SELECTOR_ABLATION_STRESS_V2_BLOCKED_INSUFFICIENT_INPUTS",
+        },
+        "verify_run": {
+            "VERIFY_RUN_PASSED",
+            "VERIFY_RUN_FAILED_MISSING_ARTIFACT",
+            "VERIFY_RUN_FAILED_HASH_MISMATCH",
+            "VERIFY_RUN_FAILED_SCHEMA",
+            "VERIFY_RUN_FAILED_PUBLICATION_HYGIENE",
+            "VERIFY_RUN_INCONCLUSIVE",
+        },
+        "external_v2": {
+            "EXTERNAL_EVALUATOR_ADAPTER_V2_DEMO_PASSED",
+            "EXTERNAL_EVALUATOR_ADAPTER_V2_PROMOTION_DECISION_GENERATED",
+            "EXTERNAL_EVALUATOR_ADAPTER_V2_BLOCKED_INVALID_SCHEMA",
+            "EXTERNAL_EVALUATOR_ADAPTER_V2_BLOCKED_NO_METRICS",
+            "EXTERNAL_EVALUATOR_ADAPTER_V2_BLOCKED_PUBLICATION_HYGIENE",
+        },
+        "hardware_matrix": {
+            "AIM_HARDWARE_MATRIX_COMPLETED",
+            "AIM_HARDWARE_MATRIX_PARTIAL",
+            "AIM_HARDWARE_MATRIX_BLOCKED",
+        },
+        "rc1_synthesis": {
+            "RC1_ARXIV_READINESS_SUPPORTED_WITH_BOUNDARIES",
+            "RC1_ARXIV_READINESS_DIRECTIONAL",
+            "RC1_ARXIV_READINESS_MIXED",
+            "RC1_ARXIV_READINESS_INCONCLUSIVE",
+            "RC1_ARXIV_READINESS_BLOCKED",
+        },
+    }
+    paths = {
+        "fresh_clone": ROOT / "artifacts/fresh_clone_reproducibility/fresh_clone_manifest.json",
+        "release_candidate": ROOT / "artifacts/release_candidate/v0.1.0-rc1/release_candidate_manifest.json",
+        "crag_mapping_v2": ROOT / "artifacts/crag_evaluator_mapping_v2/evaluator_mapping_v2_result.json",
+        "hotpotqa_audit_v2": ROOT / "artifacts/hotpotqa_quality_signal_audit_v2/audit_manifest.json",
+        "selector_stress_v2": ROOT / "artifacts/selector_ablation_stress_v2/selector_ablation_stress_manifest.json",
+        "verify_run": ROOT / "artifacts/verify_run_demo/verify_run_manifest.json",
+        "external_v2": ROOT / "artifacts/external_evaluator_adapters_v2/external_evaluator_manifest.json",
+        "hardware_matrix": ROOT / "artifacts/aim_hardware_matrix/hardware_matrix_manifest.json",
+        "rc1_synthesis": ROOT / "results/rc1_arxiv_readiness/synthesis_result.json",
+    }
+    for key, path in paths.items():
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if payload.get("result_class") not in allowed[key]:
+            fail(f"unknown RC1 result class for {key}: {payload.get('result_class')}")
+    if json.loads(paths["external_v2"].read_text(encoding="utf-8")).get("tool_replacement_claimed"):
+        fail("external evaluator adapters v2 claim tool replacement")
+    hardware = json.loads(paths["hardware_matrix"].read_text(encoding="utf-8"))
+    if hardware.get("official_platform_benchmark") or hardware.get("hostnames_exported") or hardware.get("private_paths_exported"):
+        fail("AIM hardware matrix violates publication boundaries")
+    crag = json.loads(paths["crag_mapping_v2"].read_text(encoding="utf-8"))
+    if crag.get("raw_crag_text_committed") or crag.get("raw_generated_answers_committed"):
+        fail("CRAG evaluator mapping v2 committed raw text")
+    paper = (ROOT / "paper/main.tex").read_text(encoding="utf-8")
+    for section in ["Problem Statement", "Governance Model", "Claim-Boundary Validation", "External Evaluator Adapter Architecture", "AIM Hardware Characterization"]:
+        if section not in paper:
+            fail(f"paper draft missing section: {section}")
+    forbidden = ["RAG Compass is proven superior", "production validated", "official platform benchmark completed", "human evaluation completed"]
+    for phrase in forbidden:
+        if phrase.lower() in paper.lower():
+            fail(f"paper draft contains unsupported claim phrase: {phrase}")
+
+
 def main() -> None:
     missing = [path for path in REQUIRED if not (ROOT / path).exists()]
     if missing:
@@ -534,6 +677,7 @@ def main() -> None:
     validate_generative_artifacts()
     validate_open_source_readiness_artifacts()
     validate_deployment_artifacts()
+    validate_rc1_arxiv_readiness_artifacts()
 
     try:
         remotes = subprocess.check_output(["git", "remote", "-v"], cwd=ROOT, text=True)

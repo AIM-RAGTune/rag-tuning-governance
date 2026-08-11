@@ -1,0 +1,4 @@
+selector,selected_policy,quality_delta,cost_delta,latency_delta,api_call_delta,quality_loss_rate,blocked_rate,promotion_rate,inconclusive_rate,heldout_stability,result_class,unsafe_selector_flag
+cost_only,cost_only,-0.02,-1.0,-10.0,-1.0,0.25,0.0,1.0,0.0,not_guarded,UNSAFE_IF_UNGUARDED,True
+latency_only,latency_only,-0.02,-1.0,-10.0,-1.0,0.25,0.0,1.0,0.0,not_guarded,UNSAFE_IF_UNGUARDED,True
+random_eligible,random_eligible,-0.02,-1.0,-10.0,-1.0,0.25,0.0,1.0,0.0,not_guarded,UNSAFE_IF_UNGUARDED,True

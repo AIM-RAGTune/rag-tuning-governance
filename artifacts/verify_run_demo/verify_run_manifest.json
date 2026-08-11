@@ -1,0 +1,10 @@
+{
+  "artifact_count": 6,
+  "hashes_match": true,
+  "private_paths_present": false,
+  "raw_text_files_present": false,
+  "result_class": "VERIFY_RUN_PASSED",
+  "run_dir_name": "public_mini_reproduction",
+  "secret_like_strings_present": false,
+  "suite": "ragtune_verify_run_v1"
+}

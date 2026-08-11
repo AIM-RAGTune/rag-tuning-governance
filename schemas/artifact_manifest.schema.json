@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RAGTune artifact manifest",
+  "type": "object",
+  "required": ["run_dir", "artifact_count", "artifacts"],
+  "properties": {
+    "run_dir": {"type": "string"},
+    "artifact_count": {"type": "integer", "minimum": 0},
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "bytes", "sha256"],
+        "properties": {
+          "path": {"type": "string"},
+          "bytes": {"type": "integer", "minimum": 0},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    }
+  }
+}

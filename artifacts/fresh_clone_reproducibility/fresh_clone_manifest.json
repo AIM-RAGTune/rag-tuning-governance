@@ -1,0 +1,13 @@
+{
+  "clone_mode": "git_clone",
+  "commands_passed": 7,
+  "commands_run": 7,
+  "private_paths_exported": false,
+  "raw_text_exported": false,
+  "requires_crag": false,
+  "requires_generator": false,
+  "requires_hotpotqa_cache": false,
+  "requires_private_data": false,
+  "result_class": "FRESH_CLONE_REPRODUCTION_PASSED_GIT_CLONE",
+  "suite": "ragtune_fresh_clone_reproducibility_v1"
+}

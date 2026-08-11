@@ -1,7 +1,7 @@
 \documentclass{article}
 \usepackage{booktabs}
 \usepackage{hyperref}
-\title{RAGTune Governance: Evidence-Preserving RAG Policy Promotion}
+\title{RAGTune: Evidence-Preserving Governance for RAG Policy Promotion Under Quality, Cost, Latency, and Risk Constraints}
 \author{AIM-RAGTune Contributors}
 \date{2026}
 
@@ -9,54 +9,56 @@
 \maketitle
 
 \begin{abstract}
-This scaffold summarizes the RAGTune governance validation package. The strongest current result is CRAG mock-API governance superiority. A bounded local generative LLM quality-signal audit produced mixed evidence: one CRAG slice reduced measured cost at equivalent generated-answer quality in a 12-example local qwen3 run, but three independent deterministic CRAG repeats did not reproduce the cost result. A second pinned local model, \texttt{gpt-oss:20b}, produced usable quality signals on the same offsets but no positive cost-result slices. A faster non-thinking instruct model, \texttt{llama3.2:3b}, repaired answer emission on larger fixed-offset CRAG slices with zero parse failures, but it also did not recover the cost result. A learned deployable quality-risk predictor reduced validation expansion rates for a latency endpoint, but confirmatory quality loss appeared on two fixed-offset slices. Guardrail v2 pooled validation evidence across offsets and used held-out-offset testing; it failed closed after held-out generated-quality loss, so no latency-selector promotion is made. HotpotQA remained inconclusive. Broad generative validation, optimizer superiority for RAG Compass, human evaluation, official external-platform benchmarking, and production readiness are not claimed.
+RAGTune is an open-source RAG governance and promotion-control framework. It does not replace RAG evaluation or observability tools; it consumes evaluator outputs and operational telemetry, then emits auditable promotion, rejection, blocked, or inconclusive decisions. This systems/methods draft summarizes public-mini reproduction, Docker runtime hardening, external evaluator adapter demos, selector ablation stress testing, artifact integrity verification, sanitized AIM hardware characterization, and mixed generative validation evidence. RAG Compass superiority, human validation, official platform benchmarking, production readiness, stable generative cost/latency superiority, and hallucination elimination are unsupported.
 \end{abstract}
 
 \section{Introduction}
-RAGTune is a governance framework for promotion decisions among competing RAG policies.
+RAGTune addresses the gap between RAG evaluation metrics and deployment promotion decisions. It provides a conservative governance layer for comparing policies under quality, cost, latency, provenance, and risk constraints.
 
-\section{Related Work}
-Placeholder for RAG evaluation, governance, optimization, and benchmark context.
+\section{Problem Statement}
+RAG systems often produce multiple plausible policy candidates. A promotion controller must decide whether a candidate should be promoted, blocked, rejected, or marked inconclusive without overstating the evidence.
 
-\section{RAGTune Governance Framework}
-Describe quality, cost, latency, safety, regression, provenance, and statistical gates.
+\section{Governance Model}
+RAGTune represents each candidate policy through sanitized metrics, operational telemetry, claim boundaries, and reproducibility metadata. Promotion is allowed only when predeclared gates pass.
 
-\section{RAG Compass Optimizer Candidate}
-RAG Compass is the forward-facing name for legacy id \texttt{ragtune\_no\_fork}. Current evidence does not support an optimizer-superiority claim for RAG Compass.
+\section{Policy Promotion and Refusal Taxonomy}
+The taxonomy includes promote, block, reject, inconclusive, fail-closed, partial, and unavailable results. Mixed and fail-closed outcomes are preserved as scientific evidence rather than hidden.
 
-\section{Datasets and Evidence Classes}
-Separate full corpus-backed, context-retrieval, diagnostic, simulation, and blocked evidence.
+\section{Claim-Boundary Validation}
+The validator checks raw-data exclusion, secret exclusion, private-path exclusion, CRAG redistribution boundaries, unsupported-claim language, and machine-readable result classes.
 
-\section{Methods}
-Describe frozen policy spaces, splits, bootstraps, and claim gates.
+\section{External Evaluator Adapter Architecture}
+RAGTune does not replace RAG evaluators. It consumes evaluator-style exports, normalizes metrics, and converts those metrics into promotion-control decisions.
 
-\section{Results}
-Use processed tables from \texttt{results/processed/}.
+\section{Public Mini Reproduction}
+The public-mini path is synthetic and requires no raw CRAG, HotpotQA, generator credentials, or local private data. It exercises the finite governance job and produces sanitized artifacts.
 
-\section{CRAG Mock-API Governance Superiority}
-Summarize the full held-out CRAG mock-API result, Docker decision reproduction, cost/latency ablation, case explanations, and frozen-observation resplit replication.
+\section{Selector Ablation Matrix}
+Selector ablations compare quality-only, cost-only, latency-only, random, static, RAG Compass optional, governed, guarded, and oracle-style selectors. The purpose is to expose unsafe promotions, not to claim universal superiority.
 
-\section{Behaviorally Distinct Policy Experiment}
-The follow-up experiment reanalyzes sanitized CRAG mock-API frozen observations using candidate policies with different endpoint-routing and operating-cost behavior. The primary endpoint is not a scalar weighted utility difference: governed selection must either reduce measured cost or latency at equivalent proxy-plus-evidence quality, or improve quality under a fixed deployment budget. The current result is \texttt{GOVERNANCE\_REDUCES\_COST\_AT\_EQUIVALENT\_QUALITY}: governed selection chose \texttt{low\_retrieval\_single\_endpoint}, while quality-only selection chose \texttt{optuna\_tpe}. This remains frozen-observation source/retrieval evidence and does not establish human-calibrated, generative, production, or RAG Compass superiority claims.
+\section{Generative Validation and Fail-Closed Results}
+Generative validation remains mixed. Some bounded local CRAG slices showed cost or latency reductions, while independent offsets and quality-risk guardrails exposed generated-quality loss. Guardrail v2 failed closed under held-out quality loss. HotpotQA audits provide a nonconstant generated-quality signal but do not establish broad generative governance superiority.
 
-\section{Fresh Live CRAG and HotpotQA Extension}
-The next phase attempts to run the behaviorally distinct governance design against a fresh live CRAG mock-API collection and HotpotQA as an alternate public corpus with answer labels and supporting facts. In the current public repository execution, fresh CRAG ran as a sanitized live sample but remained blocked because the quality signal was unusable. HotpotQA produced an operational-gain-with-quality-loss non-generative result. These results do not upgrade frozen-observation evidence to replicated evidence.
+\section{Docker and Deployment Readiness}
+The repository includes a hardened Docker public-mini runtime and cloud-agnostic templates. These support deployable-tool evaluation and operator workflow design, not production validation or official cloud benchmarking.
 
-\section{Generative LLM Validation}
-RAGTune Generative LLM Validation v1.1 adds pinned-generator answer generation with sanitized generated-answer metrics, a HotpotQA quality-signal audit, and CRAG generator/evaluator repair. The HotpotQA audit used a bounded 12-example local Ollama \texttt{qwen3:8b} run and found a nonconstant generated-answer quality signal, but governed and quality-only selection chose the same policy. The CRAG primary slice used the restored local CRAG mock-API path and local evaluator mapping after disabling Ollama thinking output for \texttt{qwen3:8b}; the larger bounded 12-example primary sample produced 132 nonempty generated answers and reduced measured cost at equivalent generated-answer quality. Three independent deterministic CRAG repeats at offsets 24, 36, and 60 did not reproduce the cost result. A second pinned local model, \texttt{gpt-oss:20b}, was run on the same four offsets and produced \texttt{CRAG\_GEN\_LLM\_COST\_RESULT\_INCONCLUSIVE\_ACROSS\_REPEATS}. A faster non-thinking instruct model, \texttt{llama3.2:3b}, then repaired answer emission on four 16-example fixed-offset CRAG slices with 0 / 704 parse failures. An unguarded predeclared latency-endpoint selector comparison separated governed and quality-only winners and consistently reduced latency/API calls, but only one slice met generated-quality noninferiority. A label-aware quality-risk guarded latency selector avoided quality-loss result classes, but no slice met the latency-reduction CI gate. A learned deployable quality-risk predictor reduced validation expansion rates and produced one latency-positive slice, but two confirmatory slices exceeded the generated-quality loss threshold, yielding \texttt{CRAG\_GEN\_LLM\_LEARNED\_RISK\_PREDICTOR\_LATENCY\_MIXED\_CONFIRMATORY\_QUALITY\_LOSS}. Guardrail v2 then pooled validation evidence across offsets, tested held-out offsets, used deployable-only retrieval features, and returned \texttt{CRAG\_GEN\_LLM\_QUALITY\_RISK\_GUARDRAIL\_V2\_BLOCKED\_HELDOUT\_QUALITY\_LOSS}. The synthesis remains \texttt{GEN\_LLM\_SYNTHESIS\_MIXED}.
+\section{AIM Hardware Characterization}
+The AIM hardware matrix records sanitized local runtime facts. It excludes hostnames, IP addresses, serial numbers, private paths, secrets, and full environment dumps. It is not official platform benchmarking.
 
 \section{Limitations}
-Broad generative LLM governance validation beyond the current mixed bounded local CRAG/HotpotQA evidence is unsupported. Human evaluation is not yet run. Official external-platform benchmarking is not yet run. Production readiness is not claimed.
+RAG Compass superiority is unsupported. Human validation is unsupported. Official platform benchmarking is unsupported. Production readiness is unsupported. Stable generative cost/latency superiority is unsupported. Raw licensed datasets must be obtained from their approved sources.
 
 \section{Reproducibility}
-Raw licensed datasets must be obtained separately. The repository includes configs, scripts, manifests, and processed summaries.
+Reproducibility artifacts include fresh-clone drill outputs, Docker public-mini validation, release-candidate manifests, checksums, verify-run artifacts, selector stress tests, and sanitized synthesis reports.
 
 \section{Conclusion}
-Current evidence supports continued RAGTune governance investigation more than optimizer-specific claims about RAG Compass.
+RAGTune is best supported as an evidence-preserving RAG policy governance framework. Its contribution is disciplined promotion control, refusal discipline, and reproducible claim-boundary validation.
+
+\section*{Generated Tables}
+\input{tables/result_taxonomy_table.tex}
+\input{tables/claim_boundary_table.tex}
+\input{tables/selector_ablation_summary.tex}
+\input{tables/deployment_readiness_table.tex}
+\input{tables/reproducibility_table.tex}
 
 \end{document}
-\paragraph{Open-source readiness.}
-The current public package frames RAGTune as evidence-preserving RAG policy governance infrastructure. It adds a synthetic public mini reproduction, external evaluator input adapters, selector ablations, CRAG generated-answer evaluator-mapping diagnostics, and sanitized local AIM hardware characterization. These artifacts support a systems/methods contribution while preserving mixed generative evidence and explicit claim boundaries.
-
-\paragraph{Deployment hardening.}
-The current package also defines RAGTune as a finite cloud-agnostic governance job with a CLI, Docker image contract, artifact-sink abstraction, promotion-decision schema, and example templates for Docker Compose, GitHub Actions, Kubernetes, Azure Container Apps Jobs, AWS ECS/Fargate, AWS Batch, and Google Cloud Run Jobs. These templates support reproducible operator workflows and do not constitute official cloud-platform benchmarking or production operation evidence.
