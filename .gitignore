@@ -12,4 +12,5 @@ data/raw/
 results/raw/*
 !results/raw/README.md
 artifacts/raw/
+docker_outputs/
 *.log

@@ -50,7 +50,7 @@ def run_container_smoke_tests(root: Path, *, output_root: Path) -> dict[str, Any
         result_class = "CONTAINER_RUNTIME_VALIDATION_FAILED"
         build_ok, build_detail = _run(["docker", "build", "-t", "ragtune:local", "."], root)
         steps.append({"step": "docker_build", "status": "PASS" if build_ok else "FAIL", "detail": build_detail})
-        help_ok = validate_ok = mini_ok = False
+        help_ok = validate_ok = mini_ok = compose_ok = False
         if build_ok:
             help_ok, help_detail = _run(["docker", "run", "--rm", "ragtune:local", "--help"], root)
             steps.append({"step": "container_help", "status": "PASS" if help_ok else "FAIL", "detail": help_detail})
@@ -76,7 +76,22 @@ def run_container_smoke_tests(root: Path, *, output_root: Path) -> dict[str, Any
                 root,
             )
             steps.append({"step": "container_public_mini", "status": "PASS" if mini_ok else "FAIL", "detail": mini_detail})
-        if build_ok and help_ok and validate_ok and mini_ok:
+            compose_ok, compose_detail = _run(
+                [
+                    "docker",
+                    "compose",
+                    "-f",
+                    "docker/compose.public-mini.yml",
+                    "up",
+                    "--build",
+                    "--abort-on-container-exit",
+                    "--exit-code-from",
+                    "ragtune-public-mini",
+                ],
+                root,
+            )
+            steps.append({"step": "docker_compose_public_mini", "status": "PASS" if compose_ok else "FAIL", "detail": compose_detail})
+        if build_ok and help_ok and validate_ok and mini_ok and compose_ok:
             result_class = "DOCKER_RUNTIME_VALIDATED_PUBLIC_MINI"
     elif docker_cli or podman_ready or colima_ready:
         engine = "docker" if docker_cli else "podman" if podman_ready else "colima"
@@ -114,7 +129,7 @@ def run_container_smoke_tests(root: Path, *, output_root: Path) -> dict[str, Any
         "docker_build_result": next((row["status"] for row in steps if row["step"] == "docker_build"), "not_run"),
         "docker_validate_result": next((row["status"] for row in steps if row["step"] == "container_validate_bundle"), "not_run"),
         "docker_public_mini_result": next((row["status"] for row in steps if row["step"] == "container_public_mini"), "not_run"),
-        "docker_compose_public_mini_result": "not_run",
+        "docker_compose_public_mini_result": next((row["status"] for row in steps if row["step"] == "docker_compose_public_mini"), "not_run"),
         "skip_reason": "" if "VALIDATED" in result_class else steps[-1]["detail"],
         "static_validation_required": True,
         "raw_data_committed": False,

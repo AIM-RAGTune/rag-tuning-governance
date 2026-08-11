@@ -8,34 +8,34 @@ Starting commit: `f9a67ac89bfe75b0dcd286d5b9bc22c839ee317f`
 
 ## Runtime Diagnostic
 
-- Result class: `CONTAINER_RUNTIME_CLI_PRESENT_DAEMON_UNAVAILABLE`
+- Result class: `CONTAINER_RUNTIME_DOCKER_READY`
 - Docker CLI present: yes
-- Docker daemon available: no
+- Docker daemon available: yes
 - Docker Compose plugin available: yes
 - Legacy `docker-compose` available: yes
 - Buildx available: yes
 - Podman ready: no
 - Colima ready: no
 
-The local runtime path did not complete a container build/run because no usable Docker daemon or alternate container machine was available. This is recorded as a bounded runtime skip, not as a runtime pass.
+The local runtime path completed after Docker Desktop was started and the Docker socket became readable from the validation shell.
 
 ## Static Docker Validation
 
 - Result class: `DOCKER_STATIC_VALIDATION_PASSED`
-- Checks passed: 17 / 17
+- Checks passed: 21 / 21
 - Checks failed: 0
 
 Static checks cover the Dockerfile, `.dockerignore`, Docker Compose public-mini path, helper scripts, Makefile Docker targets, public-mini job config, promotion decision schema, and Docker documentation boundaries.
 
 ## Container Smoke Test
 
-- Result class: `CONTAINER_RUNTIME_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE`
-- Skip reason: container CLI present but usable daemon/machine unavailable
-- Docker build: not run
-- `ragtune --help` in container: not run
-- `ragtune validate-bundle` in container: not run
-- Public-mini governance job in container: not run
-- Docker Compose public-mini: not run
+- Result class: `DOCKER_RUNTIME_VALIDATED_PUBLIC_MINI`
+- Skip reason: none
+- Docker build: passed
+- `ragtune --help` in container: passed
+- `ragtune validate-bundle` in container: passed
+- Public-mini governance job in container: passed
+- Docker Compose public-mini: passed
 
 ## Optional Security Scans
 

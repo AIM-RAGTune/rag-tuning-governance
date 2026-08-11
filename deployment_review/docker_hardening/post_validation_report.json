@@ -4,9 +4,9 @@
   "starting_commit": "f9a67ac89bfe75b0dcd286d5b9bc22c839ee317f",
   "post_validation_commit": "<created-after-validation>",
   "runtime_diagnostics": {
-    "result_class": "CONTAINER_RUNTIME_CLI_PRESENT_DAEMON_UNAVAILABLE",
+    "result_class": "CONTAINER_RUNTIME_DOCKER_READY",
     "docker_cli_present": true,
-    "docker_daemon_available": false,
+    "docker_daemon_available": true,
     "docker_compose_plugin_available": true,
     "docker_compose_legacy_available": true,
     "podman_ready": false,
@@ -15,17 +15,17 @@
   },
   "docker_static_validation": {
     "result_class": "DOCKER_STATIC_VALIDATION_PASSED",
-    "checks_passed": 17,
+    "checks_passed": 21,
     "checks_failed": 0
   },
   "container_smoke_test": {
-    "result_class": "CONTAINER_RUNTIME_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE",
-    "skip_reason": "container CLI present but usable daemon/machine unavailable",
-    "docker_build_result": "not_run",
-    "container_help_result": "not_run",
-    "container_validate_bundle_result": "not_run",
-    "public_mini_job_result": "not_run",
-    "docker_compose_public_mini_result": "not_run"
+    "result_class": "DOCKER_RUNTIME_VALIDATED_PUBLIC_MINI",
+    "skip_reason": "",
+    "docker_build_result": "PASS",
+    "container_help_result": "PASS",
+    "container_validate_bundle_result": "PASS",
+    "public_mini_job_result": "PASS",
+    "docker_compose_public_mini_result": "PASS"
   },
   "optional_security_scans": {
     "result_class": "CONTAINER_SECURITY_SCANS_SKIPPED_TOOLS_UNAVAILABLE",

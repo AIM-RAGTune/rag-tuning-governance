@@ -2,13 +2,13 @@
 
 Hardens the local Docker/container runtime path for the public RAGTune repository. This adds safe runtime diagnostics, static Docker validation, a public-mini container smoke-test runner, optional security-scan reporting, Docker Compose documentation, and deployment-readiness integration.
 
-The local Docker CLI is present, but no usable Docker daemon or alternate container machine was available. The PR therefore records a bounded runtime skip after static Docker/package/deployment checks passed.
+Docker Desktop was started locally and the daemon became readable from the validation shell. The PR records a completed public-mini Docker runtime validation after repairing the image copy contract needed for in-container publication validation.
 
 ## Runtime diagnostics
 
-- Runtime diagnostic result: `CONTAINER_RUNTIME_CLI_PRESENT_DAEMON_UNAVAILABLE`
+- Runtime diagnostic result: `CONTAINER_RUNTIME_DOCKER_READY`
 - Docker CLI present: yes
-- Docker daemon available: no
+- Docker daemon available: yes
 - Docker Compose plugin available: yes
 - Legacy `docker-compose` available: yes
 - Buildx available: yes
@@ -18,7 +18,7 @@ The local Docker CLI is present, but no usable Docker daemon or alternate contai
 ## Docker static validation
 
 - Result class: `DOCKER_STATIC_VALIDATION_PASSED`
-- Checks passed: 17 / 17
+- Checks passed: 21 / 21
 - Dockerfile: hardened with container contract, non-root runtime, `/outputs` support, and healthcheck
 - `.dockerignore`: hardened for local data, env files, secrets, caches, model/data binaries, and raw artifact patterns
 - Compose path: `docker/compose.public-mini.yml` plus root `docker-compose.yml`
@@ -26,13 +26,13 @@ The local Docker CLI is present, but no usable Docker daemon or alternate contai
 
 ## Container smoke test
 
-- Result class: `CONTAINER_RUNTIME_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE`
-- Skip reason: container CLI present but usable daemon/machine unavailable
-- Docker build: not run
-- `ragtune --help` in container: not run
-- `ragtune validate-bundle` in container: not run
-- Public-mini governance job in container: not run
-- Compose public-mini: not run
+- Result class: `DOCKER_RUNTIME_VALIDATED_PUBLIC_MINI`
+- Skip reason: none
+- Docker build: passed
+- `ragtune --help` in container: passed
+- `ragtune validate-bundle` in container: passed
+- Public-mini governance job in container: passed
+- Compose public-mini: passed
 
 ## Optional security scans
 

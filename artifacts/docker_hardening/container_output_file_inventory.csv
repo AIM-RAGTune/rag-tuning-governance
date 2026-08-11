@@ -1,2 +1,11 @@
 path,bytes
-<no-runtime-output-files>,0
+promotion_decision.json,1133
+public_mini_reproduction/mini_reproduction_manifest.json,668
+public_mini_reproduction/per_query_policy_results.csv,1873
+public_mini_reproduction/policy_summary_metrics.csv,249
+public_mini_reproduction/primary_outcome_report.md,460
+public_mini_reproduction/primary_outcome_statistics.json,668
+public_mini_reproduction/selector_comparison.csv,218
+run_manifest.json,106
+validation_report.json,58
+validation_report.md,55

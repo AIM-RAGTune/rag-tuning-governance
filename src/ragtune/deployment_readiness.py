@@ -157,18 +157,28 @@ def validate_deployment_readiness(root: Path, *, output_root: Path, config_path:
     docker_daemon_available = False
     if docker_cli_available:
         docker_daemon_available = subprocess.run(["docker", "info"], cwd=root, capture_output=True, text=True, check=False).returncode == 0
+    smoke_class = str(smoke_payload.get("result_class", ""))
+
+    def _docker_validation_status() -> str:
+        if smoke_class in {
+            "DOCKER_RUNTIME_VALIDATED_PUBLIC_MINI",
+            "PODMAN_RUNTIME_VALIDATED_PUBLIC_MINI",
+            "COLIMA_DOCKER_RUNTIME_VALIDATED_PUBLIC_MINI",
+        }:
+            return smoke_class
+        if docker_daemon_available:
+            return "DOCKER_DAEMON_AVAILABLE_NOT_BUILT"
+        if docker_cli_available:
+            return "DOCKER_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE"
+        return "DOCKER_VALIDATION_SKIPPED_DOCKER_UNAVAILABLE"
+
     target_rows: list[dict[str, Any]] = []
     for target, file_path in DEPLOYMENT_TARGETS:
         template_exists = (root / file_path).exists()
         local_status = "TEMPLATE_READY" if template_exists else "MISSING_TEMPLATE"
         live_status = "NOT_RUN_NO_CREDENTIALS"
         if target == "local_docker":
-            if docker_daemon_available:
-                live_status = "DOCKER_DAEMON_AVAILABLE_NOT_BUILT"
-            elif docker_cli_available:
-                live_status = "DOCKER_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE"
-            else:
-                live_status = "DOCKER_VALIDATION_SKIPPED_DOCKER_UNAVAILABLE"
+            live_status = _docker_validation_status()
         target_rows.append(
             {
                 "target": target,
@@ -180,7 +190,6 @@ def validate_deployment_readiness(root: Path, *, output_root: Path, config_path:
             }
         )
     static_ok = static_payload.get("result_class") == "DOCKER_STATIC_VALIDATION_PASSED"
-    smoke_class = str(smoke_payload.get("result_class", ""))
     smoke_ok_or_skipped = smoke_class in {
         "DOCKER_RUNTIME_VALIDATED_PUBLIC_MINI",
         "PODMAN_RUNTIME_VALIDATED_PUBLIC_MINI",
@@ -200,13 +209,7 @@ def validate_deployment_readiness(root: Path, *, output_root: Path, config_path:
         "container_contract_supported": not missing_files,
         "docker_cli_available": docker_cli_available,
         "docker_daemon_available": docker_daemon_available,
-        "docker_validation_status": (
-            "DOCKER_DAEMON_AVAILABLE_NOT_BUILT"
-            if docker_daemon_available
-            else "DOCKER_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE"
-            if docker_cli_available
-            else "DOCKER_VALIDATION_SKIPPED_DOCKER_UNAVAILABLE"
-        ),
+        "docker_validation_status": _docker_validation_status(),
         "container_runtime_diagnostic_result": diagnostics_payload.get("result_class", "missing"),
         "docker_static_validation_result": static_payload.get("result_class", "missing"),
         "container_smoke_test_result": smoke_payload.get("result_class", "missing"),

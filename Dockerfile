@@ -9,7 +9,7 @@ ENV PYTHONUNBUFFERED=1
 ENV RAGTUNE_CONTAINER=1
 ENV RAGTUNE_OUTPUT_ROOT=/outputs
 
-COPY pyproject.toml requirements.txt README.md LICENSE CITATION.cff Makefile ./
+COPY pyproject.toml requirements.txt README.md LICENSE CITATION.cff Makefile .gitattributes Dockerfile .dockerignore docker-compose.yml ./
 COPY src ./src
 COPY scripts ./scripts
 COPY configs ./configs
@@ -17,6 +17,9 @@ COPY docs ./docs
 COPY data ./data
 COPY results ./results
 COPY artifacts ./artifacts
+COPY docker ./docker
+COPY deploy ./deploy
+COPY deployment_review ./deployment_review
 COPY schemas ./schemas
 COPY paper ./paper
 COPY tests ./tests
