@@ -1,0 +1,11 @@
+{
+  "cloud_provider_hint": "unknown",
+  "containerized": false,
+  "hostnames_exported": false,
+  "os_family": "Darwin",
+  "output_root_configured": true,
+  "private_paths_exported": false,
+  "python_version": "3.13.5",
+  "secrets_exported": false,
+  "storage_mode": "local"
+}

@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 STAMP="$(date -u +%Y%m%d-%H%M%S)"
-OUT="${1:-$ROOT/../publication_exports/rag-tuning-governance_$STAMP}"
+OUT="${1:-$ROOT/../publication_bundle_output/rag-tuning-governance_$STAMP}"
 
 mkdir -p "$OUT/repository_bundle" "$OUT/approval_package" "$OUT/validation_reports" "$OUT/manifests" "$OUT/excluded" "$OUT/checksums" "$OUT/archives"
 rsync -a --delete --exclude='.git/' --exclude='.venv/' --exclude='__pycache__/' --exclude='.pytest_cache/' --exclude='.ruff_cache/' "$ROOT/" "$OUT/repository_bundle/"

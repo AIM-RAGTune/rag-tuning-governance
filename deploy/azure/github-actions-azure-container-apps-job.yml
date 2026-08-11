@@ -1,0 +1,12 @@
+name: Example Azure Container Apps Job
+on:
+  workflow_dispatch:
+jobs:
+  run-ragtune-job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build local image
+        run: docker build -t ragtune-governance:ci .
+      - name: Validate bundle in container
+        run: docker run --rm ragtune-governance:ci validate-bundle

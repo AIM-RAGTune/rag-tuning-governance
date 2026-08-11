@@ -1,0 +1,10 @@
+target,template_path,template_status,live_validation_status,official_platform_benchmarking_claimed,production_readiness_claimed
+local_docker,Dockerfile,TEMPLATE_READY,DOCKER_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE,False,False
+docker_compose,docker/docker-compose.public-mini.yml,TEMPLATE_READY,NOT_RUN_NO_CREDENTIALS,False,False
+github_actions,deploy/github-actions/validate-docker.yml,TEMPLATE_READY,NOT_RUN_NO_CREDENTIALS,False,False
+kubernetes_job,deploy/kubernetes/ragtune-job.yaml,TEMPLATE_READY,NOT_RUN_NO_CREDENTIALS,False,False
+kubernetes_cronjob,deploy/kubernetes/ragtune-cronjob.yaml,TEMPLATE_READY,NOT_RUN_NO_CREDENTIALS,False,False
+azure_container_apps_job,deploy/azure/container-apps-job.bicep,TEMPLATE_READY,NOT_RUN_NO_CREDENTIALS,False,False
+aws_ecs_fargate,deploy/aws/ecs-fargate-task.json,TEMPLATE_READY,NOT_RUN_NO_CREDENTIALS,False,False
+aws_batch,deploy/aws/batch-job-definition.json,TEMPLATE_READY,NOT_RUN_NO_CREDENTIALS,False,False
+gcp_cloud_run_job,deploy/gcp/cloud-run-job.yaml,TEMPLATE_READY,NOT_RUN_NO_CREDENTIALS,False,False

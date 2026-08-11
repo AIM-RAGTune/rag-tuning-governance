@@ -1,0 +1,30 @@
+{
+  "family": "ragtune-governance-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::<account-id>:role/<ecs-task-execution-role>",
+  "containerDefinitions": [
+    {
+      "name": "ragtune",
+      "image": "<account-id>.dkr.ecr.<region>.amazonaws.com/ragtune-governance:latest",
+      "essential": true,
+      "command": [
+        "run-governance-job",
+        "--config",
+        "configs/jobs/public_mini_governance_job.yaml",
+        "--output-root",
+        "/outputs",
+        "--decision-out",
+        "/outputs/promotion_decision.json"
+      ],
+      "environment": [
+        {
+          "name": "RAGTUNE_STORAGE_MODE",
+          "value": "local"
+        }
+      ]
+    }
+  ]
+}

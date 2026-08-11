@@ -1,0 +1,12 @@
+name: Run Public Mini Container
+on:
+  workflow_dispatch:
+jobs:
+  public-mini:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t ragtune-governance:ci .
+      - name: Run governance job
+        run: docker run --rm ragtune-governance:ci run-governance-job --config configs/jobs/public_mini_governance_job.yaml --output-root /tmp/ragtune-outputs --decision-out /tmp/ragtune-outputs/promotion_decision.json

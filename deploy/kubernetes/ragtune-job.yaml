@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ragtune-governance-job
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: ragtune
+          image: ghcr.io/example/ragtune-governance:latest
+          imagePullPolicy: IfNotPresent
+          args:
+            - run-governance-job
+            - --config
+            - /configs/job.yaml
+            - --output-root
+            - /outputs
+            - --decision-out
+            - /outputs/promotion_decision.json
+          env:
+            - name: RAGTUNE_STORAGE_MODE
+              value: local
+          volumeMounts:
+            - name: ragtune-config
+              mountPath: /configs
+            - name: ragtune-outputs
+              mountPath: /outputs
+      volumes:
+        - name: ragtune-config
+          configMap:
+            name: ragtune-job-config
+        - name: ragtune-outputs
+          persistentVolumeClaim:
+            claimName: ragtune-outputs

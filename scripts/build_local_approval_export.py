@@ -412,8 +412,8 @@ def make_archive(path: Path, members: list[Path], base: Path) -> None:
 
 def main() -> None:
     stamp = sys.argv[1] if len(sys.argv) > 1 else datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
-    preferred = Path("<approved-data-root>/SQUARE/publication_exports")
-    base = preferred if preferred.exists() and os.access(preferred, os.W_OK) else ROOT.parent / "publication_exports"
+    preferred = Path("<approved-data-root>/publication_bundle_output")
+    base = preferred if preferred.exists() and os.access(preferred, os.W_OK) else ROOT.parent / "publication_bundle_output"
     export_root = base / f"rag-tuning-governance_{stamp}"
     if export_root.exists():
         shutil.rmtree(export_root)

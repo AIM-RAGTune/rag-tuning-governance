@@ -22,3 +22,7 @@ No raw datasets, raw CRAG query wording, raw source documents, raw API responses
 ## Open-Source And arXiv Readiness Update
 
 The latest readiness package preserves the historical negative and mixed results while adding a deterministic public mini reproduction, external evaluator adapter demo, selector ablation matrix, CRAG evaluator-mapping diagnostics, and sanitized AIM hardware characterization. The package supports presenting RAGTune as a governance and promotion-control framework, not as a universal optimizer.
+
+## Cloud-Agnostic Deployment Update
+
+The deployment-hardening pass adds a CLI job contract, Docker support, Docker Compose and cloud deployment examples, storage-sink abstractions, promotion-decision schemas, and deployment-readiness validation. This strengthens RAGTune as open-source governance infrastructure. It does not change the scientific evidence ladder and does not claim live cloud benchmarking or production operation.

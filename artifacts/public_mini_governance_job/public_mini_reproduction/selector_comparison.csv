@@ -1,0 +1,4 @@
+selector,winner,decision
+quality_only,expanded_quality_policy,max quality
+cost_only,low_cost_sparse_evidence,blocked by quality loss
+governed_noninferiority,risk_guarded_governance,safe lower-cost policy within margin

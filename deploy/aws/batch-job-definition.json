@@ -1,0 +1,22 @@
+{
+  "jobDefinitionName": "ragtune-governance-batch",
+  "type": "container",
+  "platformCapabilities": ["FARGATE"],
+  "containerProperties": {
+    "image": "<account-id>.dkr.ecr.<region>.amazonaws.com/ragtune-governance:latest",
+    "command": [
+      "run-governance-job",
+      "--config",
+      "configs/jobs/public_mini_governance_job.yaml",
+      "--output-root",
+      "/outputs",
+      "--decision-out",
+      "/outputs/promotion_decision.json"
+    ],
+    "resourceRequirements": [
+      {"type": "VCPU", "value": "1"},
+      {"type": "MEMORY", "value": "2048"}
+    ],
+    "executionRoleArn": "arn:aws:iam::<account-id>:role/<batch-execution-role>"
+  }
+}

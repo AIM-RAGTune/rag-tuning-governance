@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RAGTune Promotion Decision",
+  "type": "object",
+  "required": [
+    "run_id",
+    "suite",
+    "timestamp_utc",
+    "result_class",
+    "decision",
+    "decision_reason",
+    "selected_policy",
+    "baseline_policy",
+    "quality_delta",
+    "cost_delta",
+    "latency_delta",
+    "evidence_support_delta",
+    "risk_flags",
+    "claim_boundaries",
+    "artifact_uris",
+    "validator_status",
+    "schema_version"
+  ],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "run_id": {"type": "string"},
+    "suite": {"type": "string"},
+    "timestamp_utc": {"type": "string"},
+    "result_class": {"type": "string"},
+    "decision": {"enum": ["PROMOTE", "BLOCK", "REJECT", "INCONCLUSIVE", "ERROR"]},
+    "decision_reason": {"type": "string"},
+    "selected_policy": {"type": "string"},
+    "baseline_policy": {"type": "string"},
+    "quality_delta": {"type": "number"},
+    "cost_delta": {"type": "number"},
+    "latency_delta": {"type": "number"},
+    "evidence_support_delta": {"type": "number"},
+    "risk_flags": {"type": "array"},
+    "claim_boundaries": {"type": "object"},
+    "artifact_uris": {"type": "array", "items": {"type": "string"}},
+    "validator_status": {"type": "string"}
+  }
+}

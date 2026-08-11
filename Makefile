@@ -1,4 +1,4 @@
-.PHONY: setup test reproduce-crag reproduce-multihop reproduce-public-mini tables figures validate-publication clean
+.PHONY: setup test reproduce-crag reproduce-multihop reproduce-public-mini tables figures validate-publication validate-deployment-readiness docker-build docker-validate docker-run-public-mini docker-run-external-evaluator-demo clean
 
 setup:
 	pip install -r requirements.txt
@@ -28,6 +28,21 @@ figures:
 
 validate-publication:
 	python scripts/validate_publication_bundle.py
+
+validate-deployment-readiness:
+	python scripts/validate_deployment_readiness.py --config configs/experiments/ragtune_deployment_readiness_v1.yaml --output-root artifacts/deployment_readiness --force
+
+docker-build:
+	docker build -t ragtune-governance:local .
+
+docker-validate:
+	docker run --rm ragtune-governance:local validate-bundle
+
+docker-run-public-mini:
+	docker run --rm -v "$$(pwd)/docker_outputs:/outputs" ragtune-governance:local run-governance-job --config configs/jobs/public_mini_governance_job.yaml --output-root /outputs --decision-out /outputs/promotion_decision.json
+
+docker-run-external-evaluator-demo:
+	docker run --rm -v "$$(pwd)/docker_outputs:/outputs" ragtune-governance:local run-external-evaluator-demo --output-root /outputs/external_evaluator_adapters
 
 package-for-approval:
 	bash scripts/package_for_approval.sh

@@ -59,6 +59,34 @@ REQUIRED = [
     "configs/experiments/ragtune_open_source_arxiv_readiness_synthesis_v1.yaml",
     "results/open_source_arxiv_readiness/synthesis_result.json",
     "docs/open_source_arxiv_readiness.md",
+    "Dockerfile",
+    ".dockerignore",
+    "src/ragtune/cli.py",
+    "src/ragtune/promotion_decision.py",
+    "src/ragtune/storage/factory.py",
+    "src/ragtune/deployment_readiness.py",
+    "scripts/validate_deployment_readiness.py",
+    "configs/jobs/public_mini_governance_job.yaml",
+    "configs/experiments/ragtune_deployment_readiness_v1.yaml",
+    "schemas/promotion_decision.schema.json",
+    "schemas/run_manifest.schema.json",
+    "schemas/deployment_readiness.schema.json",
+    "docs/product_contract.md",
+    "docs/deployment_architecture.md",
+    "docs/operator_workflow.md",
+    "docs/cloud_agnostic_deployment.md",
+    "docs/artifact_storage.md",
+    "docs/promotion_decision_schema.md",
+    "deploy/kubernetes/ragtune-job.yaml",
+    "deploy/kubernetes/ragtune-cronjob.yaml",
+    "deploy/azure/container-apps-job.bicep",
+    "deploy/aws/ecs-fargate-task.json",
+    "deploy/aws/batch-job-definition.json",
+    "deploy/gcp/cloud-run-job.yaml",
+    "deploy/github-actions/validate-docker.yml",
+    "artifacts/deployment_readiness/deployment_readiness_manifest.json",
+    "artifacts/deployment_readiness/promotion_decision.json",
+    "results/deployment_readiness/claim_update.json",
 ]
 
 EXPORT_REQUIRED = [
@@ -370,6 +398,44 @@ def validate_open_source_readiness_artifacts() -> None:
         fail("readiness synthesis does not preserve RAG Compass claim boundary")
 
 
+def validate_deployment_artifacts() -> None:
+    dockerignore = (ROOT / ".dockerignore").read_text(encoding="utf-8")
+    for required in [".git", ".local_data", ".env", "*.pem", "*.key", "artifacts/raw"]:
+        if required not in dockerignore:
+            fail(f".dockerignore does not exclude {required}")
+    manifest = json.loads((ROOT / "artifacts/deployment_readiness/deployment_readiness_manifest.json").read_text(encoding="utf-8"))
+    if manifest.get("result_class") not in {
+        "DEPLOYMENT_READINESS_SUPPORTED_WITH_BOUNDARIES",
+        "DEPLOYMENT_READINESS_BLOCKED_PUBLICATION_HYGIENE",
+    }:
+        fail("deployment readiness manifest has unknown result class")
+    if manifest.get("official_platform_benchmarking_claimed"):
+        fail("deployment readiness claims official platform benchmarking")
+    if manifest.get("production_readiness_claimed"):
+        fail("deployment readiness claims production operation")
+    if manifest.get("raw_data_committed") or manifest.get("raw_prompts_committed") or manifest.get("raw_generated_answers_committed"):
+        fail("deployment readiness artifacts indicate raw text was committed")
+    decision = json.loads((ROOT / "artifacts/deployment_readiness/promotion_decision.json").read_text(encoding="utf-8"))
+    if decision.get("decision") not in {"PROMOTE", "BLOCK", "REJECT", "INCONCLUSIVE", "ERROR"}:
+        fail("deployment promotion decision has invalid decision")
+    boundaries = decision.get("claim_boundaries", {})
+    if boundaries.get("official_platform_benchmarking_claimed") or boundaries.get("production_readiness_claimed"):
+        fail("deployment promotion decision violates claim boundaries")
+    docs_text = "\n".join(
+        path.read_text(encoding="utf-8").lower()
+        for path in [
+            ROOT / "docs/product_contract.md",
+            ROOT / "docs/deployment_architecture.md",
+            ROOT / "docs/cloud_agnostic_deployment.md",
+            ROOT / "docs/operator_workflow.md",
+        ]
+    )
+    if "official platform benchmarking completed" in docs_text:
+        fail("deployment docs claim official platform benchmarking")
+    if "validated in production" in docs_text:
+        fail("deployment docs claim production validation")
+
+
 def main() -> None:
     missing = [path for path in REQUIRED if not (ROOT / path).exists()]
     if missing:
@@ -414,6 +480,7 @@ def main() -> None:
     validate_no_crag_raw_text_fields()
     validate_generative_artifacts()
     validate_open_source_readiness_artifacts()
+    validate_deployment_artifacts()
 
     try:
         remotes = subprocess.check_output(["git", "remote", "-v"], cwd=ROOT, text=True)

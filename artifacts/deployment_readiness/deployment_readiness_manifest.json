@@ -1,0 +1,33 @@
+{
+  "claim_boundary_hits": [],
+  "cloud_templates_ready": true,
+  "container_contract_supported": true,
+  "deployable_product_framing": "open-source governance and promotion-control engine",
+  "docker_cli_available": true,
+  "docker_daemon_available": false,
+  "docker_validation_status": "DOCKER_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE",
+  "dockerignore_missing": [],
+  "live_cloud_validation_status": "NOT_RUN_NO_CREDENTIALS",
+  "missing_files": [],
+  "official_platform_benchmarking_claimed": false,
+  "private_paths_committed": false,
+  "production_readiness_claimed": false,
+  "raw_data_committed": false,
+  "raw_generated_answers_committed": false,
+  "raw_prompts_committed": false,
+  "required_targets": [
+    "local_docker",
+    "docker_compose",
+    "github_actions",
+    "kubernetes_job",
+    "kubernetes_cronjob",
+    "azure_container_apps_job",
+    "aws_ecs_fargate",
+    "aws_batch",
+    "gcp_cloud_run_job"
+  ],
+  "result_class": "DEPLOYMENT_READINESS_SUPPORTED_WITH_BOUNDARIES",
+  "schema_version": "1.0",
+  "secrets_committed": false,
+  "suite": "ragtune_deployment_readiness_v1"
+}

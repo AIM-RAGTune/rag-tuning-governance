@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Example RAGTune ECS Fargate task definition
+Parameters:
+  ContainerImage:
+    Type: String
+    Default: ghcr.io/example/ragtune-governance:latest
+Resources:
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: ragtune-governance-task
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: "1024"
+      Memory: "2048"
+      ContainerDefinitions:
+        - Name: ragtune
+          Image: !Ref ContainerImage
+          Command:
+            - run-governance-job
+            - --config
+            - configs/jobs/public_mini_governance_job.yaml
+            - --output-root
+            - /outputs
+            - --decision-out
+            - /outputs/promotion_decision.json

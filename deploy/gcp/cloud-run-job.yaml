@@ -1,0 +1,23 @@
+apiVersion: run.googleapis.com/v1
+kind: Job
+metadata:
+  name: ragtune-governance-job
+spec:
+  template:
+    spec:
+      template:
+        spec:
+          containers:
+            - image: us-docker.pkg.dev/<project-id>/<repo>/ragtune-governance:latest
+              args:
+                - run-governance-job
+                - --config
+                - configs/jobs/public_mini_governance_job.yaml
+                - --output-root
+                - /outputs
+                - --decision-out
+                - /outputs/promotion_decision.json
+              env:
+                - name: RAGTUNE_STORAGE_MODE
+                  value: local
+          maxRetries: 0

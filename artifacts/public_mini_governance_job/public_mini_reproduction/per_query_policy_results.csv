@@ -1,0 +1,17 @@
+example_id,query_hash,query_family,split,policy_id,final_quality_score,measured_cost_units,total_latency_ms,context_count,quality_loss_flag,raw_text_exported
+mini_q_001,mini_hash_001,lookup,confirmatory_test,low_cost_sparse_evidence,0.78,1.0,110.0,1,True,False
+mini_q_001,mini_hash_001,lookup,confirmatory_test,balanced_evidence_policy,0.835,1.8,170.0,2,False,False
+mini_q_001,mini_hash_001,lookup,confirmatory_test,expanded_quality_policy,0.85,3.2,260.0,4,False,False
+mini_q_001,mini_hash_001,lookup,confirmatory_test,risk_guarded_governance,0.842,1.9,175.0,2,False,False
+mini_q_002,mini_hash_002,comparison,confirmatory_test,low_cost_sparse_evidence,0.82,1.0,110.0,1,True,False
+mini_q_002,mini_hash_002,comparison,confirmatory_test,balanced_evidence_policy,0.875,1.8,170.0,2,False,False
+mini_q_002,mini_hash_002,comparison,confirmatory_test,expanded_quality_policy,0.89,3.2,260.0,4,False,False
+mini_q_002,mini_hash_002,comparison,confirmatory_test,risk_guarded_governance,0.882,1.9,175.0,2,False,False
+mini_q_003,mini_hash_003,multi_hop,confirmatory_test,low_cost_sparse_evidence,0.84,1.0,110.0,1,True,False
+mini_q_003,mini_hash_003,multi_hop,confirmatory_test,balanced_evidence_policy,0.895,1.8,170.0,2,False,False
+mini_q_003,mini_hash_003,multi_hop,confirmatory_test,expanded_quality_policy,0.91,3.2,260.0,4,False,False
+mini_q_003,mini_hash_003,multi_hop,confirmatory_test,risk_guarded_governance,0.902,1.9,175.0,2,False,False
+mini_q_004,mini_hash_004,answerability,confirmatory_test,low_cost_sparse_evidence,0.8,1.0,110.0,1,True,False
+mini_q_004,mini_hash_004,answerability,confirmatory_test,balanced_evidence_policy,0.855,1.8,170.0,2,False,False
+mini_q_004,mini_hash_004,answerability,confirmatory_test,expanded_quality_policy,0.87,3.2,260.0,4,False,False
+mini_q_004,mini_hash_004,answerability,confirmatory_test,risk_guarded_governance,0.862,1.9,175.0,2,False,False
