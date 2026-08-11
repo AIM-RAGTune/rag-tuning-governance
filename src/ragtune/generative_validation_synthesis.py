@@ -50,6 +50,8 @@ def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[s
         "",
     )
     stability_comparison_class = str(stability_comparison.get("result_class", ""))
+    stability_endpoint = str(stability_comparison.get("primary_endpoint", "cost") or "cost")
+    stability_endpoint_label = "latency" if stability_endpoint == "latency" else "cost"
     second_model_comparison = load_result(
         root / "results/generative_llm_validation/crag_second_model_comparison.json",
         "",
@@ -67,24 +69,39 @@ def synthesize_generative_validation(root: Path, *, output_root: Path) -> dict[s
     if "NO_GENERATOR" in crag_class and "NO_GENERATOR" in hotpotqa_class:
         result_class = "GEN_LLM_SYNTHESIS_BLOCKED"
         interpretation = "No pinned local or hosted generator was available, so generative validation remains blocked."
-    elif stability_comparison_class == "CRAG_GEN_LLM_COST_RESULT_STABLE_ACROSS_REPEATS" and crag_positive and hotpotqa_positive:
+    elif stability_comparison_class in {
+        "CRAG_GEN_LLM_COST_RESULT_STABLE_ACROSS_REPEATS",
+        "CRAG_GEN_LLM_LATENCY_RESULT_STABLE_ACROSS_REPEATS",
+    } and crag_positive and hotpotqa_positive:
         result_class = "GEN_LLM_SYNTHESIS_GENERATIVE_VALIDATION_SUPPORTED"
-        interpretation = "CRAG generative cost reduction was stable across independent deterministic repeats and HotpotQA also produced generative support."
-    elif stability_comparison_class == "CRAG_GEN_LLM_COST_RESULT_STABLE_ACROSS_REPEATS" and crag_positive:
+        interpretation = "CRAG generative operational reduction was stable across independent deterministic repeats and HotpotQA also produced generative support."
+    elif stability_comparison_class in {
+        "CRAG_GEN_LLM_COST_RESULT_STABLE_ACROSS_REPEATS",
+        "CRAG_GEN_LLM_LATENCY_RESULT_STABLE_ACROSS_REPEATS",
+    } and crag_positive:
         result_class = "GEN_LLM_SYNTHESIS_DIRECTIONAL"
-        interpretation = "CRAG generative cost reduction was stable across independent deterministic repeats, while HotpotQA did not independently support the same endpoint."
+        interpretation = "CRAG generative operational reduction was stable across independent deterministic repeats, while HotpotQA did not independently support the same endpoint."
     elif stability_comparison_class in {
         "CRAG_GEN_LLM_COST_RESULT_MIXED_ACROSS_REPEATS",
         "CRAG_GEN_LLM_COST_RESULT_NOT_STABLE_ACROSS_REPEATS",
         "CRAG_GEN_LLM_COST_RESULT_DIRECTIONAL_BUT_UNSTABLE",
+        "CRAG_GEN_LLM_LATENCY_RESULT_MIXED_ACROSS_REPEATS",
+        "CRAG_GEN_LLM_LATENCY_RESULT_NOT_STABLE_ACROSS_REPEATS",
+        "CRAG_GEN_LLM_LATENCY_RESULT_DIRECTIONAL_BUT_UNSTABLE",
     }:
         result_class = "GEN_LLM_SYNTHESIS_MIXED"
         if second_model_comparison_class:
-            interpretation = "CRAG generative cost reduction was not stable across independent deterministic repeats and was not recovered by a second pinned local generator."
+            if stability_endpoint_label == "latency":
+                interpretation = "CRAG generative latency reduction was mixed across independent deterministic repeats. The earlier cost-reduction result was not recovered by a second pinned local generator."
+            else:
+                interpretation = "CRAG generative cost reduction was not stable across independent deterministic repeats and was not recovered by a second pinned local generator."
         else:
-            interpretation = "CRAG generative cost reduction was not stable across independent deterministic repeats."
+            interpretation = f"CRAG generative {stability_endpoint_label} reduction was not stable across independent deterministic repeats."
         if answer_emission_comparison_class == "CRAG_GEN_LLM_ANSWER_EMISSION_REPAIRED_NO_COST_RESULT":
-            interpretation += " A faster non-thinking instruct model repaired answer emission, but still did not recover a stable cost result."
+            if stability_endpoint_label == "latency":
+                interpretation += " A faster non-thinking instruct model repaired answer emission; the follow-up latency-endpoint selector comparison was mixed across fixed offsets."
+            else:
+                interpretation += " A faster non-thinking instruct model repaired answer emission, but still did not recover a stable cost result."
     elif repeat_comparison_class == "CRAG_GEN_LLM_COST_RESULT_NOT_REPLICATED":
         result_class = "GEN_LLM_SYNTHESIS_MIXED"
         interpretation = "The primary CRAG slice produced generative support, but an independent deterministic CRAG repeat did not reproduce the cost result."
@@ -150,10 +167,11 @@ No raw prompts, raw generated answers, raw dataset questions, raw source documen
         if stability_comparison_class:
             limitation_text = (
                 "Generative validation is currently mixed bounded local evidence. The primary CRAG slice produced "
-                "a cost-reduction signal, but the CRAG stability comparison did not show stable cost reduction "
+                f"a cost-reduction signal, but the CRAG stability comparison did not show stable {stability_endpoint_label} reduction "
                 "across independent deterministic repeats"
-                + (", a second pinned local generator did not recover a stable cost result" if second_model_comparison_class else "")
-                + (", a faster non-thinking instruct model repaired answer emission but still did not recover a stable cost result" if answer_emission_comparison_class else "")
+                + (", and a second pinned local generator did not recover a stable cost result" if second_model_comparison_class else "")
+                + (", a faster non-thinking instruct model repaired answer emission and the latency-endpoint selector comparison was mixed across fixed offsets" if answer_emission_comparison_class and stability_endpoint_label == "latency" else "")
+                + (", a faster non-thinking instruct model repaired answer emission but still did not recover a stable cost result" if answer_emission_comparison_class and stability_endpoint_label != "latency" else "")
                 + ", and HotpotQA remained inconclusive. This is not broad generative validation, not official "
                 "platform benchmarking, not human validation, and not production readiness."
             )

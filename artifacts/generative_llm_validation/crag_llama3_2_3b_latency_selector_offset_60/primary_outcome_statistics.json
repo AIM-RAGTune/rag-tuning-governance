@@ -1,0 +1,79 @@
+{
+  "answer_emission_repair_enabled": true,
+  "api_call_delta": {
+    "ci_high": -3.0,
+    "ci_low": -3.0,
+    "mean": -3.0
+  },
+  "constrained_optimizer_winner": "static_default_policy",
+  "cost_delta": {
+    "ci_high": -3.6866000000000003,
+    "ci_low": -3.9287,
+    "mean": -3.788866666666667
+  },
+  "crag_evaluator_mapping_result_class": "CRAG_GENERATED_QUALITY_LOCAL_EVALUATOR_ACTIVE",
+  "empty_answer_retry_count": 0,
+  "empty_answer_retry_success_count": 0,
+  "empty_answer_retry_success_rate": 0.0,
+  "evidence_class": "crag_generative_validation_sanitized_bounded_repeat",
+  "evidence_support_delta": {
+    "ci_high": 0.0,
+    "ci_low": -1.0,
+    "mean": -0.16666666666666666
+  },
+  "example_count": 16,
+  "generated_quality_delta": {
+    "ci_high": 0.0,
+    "ci_low": -0.30000000000000004,
+    "mean": -0.03333333333333334
+  },
+  "generation_rows": 176,
+  "generator_available": true,
+  "generator_local_or_hosted": "local",
+  "generator_model": "llama3.2:3b",
+  "generator_provider": "ollama",
+  "governed_winner": "static_default_policy",
+  "latency_delta_ms": {
+    "ci_high": -2367.034874856472,
+    "ci_low": -3266.385874710977,
+    "mean": -2549.2699169553816
+  },
+  "non_empty_generated_answers": 176,
+  "pareto_frontier": [
+    "adaptive_routing_on_insufficient_evidence",
+    "low_retrieval_single_endpoint",
+    "static_default_policy"
+  ],
+  "primary_endpoint": "latency",
+  "prior_zero_delta_explanation": "generated answers and configured quality scores vary across the audited sample",
+  "quality_metric_class": "GENERATED_QUALITY_CRAG_LOCAL_EVALUATOR",
+  "quality_only_candidate_policies": [
+    "expanded_retrieval_multi_endpoint",
+    "quality_only_best_on_validation"
+  ],
+  "quality_only_winner": "expanded_retrieval_multi_endpoint",
+  "quality_signal_audit_result_class": "CRAG_GENERATED_QUALITY_LOCAL_EVALUATOR_ACTIVE",
+  "quality_variance": 0.04624856970782517,
+  "rag_compass_rank": 5,
+  "raw_evidence_committed": false,
+  "raw_generated_answers_committed": false,
+  "raw_prompts_committed": false,
+  "raw_questions_committed": false,
+  "result_class": "GEN_LLM_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS_CRAG",
+  "sample_offset": 60,
+  "sample_strategy": "deterministic_contiguous_offset",
+  "secrets_committed": false,
+  "selector_candidate_policies": [
+    "adaptive_routing_on_insufficient_evidence",
+    "expanded_retrieval_multi_endpoint",
+    "low_retrieval_single_endpoint",
+    "quality_only_best_on_validation",
+    "rag_compass_optional",
+    "static_default_policy"
+  ],
+  "selector_candidate_policy_count": 6,
+  "selector_design": "validation_split_quality_only_high_evidence_vs_governed_latency_feasible_confirmatory_eval",
+  "suite": "ragtune_crag_generative_llm_validation_v1",
+  "unique_answer_hash_count": 76,
+  "usable_quality_signal": true
+}

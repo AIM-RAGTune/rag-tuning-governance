@@ -1,0 +1,4 @@
+selector,winner,reason
+governed_selection,static_default_policy,validation deployable policy with lowest latency within generated-quality noninferiority margin
+quality_only_best_on_validation,expanded_retrieval_multi_endpoint,highest validation generated quality among predeclared high-evidence quality-only candidates; ignores cost and latency
+constrained_quality_optimizer,static_default_policy,deployment-aware validation selector over deployable policies

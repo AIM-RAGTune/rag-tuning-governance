@@ -1,0 +1,4 @@
+policy_id,frontier_reason
+adaptive_routing_on_insufficient_evidence,"nondominated on generated quality, cost, and latency"
+low_retrieval_single_endpoint,"nondominated on generated quality, cost, and latency"
+static_default_policy,"nondominated on generated quality, cost, and latency"
