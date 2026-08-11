@@ -21,6 +21,18 @@ from ragtune.generative_validation_common import (
 from ragtune.generators.factory import discover_generator
 from ragtune.publication_sanitization import stable_hash
 
+DEPLOYABLE_CRAG_GENERATIVE_POLICIES = {
+    "low_retrieval_single_endpoint",
+    "expanded_retrieval_multi_endpoint",
+    "adaptive_routing_on_insufficient_evidence",
+    "static_default_policy",
+    "rag_compass_optional",
+}
+QUALITY_ONLY_CRAG_GENERATIVE_POLICIES = {
+    "expanded_retrieval_multi_endpoint",
+    "quality_only_best_on_validation",
+}
+
 
 def crag_data_file() -> Path | None:
     data_root = os.environ.get("RAGTUNE_CRAG_DATA")
@@ -97,9 +109,11 @@ def simple_ci(values: list[float]) -> dict[str, float]:
     }
 
 
-def summarize_policy(rows: list[dict[str, object]]) -> list[dict[str, object]]:
+def summarize_policy(rows: list[dict[str, object]], *, policy_ids: set[str] | None = None) -> list[dict[str, object]]:
     summaries = []
     for policy in sorted({str(row["policy_id"]) for row in rows}):
+        if policy_ids is not None and policy not in policy_ids:
+            continue
         subset = [row for row in rows if row["policy_id"] == policy]
         summaries.append(
             {
@@ -112,13 +126,41 @@ def summarize_policy(rows: list[dict[str, object]]) -> list[dict[str, object]]:
     return summaries
 
 
-def choose_winners(summaries: list[dict[str, object]]) -> tuple[str, str, list[str]]:
+def choose_winners(
+    summaries: list[dict[str, object]],
+    *,
+    primary_endpoint: str,
+    quality_only_policy_ids: set[str] | None = None,
+    governed_policy_ids: set[str] | None = None,
+) -> tuple[str, str, str, list[str]]:
     if not summaries:
-        return "", "", []
-    quality_only = max(summaries, key=lambda row: float(row["final_generated_quality_score"]))
+        return "", "", "", []
+    quality_candidates = [
+        row
+        for row in summaries
+        if quality_only_policy_ids is None or str(row["policy_id"]) in quality_only_policy_ids
+    ] or summaries
+    quality_only = max(quality_candidates, key=lambda row: float(row["final_generated_quality_score"]))
     quality_floor = float(quality_only["final_generated_quality_score"]) - 0.01
-    feasible = [row for row in summaries if float(row["final_generated_quality_score"]) >= quality_floor]
-    governed = min(feasible or summaries, key=lambda row: (float(row["total_cost_units"]), float(row["total_latency_ms"])))
+    governed_candidates = [
+        row
+        for row in summaries
+        if governed_policy_ids is None or str(row["policy_id"]) in governed_policy_ids
+    ] or summaries
+    feasible = [row for row in governed_candidates if float(row["final_generated_quality_score"]) >= quality_floor]
+    if primary_endpoint == "latency":
+        governed = min(feasible or governed_candidates, key=lambda row: (float(row["total_latency_ms"]), float(row["total_cost_units"]), str(row["policy_id"])))
+    else:
+        governed = min(feasible or governed_candidates, key=lambda row: (float(row["total_cost_units"]), float(row["total_latency_ms"]), str(row["policy_id"])))
+    constrained = min(
+        feasible or governed_candidates,
+        key=lambda row: (
+            float(row["total_latency_ms"]) if primary_endpoint == "latency" else float(row["total_cost_units"]),
+            float(row["total_cost_units"]) if primary_endpoint == "latency" else float(row["total_latency_ms"]),
+            -float(row["final_generated_quality_score"]),
+            str(row["policy_id"]),
+        ),
+    )
     frontier = []
     for row in summaries:
         dominated = False
@@ -140,7 +182,7 @@ def choose_winners(summaries: list[dict[str, object]]) -> tuple[str, str, list[s
                 break
         if not dominated:
             frontier.append(str(row["policy_id"]))
-    return str(governed["policy_id"]), str(quality_only["policy_id"]), frontier
+    return str(governed["policy_id"]), str(quality_only["policy_id"]), str(constrained["policy_id"]), frontier
 
 
 def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, object]:
@@ -150,6 +192,9 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
     max_tokens = int(os.environ.get("RAGTUNE_GENERATOR_MAX_TOKENS", "48"))
     timeout_s = float(os.environ.get("RAGTUNE_GENERATOR_TIMEOUT_S", "120"))
     retry_empty_answers = os.environ.get("RAGTUNE_RETRY_EMPTY_GENERATED_ANSWERS", "true").strip().lower() in {"1", "true", "yes", "on"}
+    primary_endpoint = os.environ.get("RAGTUNE_CRAG_GEN_PRIMARY_ENDPOINT", "cost").strip().lower()
+    if primary_endpoint not in {"cost", "latency"}:
+        primary_endpoint = "cost"
     rows = load_crag_rows(max_examples, offset=sample_offset)
     result_rows: list[dict[str, object]] = []
     empty_answer_retry_count = 0
@@ -253,8 +298,20 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
                 }
             )
     summaries = summarize_policy(result_rows)
-    governed, quality_only, frontier = choose_winners(summaries)
+    validation_selection_rows = [row for row in result_rows if row["split"] == "validation"]
+    if not validation_selection_rows:
+        validation_selection_rows = [row for row in result_rows if row["split"] == "calibration"] or result_rows
+    selection_policy_ids = DEPLOYABLE_CRAG_GENERATIVE_POLICIES | QUALITY_ONLY_CRAG_GENERATIVE_POLICIES
+    selection_summaries = summarize_policy(validation_selection_rows, policy_ids=selection_policy_ids)
+    governed, quality_only, constrained, frontier = choose_winners(
+        selection_summaries,
+        primary_endpoint=primary_endpoint,
+        quality_only_policy_ids=QUALITY_ONLY_CRAG_GENERATIVE_POLICIES,
+        governed_policy_ids=DEPLOYABLE_CRAG_GENERATIVE_POLICIES,
+    )
     confirmatory = [row for row in result_rows if row["split"] == "confirmatory_test"]
+    if not confirmatory:
+        confirmatory = result_rows
     governed_rows = {row["example_id"]: row for row in confirmatory if row["policy_id"] == governed}
     quality_rows = {row["example_id"]: row for row in confirmatory if row["policy_id"] == quality_only}
     shared_ids = sorted(set(governed_rows) & set(quality_rows))
@@ -270,11 +327,16 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
         diagnostics["quality_signal_audit_result_class"] = "CRAG_GENERATED_QUALITY_LOCAL_EVALUATOR_ACTIVE"
     elif diagnostics["quality_signal_audit_result_class"] == "HOTPOTQA_GEN_LLM_ZERO_DELTAS_GENERATOR_INSENSITIVE":
         diagnostics["quality_signal_audit_result_class"] = "CRAG_GENERATED_QUALITY_BLOCKED_NO_USABLE_SIGNAL"
+    equivalent_quality = bool(quality_deltas) and simple_ci(quality_deltas)["mean"] >= -0.01
+    lower_cost = bool(cost_deltas) and simple_ci(cost_deltas)["ci_high"] < 0
+    lower_latency = bool(latency_deltas) and simple_ci(latency_deltas)["ci_high"] < 0
     if not diagnostics["usable_quality_signal"]:
         result_class = "GEN_LLM_VALIDATION_BLOCKED_NO_USABLE_QUALITY_SIGNAL_CRAG"
-    elif quality_deltas and simple_ci(quality_deltas)["mean"] >= -0.01 and simple_ci(cost_deltas)["ci_high"] < 0:
+    elif primary_endpoint == "latency" and equivalent_quality and lower_latency:
+        result_class = "GEN_LLM_GOVERNANCE_REDUCES_LATENCY_AT_EQUIVALENT_GENERATED_QUALITY_CRAG"
+    elif primary_endpoint == "cost" and equivalent_quality and lower_cost:
         result_class = "GEN_LLM_GOVERNANCE_REDUCES_COST_AT_EQUIVALENT_GENERATED_QUALITY_CRAG"
-    elif quality_deltas and simple_ci(quality_deltas)["mean"] < -0.01 and simple_ci(cost_deltas)["mean"] < 0:
+    elif quality_deltas and simple_ci(quality_deltas)["mean"] < -0.01 and (simple_ci(cost_deltas)["mean"] < 0 or simple_ci(latency_deltas)["mean"] < 0):
         result_class = "GEN_LLM_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS_CRAG"
     else:
         result_class = "GEN_LLM_GOVERNANCE_INCONCLUSIVE_CRAG"
@@ -294,13 +356,18 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
         "result_class": result_class,
         "generator_provider": discovery.provider,
         "generator_model": discovery.model,
+        "primary_endpoint": primary_endpoint,
+        "selector_design": "validation_split_quality_only_high_evidence_vs_governed_latency_feasible_confirmatory_eval",
+        "selector_candidate_policy_count": len(selection_summaries),
+        "selector_candidate_policies": [str(row["policy_id"]) for row in selection_summaries],
+        "quality_only_candidate_policies": sorted(QUALITY_ONLY_CRAG_GENERATIVE_POLICIES),
         "generator_available": True,
         "generator_local_or_hosted": discovery.local_or_hosted,
         "quality_metric_class": "GENERATED_QUALITY_CRAG_LOCAL_EVALUATOR",
         "crag_evaluator_mapping_result_class": mapping_class,
         "governed_winner": governed,
         "quality_only_winner": quality_only,
-        "constrained_optimizer_winner": governed,
+        "constrained_optimizer_winner": constrained,
         "pareto_frontier": frontier,
         "rag_compass_rank": next((idx + 1 for idx, row in enumerate(sorted(summaries, key=lambda item: float(item["final_generated_quality_score"]), reverse=True)) if row["policy_id"] == "rag_compass_optional"), ""),
         "generated_quality_delta": simple_ci(quality_deltas),
@@ -331,8 +398,9 @@ def run_crag_generation(root: Path, output_root: Path, discovery) -> dict[str, o
     write_csv(output_root / "per_query_generation_metrics.csv", GENERATION_FIELDNAMES, result_rows)
     write_csv(output_root / "policy_summary_metrics.csv", ["policy_id", "final_generated_quality_score", "total_cost_units", "total_latency_ms"], summaries)
     write_csv(output_root / "selector_comparison.csv", ["selector", "winner", "reason"], [
-        {"selector": "governed_selection", "winner": governed, "reason": "lowest cost within generated-quality noninferiority margin"},
-        {"selector": "quality_only_best_on_validation", "winner": quality_only, "reason": "highest generated quality"},
+        {"selector": "governed_selection", "winner": governed, "reason": f"validation deployable policy with lowest {primary_endpoint} within generated-quality noninferiority margin"},
+        {"selector": "quality_only_best_on_validation", "winner": quality_only, "reason": "highest validation generated quality among predeclared high-evidence quality-only candidates; ignores cost and latency"},
+        {"selector": "constrained_quality_optimizer", "winner": constrained, "reason": "deployment-aware validation selector over deployable policies"},
     ])
     write_csv(output_root / "pareto_frontier.csv", ["policy_id", "frontier_reason"], [{"policy_id": policy, "frontier_reason": "nondominated on generated quality, cost, and latency"} for policy in frontier])
     write_csv(

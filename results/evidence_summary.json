@@ -12,7 +12,7 @@
     "supported_claims": [
         "RAGTune governance produced a CRAG mock-API governance superiority signal on full held-out validation.",
         "A behaviorally distinct follow-up over sanitized frozen CRAG mock-API observations found governed selection reduced measured cost at equivalent proxy-plus-evidence quality.",
-        "The CRAG v1.1 local generative primary slice found reduced measured cost at equivalent generated-answer quality under sanitized metrics, but three independent deterministic CRAG repeats did not reproduce the cost result; a second pinned local model on the same offsets produced usable quality signals but no positive cost-result slices; a faster non-thinking instruct model repaired answer emission but also produced no positive cost-result slices; HotpotQA confirmed a nonconstant quality signal but remained inconclusive.",
+        "The CRAG v1.1 local generative primary slice found reduced measured cost at equivalent generated-answer quality under sanitized metrics, but three independent deterministic CRAG repeats did not reproduce the cost result; a second pinned local model on the same offsets produced usable quality signals but no positive cost-result slices; a faster non-thinking instruct model repaired answer emission, and a follow-up latency-endpoint selector comparison produced one latency-positive slice and three quality-loss slices; HotpotQA confirmed a nonconstant quality signal but remained inconclusive.",
         "The strongest CRAG mock-API decision was decision-reproduced in Docker and replicated under frozen-observation resplits according to packaged artifacts.",
         "RAGBench HotpotQA supports context-retrieval policy variation, not full corpus-backed retrieval."
     ],
@@ -27,7 +27,7 @@
         "Raw licensed datasets are not redistributed.",
         "CRAG use is noncommercial-research-only.",
         "The behaviorally distinct follow-up is derived from frozen sanitized observations and uses proxy-plus-evidence quality, not human-calibrated or generative validation.",
-        "Generative validation synthesis is mixed: the primary CRAG qwen slice showed reduced measured cost at equivalent generated-answer quality, but CRAG stability repeats did not reproduce the cost result, a second pinned local model did not recover it, a faster non-thinking instruct model repaired answer emission without recovering the cost result, and HotpotQA remained inconclusive.",
+        "Generative validation synthesis is mixed: the primary CRAG qwen slice showed reduced measured cost at equivalent generated-answer quality, but CRAG stability repeats did not reproduce the cost result, a second pinned local model did not recover it, a faster non-thinking instruct model repaired answer emission, a latency-endpoint selector comparison was mixed across fixed offsets, and HotpotQA remained inconclusive.",
         "Fresh live CRAG now has a restored local mock-API runtime and sanitized live sample, but remains blocked because the sample did not produce a usable answer/evidence quality signal; HotpotQA produced an operational-gain-with-quality-loss result under stronger answer-label/supporting-fact metrics.",
         "RAG Compass ranked fifth in the strongest CRAG mock-API result."
   ],

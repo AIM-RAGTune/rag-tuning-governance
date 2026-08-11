@@ -1,0 +1,20 @@
+{
+  "blocker": "",
+  "crag_approval_env_var_present": true,
+  "crag_data_configured": true,
+  "crag_root_configured": true,
+  "evidence_class": "crag_generative_validation_sanitized_bounded_repeat",
+  "generator_available": true,
+  "generator_local_or_hosted": "local",
+  "generator_model": "llama3.2:3b",
+  "generator_provider": "ollama",
+  "local_evaluator_available": true,
+  "mock_api_available": true,
+  "raw_evidence_committed": false,
+  "raw_generated_answers_committed": false,
+  "raw_prompts_committed": false,
+  "raw_questions_committed": false,
+  "result_class": "GEN_LLM_GOVERNANCE_REDUCES_LATENCY_AT_EQUIVALENT_GENERATED_QUALITY_CRAG",
+  "secrets_committed": false,
+  "suite": "ragtune_crag_generative_llm_validation_v1"
+}

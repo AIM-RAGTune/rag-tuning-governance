@@ -152,6 +152,11 @@ def test_crag_stability_comparison_result_class_machine_readable() -> None:
         "CRAG_GEN_LLM_COST_RESULT_NOT_STABLE_ACROSS_REPEATS",
         "CRAG_GEN_LLM_COST_RESULT_DIRECTIONAL_BUT_UNSTABLE",
         "CRAG_GEN_LLM_COST_RESULT_INCONCLUSIVE_ACROSS_REPEATS",
+        "CRAG_GEN_LLM_LATENCY_RESULT_STABLE_ACROSS_REPEATS",
+        "CRAG_GEN_LLM_LATENCY_RESULT_MIXED_ACROSS_REPEATS",
+        "CRAG_GEN_LLM_LATENCY_RESULT_NOT_STABLE_ACROSS_REPEATS",
+        "CRAG_GEN_LLM_LATENCY_RESULT_DIRECTIONAL_BUT_UNSTABLE",
+        "CRAG_GEN_LLM_LATENCY_RESULT_INCONCLUSIVE_ACROSS_REPEATS",
     }
     assert int(comparison["run_count"]) >= 3
     assert comparison["raw_prompts_committed"] is False
@@ -189,6 +194,34 @@ def test_llama3_crag_offsets_have_no_parse_failures() -> None:
         assert stats["generator_model"] == "llama3.2:3b"
         assert stats["non_empty_generated_answers"] == stats["generation_rows"]
         assert stats["usable_quality_signal"] is True
+
+
+def test_llama3_latency_selector_offsets_separate_winners() -> None:
+    positive_latency = 0
+    quality_loss = 0
+    for offset in ["0", "24", "36", "60"]:
+        stats = load_json(f"artifacts/generative_llm_validation/crag_llama3_2_3b_latency_selector_offset_{offset}/primary_outcome_statistics.json")
+        assert stats["generator_model"] == "llama3.2:3b"
+        assert stats["primary_endpoint"] == "latency"
+        assert stats["selector_design"] == "validation_split_quality_only_high_evidence_vs_governed_latency_feasible_confirmatory_eval"
+        assert stats["governed_winner"] != stats["quality_only_winner"]
+        assert stats["non_empty_generated_answers"] == stats["generation_rows"]
+        assert stats["usable_quality_signal"] is True
+        assert stats["raw_generated_answers_committed"] is False
+        if stats["result_class"] == "GEN_LLM_GOVERNANCE_REDUCES_LATENCY_AT_EQUIVALENT_GENERATED_QUALITY_CRAG":
+            positive_latency += 1
+        if stats["result_class"] == "GEN_LLM_GOVERNANCE_OPERATIONAL_GAIN_QUALITY_LOSS_CRAG":
+            quality_loss += 1
+    assert positive_latency == 1
+    assert quality_loss == 3
+
+
+def test_crag_generative_selector_uses_deployable_validation_candidates() -> None:
+    source = (ROOT / "src/ragtune/crag_generative_validation.py").read_text(encoding="utf-8")
+    assert "DEPLOYABLE_CRAG_GENERATIVE_POLICIES" in source
+    assert "QUALITY_ONLY_CRAG_GENERATIVE_POLICIES" in source
+    assert "validation_split_quality_only_high_evidence_vs_governed_latency_feasible_confirmatory_eval" in source
+    assert "RAGTUNE_CRAG_GEN_PRIMARY_ENDPOINT" in source
 
 
 def test_no_official_platform_benchmark_claim_from_local_generator() -> None:
