@@ -4,5 +4,5 @@ dockerignore,PASS,
 claim_boundaries,PASS,
 cloud_live_runs,NOT_RUN,templates only; no cloud credentials required or used
 docker_static_validation,PASS,DOCKER_STATIC_VALIDATION_PASSED
-container_smoke_test,PASS,CONTAINER_RUNTIME_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE
+container_smoke_test,PASS,DOCKER_RUNTIME_VALIDATED_PUBLIC_MINI
 optional_security_scans,PASS,CONTAINER_SECURITY_SCANS_SKIPPED_TOOLS_UNAVAILABLE

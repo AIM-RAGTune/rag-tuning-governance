@@ -2,4 +2,4 @@
 
 Result class: `DOCKER_STATIC_VALIDATION_PASSED`.
 
-Checks passed: 17 / 17.
+Checks passed: 21 / 21.

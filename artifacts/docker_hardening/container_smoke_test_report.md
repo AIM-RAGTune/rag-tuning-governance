@@ -1,9 +1,9 @@
 # Container Smoke Test
 
-Result class: `CONTAINER_RUNTIME_VALIDATION_SKIPPED_DAEMON_UNAVAILABLE`
+Result class: `DOCKER_RUNTIME_VALIDATED_PUBLIC_MINI`
 
 Engine selected: `docker`
 
-Skip reason: `container CLI present but usable daemon/machine unavailable`
+Skip reason: ``
 
 This is local container validation only. It does not claim live cloud validation, official platform benchmarking, or production operation.

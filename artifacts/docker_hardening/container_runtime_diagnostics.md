@@ -1,9 +1,9 @@
 # Container Runtime Diagnostics
 
-Result class: `CONTAINER_RUNTIME_CLI_PRESENT_DAEMON_UNAVAILABLE`
+Result class: `CONTAINER_RUNTIME_DOCKER_READY`
 
 - Docker CLI present: `True`
-- Docker daemon available: `False`
+- Docker daemon available: `True`
 - Docker Compose plugin available: `True`
 - Podman ready: `False`
 - Colima ready: `False`
