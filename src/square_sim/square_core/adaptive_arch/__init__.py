@@ -1,1 +1,0 @@
-"""Adaptive architecture core track."""

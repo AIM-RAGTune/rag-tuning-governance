@@ -50,7 +50,7 @@ Natural divergence adjudication found a mixed signal: 1 beneficial, 4 inconclusi
 
 ## 13. Unsupported Areas
 
-RAG Compass superiority, generative LLM validation, human evaluation, official external-platform benchmarking, production readiness, broad governance superiority, and SQUARE hardware/quantum advantage remain unsupported.
+RAG Compass superiority, generative LLM validation, human evaluation, official external-platform benchmarking, production readiness, broad governance superiority, and legacy hardware/quantum-advantage remain unsupported.
 
 ## 14. Current Best Claim
 

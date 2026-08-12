@@ -6,8 +6,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from square_sim.utils.files import write_json
-from square_sim.utils.hashing import stable_hash
+from ragtune.utils.files import write_json
+from ragtune.utils.hashing import stable_hash
 
 
 def governance_fixture(seed: int = 12345, rows: int = 240) -> pd.DataFrame:

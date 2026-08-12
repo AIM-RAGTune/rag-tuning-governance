@@ -1,7 +1,0 @@
-enable_real_peft: false
-license_acknowledged: false
-model_id_or_path: ""
-local_checkpoint_root: "/srv/aim/squaresim/hot/square_tune_peft"
-dataset_key: synthetic_llm_failure_cluster_routing
-max_steps: 10
-store_weights_on_nas: false

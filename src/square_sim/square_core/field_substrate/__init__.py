@@ -1,1 +1,0 @@
-"""Field-substrate simulation track."""

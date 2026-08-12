@@ -1,2 +1,0 @@
-"""Baseline optimizers for SQUARETune."""
-

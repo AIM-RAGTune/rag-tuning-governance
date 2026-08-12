@@ -7,7 +7,7 @@
   "container_smoke_test_skip_reason": "",
   "deployable_product_framing": "open-source governance and promotion-control engine",
   "docker_cli_available": true,
-  "docker_daemon_available": true,
+  "docker_daemon_available": false,
   "docker_static_validation_result": "DOCKER_STATIC_VALIDATION_PASSED",
   "docker_validation_status": "DOCKER_RUNTIME_VALIDATED_PUBLIC_MINI",
   "dockerignore_missing": [],

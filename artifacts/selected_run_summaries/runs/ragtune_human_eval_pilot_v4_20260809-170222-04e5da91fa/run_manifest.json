@@ -1,5 +1,5 @@
 {
-  "claim_boundary": "RAGTune software validation only; no SQUARE hardware or quantum claim.",
+  "claim_boundary": "RAGTune software validation only; no legacy hardware or quantum-advantage claim.",
   "config_hash": "ca3ba4f6f45bc4b3afd7ac906bead97558de7994afefbe83dd4f5b5067d960f6",
   "config_path": "configs/experiments/ragtune_human_eval_pilot_v4.yaml",
   "container_digest": null,

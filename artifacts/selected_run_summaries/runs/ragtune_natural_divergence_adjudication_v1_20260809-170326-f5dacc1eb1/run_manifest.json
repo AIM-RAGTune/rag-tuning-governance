@@ -1,5 +1,5 @@
 {
-  "claim_boundary": "RAGTune software validation only; no SQUARE hardware or quantum claim.",
+  "claim_boundary": "RAGTune software validation only; no legacy hardware or quantum-advantage claim.",
   "config_hash": "f23c9f3b21882cf37180581f37d65e2a54cb7fbf441afa11987c9ed1e01d263f",
   "config_path": "configs/experiments/ragtune_natural_divergence_adjudication_v1.yaml",
   "container_digest": null,

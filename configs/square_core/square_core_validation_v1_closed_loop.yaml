@@ -1,9 +1,0 @@
-matrix_name: closed_loop
-tracks: [closed_loop]
-seeds: [101, 202, 303, 404, 505]
-simulation:
-  grid_size: 32
-  emitter_count: 32
-  steps: 32
-diagnostics:
-  save_large_tensors: false

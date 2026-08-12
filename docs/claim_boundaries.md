@@ -22,7 +22,7 @@ Unsupported:
 - Official external platform benchmarking.
 - Production readiness.
 - Hallucination elimination.
-- SQUARE hardware or quantum advantage is unsupported and not claimed.
+- legacy hardware or quantum-advantage is unsupported and not claimed.
 
 Evidence classes must not be relabeled. Context-retrieval evidence is weaker than full corpus-backed evidence. Workflow simulation is not an official platform benchmark.
 

@@ -1,3 +1,0 @@
-include_configs:
-  - configs/tune/external_transfer/datasets_minimal_v1.yaml
-  - configs/tune/external_transfer/datasets_optional_v1.yaml

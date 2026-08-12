@@ -1,6 +1,0 @@
-matrix_name: rag_scenarios
-tracks: [rag]
-seeds: [101]
-simulation:
-  rows_per_track: 2000
-  scenario_max_rows: 2000

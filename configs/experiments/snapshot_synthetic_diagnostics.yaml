@@ -20,11 +20,11 @@ models:
   - logistic_regression
   - hist_gradient_boosting
   - fourier_mlp
-  - squaresim_full
-  - squaresim_snapshot_rollout
-  - squaresim_snapshot_no_fork
-  - squaresim_snapshot_linear_rollout
-  - squaresim_snapshot_no_merge
+  - sq-removedsim_full
+  - sq-removedsim_snapshot_rollout
+  - sq-removedsim_snapshot_no_fork
+  - sq-removedsim_snapshot_linear_rollout
+  - sq-removedsim_snapshot_no_merge
 training:
   max_epochs: 5
   batch_size: 256

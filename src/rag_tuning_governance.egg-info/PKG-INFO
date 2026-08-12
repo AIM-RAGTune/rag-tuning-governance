@@ -78,7 +78,7 @@ This repository does not claim:
 - Official LangSmith, Ragas, DeepEval, or RAGChecker benchmarking.
 - Production readiness.
 - Hallucination elimination.
-- SQUARE hardware or quantum advantage.
+- legacy hardware or quantum-advantage.
 
 ## Dataset Availability
 

@@ -5,7 +5,7 @@ from typing import Any
 
 import pandas as pd
 
-from square_sim.utils.files import write_json, write_text
+from ragtune.utils.files import write_json, write_text
 
 
 def write_report(

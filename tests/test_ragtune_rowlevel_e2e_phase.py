@@ -12,7 +12,7 @@ from ragtune.validation_phase3 import (
     row_level_reconstruction_payload,
     verify_prior_hashes,
 )
-from square_sim.utils.files import write_json
+from ragtune.utils.files import write_json
 
 
 def _parent_run(tmp_path: Path, constant_delta: bool = True) -> Path:

@@ -15,8 +15,8 @@ from ragtune.artifacts import (
 from ragtune.config import SuiteConfig
 from ragtune.end_to_end import RAGPolicy, chunk_documents, mini_corpus, run_pipeline
 from ragtune.metrics import apply_utilities, rank_policies
-from square_sim.utils.files import write_json, write_text
-from square_sim.utils.hashing import stable_hash
+from ragtune.utils.files import write_json, write_text
+from ragtune.utils.hashing import stable_hash
 
 
 def _policies() -> dict[str, RAGPolicy]:

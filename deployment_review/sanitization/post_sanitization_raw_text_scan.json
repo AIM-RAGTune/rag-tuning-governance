@@ -1,203 +1,198 @@
 {
-  "files_scanned": 873,
-  "violations": [],
   "allowed_mentions_count": 39,
   "allowed_mentions_sample": [
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "README.md",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "tests/test_ragtune_crag_mock_api_hardening_phase.py",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "tests/test_ragtune_fresh_corpus_readiness_phase.py",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "tests/test_ragtune_corpus_expansion_v4_phase.py",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "docs/crag_query_text_sanitization.md",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "scripts/validate_publication_bundle.py",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "scripts/validate_publication_bundle.py",
-      "term": "question_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "question_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "scripts/validate_publication_bundle.py",
-      "term": "raw_query",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "raw_query"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "scripts/validate_publication_bundle.py",
-      "term": "raw_question",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "raw_question"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "scripts/validate_publication_bundle.py",
-      "term": "raw_response",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "raw_response"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "scripts/validate_publication_bundle.py",
-      "term": "source_snippet",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "source_snippet"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "scripts/validate_publication_bundle.py",
-      "term": "api_response",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "api_response"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "scripts/validate_publication_bundle.py",
-      "term": "context_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "context_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "scripts/validate_publication_bundle.py",
-      "term": "document_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "document_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "data/DATA_AVAILABILITY.md",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "src/ragtune/validation_phase3.py",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "src/ragtune/validation_phase3.py",
-      "term": "raw_query",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "raw_query"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "src/ragtune/validation_phase3.py",
-      "term": "context_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "context_text"
     },
     {
-      "path": "src/square_sim/square_tune_matched_cost/datasets.py",
-      "term": "context_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
+      "term": "context_text"
     },
     {
-      "path": "src/square_sim/tune/external/scenarios.py",
-      "term": "context_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
+      "term": "context_text"
     },
     {
-      "path": "src/square_sim/tune/external/normalize.py",
-      "term": "context_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
+      "term": "context_text"
     },
     {
-      "path": "src/square_sim/tune/external/schemas.py",
-      "term": "context_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
+      "term": "context_text"
     },
     {
-      "path": "src/square_sim/square_tune_generalized/datasets/rag.py",
-      "term": "context_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
+      "term": "context_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "deployment_review/sanitization/pre_sanitization_state.json",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "deployment_review/sanitization/pre_sanitization_state.json",
-      "term": "raw_query",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "raw_query"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "deployment_review/sanitization/pre_sanitization_state.json",
-      "term": "context_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "context_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "deployment_review/sanitization/sanitized_files_manifest.csv",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "deployment_review/sanitization/pre_sanitization_state.md",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "deployment_review/sanitization/pre_sanitization_state.md",
-      "term": "raw_query",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "raw_query"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "deployment_review/sanitization/pre_sanitization_state.md",
-      "term": "context_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "context_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "deployment_review/sanitization/raw_text_exposure_inventory.json",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "deployment_review/sanitization/sanitized_files_manifest.json",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "deployment_review/sanitization/raw_text_exposure_inventory.csv",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "artifacts/selected_run_summaries/runs/ragtune_crag_mock_api_validation_v1_20260809-164913-92d8c0edd4/crag_mock_api_domain_task_sample.csv",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "artifacts/selected_run_summaries/runs/ragtune_crag_mock_api_validation_v1_20260809-165415-92d8c0edd4/crag_mock_api_domain_task_sample.csv",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "artifacts/selected_run_summaries/runs/ragtune_crag_mock_api_case_explanation_pack_v1_20260809-174530-2c68f91651/crag_mock_api_case_packets.json",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "artifacts/selected_run_summaries/runs/ragtune_crag_mock_api_case_explanation_pack_v1_20260809-174530-2c68f91651/crag_mock_api_case_packets.md",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "artifacts/selected_run_summaries/runs/ragtune_crag_mock_api_case_explanation_pack_v1_20260809-174530-2c68f91651/crag_mock_api_technical_case_pack.md",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     },
     {
+      "allowed_as": "schema/code/hash/redaction mention unless listed as violation",
       "path": "artifacts/selected_run_summaries/runs/ragtune_crag_mock_api_validation_v1_20260809-162440-92d8c0edd4/crag_mock_api_domain_task_sample.csv",
-      "term": "query_text",
-      "allowed_as": "schema/code/hash/redaction mention unless listed as violation"
+      "term": "query_text"
     }
   ],
-  "result": "PASS"
+  "files_scanned": 873,
+  "result": "PASS",
+  "violations": []
 }

@@ -10,9 +10,9 @@ from typing import Any
 
 import yaml
 
-from square_sim.utils.files import write_json, write_text
-from square_sim.utils.hashing import sha256_file, stable_hash
-from square_sim.utils.write_once import WriteOnceError
+from ragtune.utils.files import write_json, write_text
+from ragtune.utils.hashing import sha256_file, stable_hash
+from ragtune.utils.write_once import WriteOnceError
 
 
 def utc_now() -> str:
@@ -107,7 +107,7 @@ def write_run_manifest(
         "started_at_utc": utc_now(),
         "ended_at_utc": utc_now(),
         "errors": errors or [],
-        "claim_boundary": "RAGTune software validation only; no SQUARE hardware or quantum claim.",
+        "claim_boundary": "RAGTune software validation only; no hardware or quantum-advantage claim.",
     }
     if extra:
         payload.update(extra)

@@ -1,5 +1,0 @@
-matrix_name: square_core_v2_targeted_full
-seeds: [101, 202, 303, 404, 505]
-tracks:
-  - square_core_v2_field_substrate_targeted
-  - square_core_v2_closed_loop_targeted

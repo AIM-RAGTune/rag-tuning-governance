@@ -32,8 +32,8 @@ from ragtune.config import SuiteConfig
 from ragtune.end_to_end import RAGPolicy, chunk_documents
 from ragtune.metrics import pareto_frontier
 from ragtune.phase2 import aggregate_unit_deltas, paired_bootstrap, parent_run_dir
-from square_sim.utils.files import read_json, write_json, write_text
-from square_sim.utils.hashing import sha256_file, stable_hash
+from ragtune.utils.files import read_json, write_json, write_text
+from ragtune.utils.hashing import sha256_file, stable_hash
 
 PRIMARY_CONTENDER = "ragtune_no_fork"
 PRIMARY_BASELINE = "best_single_policy_on_validation"
@@ -1670,7 +1670,7 @@ def source_snapshot(root: Path = Path(".")) -> dict[str, Any]:
         rel = path.relative_to(root)
         if any(part in SOURCE_EXCLUDE_NAMES for part in rel.parts):
             continue
-        if rel.parts and rel.parts[0] not in {"ragtune", "square_sim", "configs", "tests", "docs"} and rel.name not in {"README.md", "pyproject.toml", "requirements.lock", "Dockerfile"}:
+        if rel.parts and rel.parts[0] not in {"ragtune", "configs", "tests", "docs"} and rel.name not in {"README.md", "pyproject.toml", "requirements.lock", "Dockerfile"}:
             continue
         try:
             files.append({"path": str(rel), "sha256": sha256_file(path), "bytes": path.stat().st_size})
@@ -3103,7 +3103,7 @@ def latest_multihop_verification() -> dict[str, Any] | None:
 RAG_COMPASS_ID = "ragtune_no_fork"
 RAG_COMPASS_DISPLAY = "RAG Compass"
 RAG_COMPASS_LABEL = "RAG Compass (legacy id: ragtune_no_fork)"
-RAG_COMPASS_DEPRECATED_NAMES = ["No-Fork", "RAGTune-No-Fork", "ragtune_no_fork", "square_tune_no_fork"]
+RAG_COMPASS_DEPRECATED_NAMES = ["No-Fork", "RAGTune-No-Fork", "ragtune_no_fork"]
 
 
 def optimizer_display_name(optimizer_id: str) -> str:

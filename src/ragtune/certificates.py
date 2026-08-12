@@ -39,10 +39,9 @@ def issue_certificate(
         "reason": reason,
         "statistical_analysis": statistical_analysis or {},
         "claim_boundary": [
-            "No SQUARE hardware evidence.",
+            "No hardware evidence.",
             "No quantum advantage claim.",
             "No hallucination elimination claim.",
             "Fixture tests are not benchmark evidence.",
         ],
     }
-

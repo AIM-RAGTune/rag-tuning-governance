@@ -18,8 +18,8 @@ from ragtune.config import SuiteConfig
 from ragtune.end_to_end import mini_corpus
 from ragtune.metrics import apply_utilities, pareto_frontier, rank_policies
 from ragtune.robustness import perturb_corpus, security_violation
-from square_sim.utils.files import read_json, write_json, write_text
-from square_sim.utils.hashing import sha256_file, stable_hash
+from ragtune.utils.files import read_json, write_json, write_text
+from ragtune.utils.hashing import sha256_file, stable_hash
 
 PRIOR_RUN_IDS = [
     "ragtune_real_rag_reproduction_v1_20260805-124641-f5a8e06009",

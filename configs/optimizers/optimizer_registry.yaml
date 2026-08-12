@@ -6,6 +6,6 @@ optimizers:
       - No-Fork
       - RAGTune-No-Fork
       - ragtune_no_fork
-      - square_tune_no_fork
+      - ragtune_no_fork
     status: active
     schema_id_stable: true
