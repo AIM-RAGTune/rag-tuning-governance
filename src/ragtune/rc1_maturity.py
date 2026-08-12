@@ -174,7 +174,7 @@ def run_fresh_clone_reproducibility(root: Path, *, output_root: Path) -> dict[st
     result_class = "FRESH_CLONE_REPRODUCTION_PASSED_LOCAL_COPY"
     with tempfile.TemporaryDirectory(prefix="ragtune_fresh_clone_") as tmp:
         tmp_root = Path(tmp)
-        clone_root = tmp_root / "rag-tuning-governance-public"
+        clone_root = tmp_root / "rag-tuning-governance"
         try:
             remote = subprocess.check_output(["git", "remote", "get-url", "origin"], cwd=root, text=True).strip()
             git_clone = _run(["git", "clone", "--depth", "1", remote, str(clone_root)], tmp_root, timeout_s=90)

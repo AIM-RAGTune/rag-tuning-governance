@@ -1,9 +1,9 @@
 {
   "commands": [
     {
-      "command": "git clone --depth 1 https://github.com/AIM-RAGTune/rag-tuning-governance-public.git /var/folders/6v/5bkr1g0s6m3dcnm9_x63vgzh0000gp/T/ragtune_fresh_clone_kcwpixfw/rag-tuning-governance-public",
+      "command": "git clone --depth 1 https://github.com/AIM-RAGTune/rag-tuning-governance.git <temporary-fresh-clone-dir>/rag-tuning-governance",
       "duration_s": 0.832,
-      "output_excerpt": "Cloning into '/var/folders/6v/5bkr1g0s6m3dcnm9_x63vgzh0000gp/T/ragtune_fresh_clone_kcwpixfw/rag-tuning-governance-public'...",
+      "output_excerpt": "Cloning into '<temporary-fresh-clone-dir>/rag-tuning-governance'...",
       "output_hash": "1841706e369846f43d2f4eebc7c8b3b24b53f448af189acf4c35c2765ee9a502",
       "returncode": 0,
       "status": "PASS"

@@ -30,7 +30,7 @@ The public repository history remains immutable. No private git history was merg
 
 ## Canonical Repository URL Cleanup
 
-- Public canonical repository: `https://github.com/AIM-RAGTune/rag-tuning-governance-public`.
+- Public canonical repository: `https://github.com/AIM-RAGTune/rag-tuning-governance`.
 - Updated citation and stale deployment-review URL references as needed.
 
 ## Verification Gates

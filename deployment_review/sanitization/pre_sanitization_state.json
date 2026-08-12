@@ -296,7 +296,7 @@
       "size": 33117
     }
   ],
-  "remote_url": "origin\thttps://github.com/AIM-RAGTune/rag-tuning-governance-public.git (fetch)\norigin\thttps://github.com/AIM-RAGTune/rag-tuning-governance-public.git (push)",
+  "remote_url": "origin\thttps://github.com/AIM-RAGTune/rag-tuning-governance.git (fetch)\norigin\thttps://github.com/AIM-RAGTune/rag-tuning-governance.git (push)",
   "repository_path": "<sanitized-repository-bundle>",
   "repository_visibility": "error connecting to api.github.com\ncheck your internet connection or https://githubstatus.com",
   "working_tree_status": ""

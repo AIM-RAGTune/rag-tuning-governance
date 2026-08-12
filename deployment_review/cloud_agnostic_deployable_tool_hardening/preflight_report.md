@@ -8,7 +8,7 @@ Starting branch: `main`
 
 Working branch: `codex/cloud-agnostic-deployable-tool-hardening`
 
-Origin remote: `https://github.com/AIM-RAGTune/rag-tuning-governance-public.git`
+Origin remote: `https://github.com/AIM-RAGTune/rag-tuning-governance.git`
 
 Working tree status at branch creation: clean.
 

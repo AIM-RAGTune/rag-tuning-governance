@@ -2,7 +2,7 @@
 
 - Starting commit: `03d5b93b5efc75bf94967ff1eac7f42bbdf6720a`
 - Branch: `fresh-live-crag-hotpotqa-behavioral-governance`
-- Remote: `https://github.com/AIM-RAGTune/rag-tuning-governance-public.git`
+- Remote: `https://github.com/AIM-RAGTune/rag-tuning-governance.git`
 - Initial working tree: clean
 
 ## Baseline Validation

@@ -4,7 +4,7 @@
 - Starting commit: `3f27039b8470d7b50fcde48d23a8658612421d30`
 - Starting branch: `main`
 - Working branch: `codex/rc1-reproducibility-arxiv-hardening`
-- Remote URL: `https://github.com/AIM-RAGTune/rag-tuning-governance-public.git`
+- Remote URL: `https://github.com/AIM-RAGTune/rag-tuning-governance.git`
 - Working tree before branch: clean
 - Baseline publication validator: passed
 - Baseline publication tests: `175 passed`

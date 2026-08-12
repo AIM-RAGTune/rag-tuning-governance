@@ -4,7 +4,7 @@
   "starting_branch": "main",
   "working_branch": "codex/docker-runtime-hardening",
   "origin_main_commit": "f9a67ac89bfe75b0dcd286d5b9bc22c839ee317f",
-  "remote_url": "https://github.com/AIM-RAGTune/rag-tuning-governance-public.git",
+  "remote_url": "https://github.com/AIM-RAGTune/rag-tuning-governance.git",
   "working_tree_status_at_branch_creation": "clean",
   "scope": "local_container_hardening_only",
   "live_cloud_validation_claimed": false,
