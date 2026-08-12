@@ -40,7 +40,7 @@
   "test_count_before": "219 passed, 3 CLI subprocess import failures before Task A fix",
   "test_count_after": "224 passed",
   "public_ending_branch_commit": "<see-pr-branch-head>",
-  "github_push_status": "pushed to origin/repo-consolidation-and-square-excision",
+  "github_push_status": "pushed to origin work branch",
   "pr_creation_status": "blocked: gh token invalid; GitHub app connector returned 403 Resource not accessible by integration",
-  "manual_pr_url": "https://github.com/AIM-RAGTune/rag-tuning-governance-public/pull/new/repo-consolidation-and-square-excision"
+  "manual_pr_url": "<github-new-pr-url-for-work-branch>"
 }
