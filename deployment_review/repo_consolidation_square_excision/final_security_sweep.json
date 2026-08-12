@@ -1,0 +1,15 @@
+{
+  "branch_diff_files": 497,
+  "branch_diff_secret_scan": "passed_no_hits",
+  "branch_diff_private_path_scan": "passed_no_hits",
+  "branch_diff_ip_scan": "allowed_deleted_legacy_localhost_bindings_only",
+  "branch_diff_raw_text_scan": "allowed_sanitized_field_names_deleted_lines_and_inventory_paths_only",
+  "working_tree_large_file_scan": "one ignored local dataset cache under .local_data; no tracked public artifacts over 50M",
+  "tracked_large_file_scan": "passed_no_tracked_files_over_50M",
+  "working_tree_secret_scan": "allowed scanner definitions, environment variable names, and tests only",
+  "working_tree_private_path_scan": "allowed negative tests only",
+  "working_tree_raw_text_scan": "allowed field names, hashes, false flags, scanner definitions, and synthetic tests only",
+  "overclaim_scan": "allowed unsupported-claim and negated boundary statements only",
+  "content_grep_removed_package": "no hits",
+  "content_grep_removed_project_name": "no tracked content hits before final reports; final report avoids adding code references"
+}
