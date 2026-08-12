@@ -10,7 +10,7 @@ Working branch: `codex/docker-runtime-hardening`
 
 Origin main commit: `f9a67ac89bfe75b0dcd286d5b9bc22c839ee317f`
 
-Remote URL: `https://github.com/AIM-RAGTune/rag-tuning-governance-public.git`
+Remote URL: `https://github.com/AIM-RAGTune/rag-tuning-governance.git`
 
 Working tree status at branch creation: clean.
 

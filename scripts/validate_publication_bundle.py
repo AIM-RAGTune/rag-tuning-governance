@@ -225,7 +225,7 @@ def publication_remote_mode() -> str:
         return explicit
     if os.environ.get("GITHUB_ACTIONS") == "true":
         repository = os.environ.get("GITHUB_REPOSITORY", "")
-        if repository == "AIM-RAGTune/rag-tuning-governance-public":
+        if repository == "AIM-RAGTune/rag-tuning-governance":
             return "github_actions_public_repo"
         return "github_actions_unapproved_repo"
     return "deployed_public_repo"
@@ -254,10 +254,10 @@ def public_repository_remote_allowed(remotes: str) -> bool:
     if mode not in {"deployed_public_repo", "github_actions_public_repo"}:
         return False
     allowed_remotes = {
-        "https://github.com/AIM-RAGTune/rag-tuning-governance-public",
-        "https://github.com/AIM-RAGTune/rag-tuning-governance-public.git",
-        "git@github.com:AIM-RAGTune/rag-tuning-governance-public",
-        "git@github.com:AIM-RAGTune/rag-tuning-governance-public.git",
+        "https://github.com/AIM-RAGTune/rag-tuning-governance",
+        "https://github.com/AIM-RAGTune/rag-tuning-governance.git",
+        "git@github.com:AIM-RAGTune/rag-tuning-governance",
+        "git@github.com:AIM-RAGTune/rag-tuning-governance.git",
     }
     remote_lines = [normalize_remote_line(line) for line in remotes.splitlines() if line.strip()]
     if not remote_lines:
