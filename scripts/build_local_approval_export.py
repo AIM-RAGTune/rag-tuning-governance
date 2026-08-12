@@ -187,7 +187,7 @@ def write_approval_files(export_root: Path, now: str, findings: list[dict[str, s
 
     summary = {
         "purpose": "Local approval-ready scientific publication package for RAGTune governance validation.",
-        "proposed_repository_name": "rag-tuning-governance",
+        "proposed_repository_name": "rag-tuning-governance-public",
         "destination_options": [
             "approved internal Git destination",
             "GitHub Enterprise",
@@ -210,7 +210,7 @@ def write_approval_files(export_root: Path, now: str, findings: list[dict[str, s
     (approval / "approval_request_summary.md").write_text(
         "# Approval Request Summary\n\n"
         "Purpose: local scientific-review package for RAGTune governance validation.\n\n"
-        "- Proposed repository name: `rag-tuning-governance`\n"
+        "- Proposed repository name: `rag-tuning-governance-public`\n"
         f"- Current tenant blocker: {BLOCKER}\n"
         "- No bypass attempted: yes\n"
         f"- Included files: {len(included)}\n"
@@ -259,7 +259,7 @@ def write_approval_files(export_root: Path, now: str, findings: list[dict[str, s
         "These commands were not run because GitHub is not currently an approved trusted destination in this tenant.\n\n"
         "```bash\n"
         "gh auth status\n"
-        "gh repo create rag-tuning-governance --private --source=. --remote=origin\n"
+        "gh repo create rag-tuning-governance-public --public --source=. --remote=origin\n"
         "git push -u origin main\n"
         "\n"
         "# Approved internal destination alternative:\n"
