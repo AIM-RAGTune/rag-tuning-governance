@@ -2,6 +2,32 @@
 
 RAGTune is a governance framework for RAG policy promotion. RAG Compass is a candidate optimizer within the framework. Current evidence supports RAGTune governance value more strongly than RAG Compass optimizer superiority.
 
+
+Multiple Layers of Optimization Categories
+————————————
+Enterprise / customer policy
+        ↓
+Business domain
+        ↓
+Use case and workflow
+        ↓
+User population and role
+        ↓
+Corpus and RAG asset class
+        ↓
+Access, privacy, and entitlement
+        ↓
+Query or task classification
+        ↓
+Quality and risk requirements
+        ↓
+Cost, latency, and capacity constraints
+        ↓
+Available models, retrievers, and tools
+        ↓
+Validated RAGTune promotion decision
+
+
 ## Current Strongest Result
 
 The strongest current result is a CRAG mock-API validation run:
