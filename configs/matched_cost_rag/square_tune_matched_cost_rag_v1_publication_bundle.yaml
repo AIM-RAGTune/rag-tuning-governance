@@ -1,5 +1,0 @@
-bundle_name: square_tune_matched_cost_rag_v1
-exclude_raw_data: true
-exclude_credentials: true
-exclude_model_weights: true
-include_negative_result_analysis: true

@@ -1,2 +1,0 @@
-"""SQUARETune evaluation metrics."""
-

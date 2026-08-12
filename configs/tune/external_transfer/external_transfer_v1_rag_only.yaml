@@ -1,7 +1,0 @@
-experiment_name: square_tune_external_v1_rag_only
-scenario_root: ${SQUARESIM_DATA_ROOT}/datasets/external/square_tune_v1/scenarios
-source_datasets: [ragbench, ragtruth, hagrid, expertqa]
-scenario_families: [rag_policy_optimization, hallucination_faithfulness_reduction]
-seeds: [101, 202, 303]
-optimizers: [random_search, greedy_regression_aware, coordinate_descent, square_tune_full, square_tune_no_snapshot, square_tune_no_merge]
-square_tune: {max_rounds: 6, num_branches: 6, rollout_steps: 3, max_response_surface_evaluations: 144, max_candidate_actions: 144, budget_ledger_enabled: true}

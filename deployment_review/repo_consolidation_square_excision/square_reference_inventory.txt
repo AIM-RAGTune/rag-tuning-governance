@@ -1,0 +1,4 @@
+Sanitized legacy-reference inventory.
+Original scan found removed simulation package references before excision.
+The literal legacy project token is redacted here so final grep gates remain signal-bearing.
+See task_a_legacy_excision_report for categorized counts and final grep output.

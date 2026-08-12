@@ -17,7 +17,7 @@ from ragtune.phase2 import (
     statistical_audit_payload,
 )
 from ragtune.real_rag import issue_real_rag_certificate
-from square_sim.utils.files import write_json
+from ragtune.utils.files import write_json
 
 
 def _parent_run(tmp_path: Path) -> Path:

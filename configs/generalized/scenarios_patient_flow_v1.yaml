@@ -1,6 +1,0 @@
-matrix_name: patient_flow_scenarios
-tracks: [patient_flow]
-seeds: [101]
-simulation:
-  rows_per_track: 2000
-  scenario_max_rows: 2000

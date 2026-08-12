@@ -1,0 +1,26 @@
+{
+  "public_repo_path": "<local-public-repo>",
+  "public_starting_commit": "ff529005bf7d00a0c3f79ba991563f3923d63205",
+  "public_branch": "<requested-work-branch>",
+  "public_remote": "https://github.com/AIM-RAGTune/rag-tuning-governance-public.git",
+  "origin_main": "ff529005bf7d00a0c3f79ba991563f3923d63205",
+  "release_tag": "v0.1.0-rc1",
+  "release_tag_target": "ff529005bf7d00a0c3f79ba991563f3923d63205",
+  "private_repo_path": "<local-private-source-repo>",
+  "private_repo_commit": "367f01aeb34f2e45c425bb20561cccda7f57540b",
+  "private_repo_branch": "main",
+  "private_working_tree_status": "## main",
+  "baseline_results": {
+    "publication_validator": "passed",
+    "deployment_readiness": "DEPLOYMENT_READINESS_SUPPORTED_WITH_BOUNDARIES",
+    "pytest_publication_before": "failed: 219 passed, 3 CLI subprocess import failures",
+    "make_validate_publication": "passed",
+    "make_test_before": "failed: same CLI subprocess import issue",
+    "compileall": "passed",
+    "diff_check_before": "passed before edits; after generated CSV normalization, passed"
+  },
+  "notes": [
+    "The public survivor branch was created from origin/main without rewriting main.",
+    "The private repository was inspected as a file-level source only; no history import was performed."
+  ]
+}

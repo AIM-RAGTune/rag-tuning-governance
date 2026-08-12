@@ -30,7 +30,7 @@ from ragtune.metrics import (
 )
 from ragtune.reports import write_report
 from ragtune.statistics import paired_bootstrap_ci, win_tie_loss
-from square_sim.utils.files import write_json
+from ragtune.utils.files import write_json
 
 
 def skipped_baselines(metrics: pd.DataFrame) -> list[dict[str, Any]]:

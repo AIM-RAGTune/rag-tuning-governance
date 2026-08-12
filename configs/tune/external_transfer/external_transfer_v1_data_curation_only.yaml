@@ -1,7 +1,0 @@
-experiment_name: square_tune_external_v1_data_curation_only
-scenario_root: ${SQUARESIM_DATA_ROOT}/datasets/external/square_tune_v1/scenarios
-source_datasets: [helpsteer2, ultrafeedback, dolly15k, oasst1]
-scenario_families: [data_curation_preference_optimization, adapter_planning_simulation]
-seeds: [101, 202, 303]
-optimizers: [random_search, greedy_eval_improvement, greedy_regression_aware, coordinate_descent, square_tune_full, square_tune_no_snapshot, square_tune_no_memory, square_tune_no_cost_sensor]
-square_tune: {max_rounds: 6, num_branches: 6, rollout_steps: 3, max_response_surface_evaluations: 144, max_candidate_actions: 144, budget_ledger_enabled: true}

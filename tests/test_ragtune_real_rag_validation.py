@@ -16,7 +16,7 @@ from ragtune.real_rag import (
     leakage_report,
     select_primary_baseline,
 )
-from square_sim.utils.write_once import WriteOnceError
+from ragtune.utils.write_once import WriteOnceError
 
 
 def _fixture_config(tmp_path: Path, *, suite: str = "ragtune_real_rag_reproduction_v1") -> Path:

@@ -11,7 +11,7 @@ dataset: energy
 target: target
 seed: 42
 models:
-  - squaresim_full
+  - sq-removedsim_full
 feature_policy:
   exclude_roles: [target, target_real, pocket_flag]
   exclude_columns: []

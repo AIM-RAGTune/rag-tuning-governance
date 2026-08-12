@@ -7,7 +7,7 @@ import pandas as pd
 
 from ragtune.config import SuiteConfig
 from ragtune.experiments.common import finalize_policy_suite
-from square_sim.utils.files import write_json
+from ragtune.utils.files import write_json
 
 
 def calibration_metrics(seed: int) -> pd.DataFrame:

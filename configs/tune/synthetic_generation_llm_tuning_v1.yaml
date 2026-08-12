@@ -1,6 +1,0 @@
-suite: llm_tuning_v1
-rows: 50000
-seeds: [101, 202, 303, 404, 505]
-noise_level: 0.05
-difficulty: mixed
-write_latent: false

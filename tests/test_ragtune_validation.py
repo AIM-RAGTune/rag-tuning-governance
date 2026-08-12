@@ -20,7 +20,7 @@ from ragtune.metrics import (
 )
 from ragtune.policy import policy_id
 from ragtune.robustness import perturb_corpus, security_violation
-from square_sim.utils.write_once import WriteOnceError
+from ragtune.utils.write_once import WriteOnceError
 
 
 def test_no_overwrite_completed_run(tmp_path: Path) -> None:

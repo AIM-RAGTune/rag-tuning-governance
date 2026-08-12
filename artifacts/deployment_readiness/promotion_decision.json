@@ -28,6 +28,6 @@
   "schema_version": "1.0",
   "selected_policy": "deployment_templates",
   "suite": "ragtune_deployment_readiness_v1",
-  "timestamp_utc": "2026-08-11T22:49:27+00:00",
+  "timestamp_utc": "2026-08-12T01:11:09+00:00",
   "validator_status": "pending_publication_validator"
 }

@@ -1,2 +1,0 @@
-"""Claim-level faithfulness proxy."""
-

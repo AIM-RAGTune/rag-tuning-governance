@@ -14,7 +14,7 @@ from ragtune.validation_phase3 import (
     normalize_t2,
     split_queries,
 )
-from square_sim.utils.write_once import WriteOnceError
+from ragtune.utils.write_once import WriteOnceError
 
 
 def _config(tmp_path: Path, suite: str, raw: dict | None = None) -> Path:
