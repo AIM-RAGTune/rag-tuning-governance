@@ -19,3 +19,5 @@
 - Release commit and release tag: unchanged and reachable.
 
 - Final report commit: see PR branch HEAD.
+- GitHub push status: pushed to origin work branch.
+- PR creation status: blocked by invalid GitHub CLI token and GitHub app 403; use the manual PR URL.
