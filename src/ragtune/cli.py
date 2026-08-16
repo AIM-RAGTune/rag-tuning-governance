@@ -18,7 +18,62 @@ from ragtune.rc1_maturity import verify_run
 from ragtune.selector_ablation_matrix import run_selector_ablation_matrix
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(os.environ.get("RAGTUNE_REPO_ROOT", Path(__file__).resolve().parents[2]))
+EXIT_CONFIG_OR_INPUT_ERROR = 2
+EXIT_VALIDATION_GATE_FAILURE = 3
+EXIT_RUNTIME_FAILURE = 4
+
+
+def _output_env() -> str | None:
+    return os.environ.get("RAGTUNE_OUTPUT_DIR") or os.environ.get("RAGTUNE_OUTPUT_ROOT")
+
+
+def _input_env() -> str | None:
+    return os.environ.get("RAGTUNE_INPUT_DIR")
+
+
+def _resolve_output_root(value: str | None, fallback: str) -> Path:
+    if value:
+        return Path(value)
+    if _output_env():
+        return Path(str(_output_env()))
+    return Path(fallback)
+
+
+def _resolve_decision_out(value: str | None, output_root: Path) -> Path:
+    if value:
+        return Path(value)
+    return output_root / "promotion_decision.json"
+
+
+def _resolve_config_path(value: str) -> Path:
+    path = Path(value)
+    if path.exists() or path.is_absolute():
+        return path
+    rooted = ROOT / path
+    if rooted.exists():
+        return rooted
+    if _input_env():
+        input_path = Path(str(_input_env())) / path
+        if input_path.exists():
+            return input_path
+    return path
+
+
+def _runtime_validate_bundle() -> int:
+    required = [
+        ROOT / "configs" / "jobs" / "public_mini_governance_job.yaml",
+        ROOT / "schemas" / "promotion_decision.schema.json",
+    ]
+    forbidden = ["tests", "paper", "docs", "results", "artifacts", "deployment_review"]
+    missing = [path.relative_to(ROOT).as_posix() for path in required if not path.exists()]
+    forbidden_present = [name for name in forbidden if (ROOT / name).exists()]
+    if missing or forbidden_present:
+        payload = {"missing": missing, "forbidden_present": forbidden_present}
+        print(f"runtime validation failed: {json.dumps(payload, sort_keys=True)}", file=sys.stderr)
+        return EXIT_VALIDATION_GATE_FAILURE
+    print("runtime validation passed")
+    return 0
 
 
 def _load_config(path: Path) -> dict[str, object]:
@@ -59,21 +114,23 @@ def _run_script(args: list[str]) -> int:
 
 
 def cmd_validate_bundle(_args: argparse.Namespace) -> int:
+    if os.environ.get("RAGTUNE_CONTAINER") == "1":
+        return _runtime_validate_bundle()
     return _run_script(["scripts/validate_publication_bundle.py"])
 
 
 def cmd_run_public_mini(args: argparse.Namespace) -> int:
-    run_public_mini_reproduction(ROOT, output_root=ROOT / args.output_root)
+    run_public_mini_reproduction(ROOT, output_root=_resolve_output_root(args.output_root, "artifacts/public_mini_reproduction"))
     return 0
 
 
 def cmd_run_selector_ablation(args: argparse.Namespace) -> int:
-    run_selector_ablation_matrix(ROOT, output_root=ROOT / args.output_root)
+    run_selector_ablation_matrix(ROOT, output_root=_resolve_output_root(args.output_root, "artifacts/selector_ablation_matrix"))
     return 0
 
 
 def cmd_run_external_evaluator_demo(args: argparse.Namespace) -> int:
-    run_external_evaluator_adapter_demo(ROOT, output_root=ROOT / args.output_root)
+    run_external_evaluator_adapter_demo(ROOT, output_root=_resolve_output_root(args.output_root, "artifacts/external_evaluator_adapters"))
     return 0
 
 
@@ -82,7 +139,7 @@ def cmd_run_claim_check(_args: argparse.Namespace) -> int:
 
 
 def cmd_synthesize_readiness(args: argparse.Namespace) -> int:
-    run_open_source_arxiv_readiness_synthesis(ROOT, output_root=ROOT / args.output_root)
+    run_open_source_arxiv_readiness_synthesis(ROOT, output_root=_resolve_output_root(args.output_root, "results/open_source_arxiv_readiness"))
     return 0
 
 
@@ -93,13 +150,15 @@ def cmd_inspect_environment(args: argparse.Namespace) -> int:
         "python_version": platform.python_version(),
         "os_family": platform.system(),
         "storage_mode": os.environ.get("RAGTUNE_STORAGE_MODE", "local"),
-        "output_root_configured": bool(os.environ.get("RAGTUNE_OUTPUT_ROOT") or args.output_root),
+        "input_dir_configured": bool(_input_env()),
+        "output_root_configured": bool(_output_env() or args.output_root),
         "hostnames_exported": False,
         "private_paths_exported": False,
         "secrets_exported": False,
     }
-    if args.output_root:
-        write_json(Path(args.output_root) / "environment_inspection.json", payload)
+    output_root = _resolve_output_root(args.output_root, "artifacts/environment_inspection")
+    if output_root:
+        write_json(output_root / "environment_inspection.json", payload)
     print(json.dumps(payload, indent=2, sort_keys=True))
     return 0
 
@@ -120,12 +179,14 @@ def cmd_export_decision(args: argparse.Namespace) -> int:
 
 
 def cmd_verify_run(args: argparse.Namespace) -> int:
-    result = verify_run(ROOT, run_dir=ROOT / args.run_dir, output_root=ROOT / args.output_root)
+    result = verify_run(ROOT, run_dir=Path(args.run_dir), output_root=_resolve_output_root(args.output_root, "artifacts/verify_run_demo"))
     return 0 if result["result_class"] == "VERIFY_RUN_PASSED" else 1
 
 
 def cmd_run_governance_job(args: argparse.Namespace) -> int:
-    config_path = Path(args.config)
+    output_root = _resolve_output_root(args.output_root, "artifacts/public_mini_governance_job")
+    decision_out = _resolve_decision_out(args.decision_out, output_root)
+    config_path = _resolve_config_path(args.config)
     if not config_path.exists():
         decision = build_promotion_decision(
             run_id="missing_config",
@@ -134,10 +195,9 @@ def cmd_run_governance_job(args: argparse.Namespace) -> int:
             decision_reason="job config missing",
             validator_status="not_run",
         )
-        write_promotion_decision(Path(args.decision_out), decision)
-        return 2
+        write_promotion_decision(decision_out, decision)
+        return EXIT_CONFIG_OR_INPUT_ERROR
     config = _load_config(config_path)
-    output_root = Path(args.output_root)
     output_root.mkdir(parents=True, exist_ok=True)
     steps = config.get("steps") or ["public_mini_reproduction"]
     artifacts: list[str] = []
@@ -172,12 +232,11 @@ def cmd_run_governance_job(args: argparse.Namespace) -> int:
             "cost_delta": float((mini_result or {}).get("governed_cost_delta_vs_quality_only", 0.0)),
         },
     )
-    decision_out = Path(args.decision_out)
     write_promotion_decision(decision_out, decision)
     write_json(output_root / "run_manifest.json", {"job_config": "<config>", "decision_out": str(decision_out.name), "raw_text_exported": False})
     write_md(output_root / "validation_report.md", f"Governance job decision: `{decision['decision']}`. Validator: `{validator_status}`.")
     write_json(output_root / "validation_report.json", {"validator_status": validator_status, "decision": decision["decision"]})
-    return 0 if validator_rc == 0 else validator_rc
+    return 0 if validator_rc == 0 else EXIT_VALIDATION_GATE_FAILURE
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -199,16 +258,11 @@ def build_parser() -> argparse.ArgumentParser:
         child = sub.add_parser(name)
         child.set_defaults(func=func)
         child.add_argument("--config", default="configs/jobs/public_mini_governance_job.yaml")
-        child.add_argument("--output-root", default="artifacts/public_mini_governance_job")
-        child.add_argument("--decision-out", default="artifacts/public_mini_governance_job/promotion_decision.json")
+        child.add_argument("--output-root", default=None)
+        child.add_argument("--decision-out", default=None)
         child.add_argument("--force", action="store_true")
-    sub.choices["run-public-mini"].set_defaults(output_root="artifacts/public_mini_reproduction")
-    sub.choices["run-selector-ablation"].set_defaults(output_root="artifacts/selector_ablation_matrix")
-    sub.choices["run-external-evaluator-demo"].set_defaults(output_root="artifacts/external_evaluator_adapters")
-    sub.choices["synthesize-readiness"].set_defaults(output_root="results/open_source_arxiv_readiness")
     verify = sub.choices["verify-run"]
     verify.add_argument("--run-dir", default="artifacts/public_mini_reproduction")
-    verify.set_defaults(output_root="artifacts/verify_run_demo")
     export = sub.choices["export-decision"]
     export.add_argument("--run-id", default="manual_export")
     export.add_argument("--suite", default="manual")

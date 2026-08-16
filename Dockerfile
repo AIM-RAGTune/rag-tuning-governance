@@ -1,45 +1,58 @@
-FROM python:3.11-slim
+ARG PYTHON_BASE=python:3.11-slim@sha256:a630a63cdb314e2d138a2fca3e375e319e8568346ffafac5b980f888630ac4f1
+
+FROM ${PYTHON_BASE} AS builder
+
+WORKDIR /build
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1
+
+COPY pyproject.toml README.md LICENSE CITATION.cff ./
+COPY src ./src
+
+RUN python -m pip install --upgrade pip build wheel \
+    && python -m build --wheel --outdir /wheelhouse
+
+FROM ${PYTHON_BASE} AS runtime
 
 LABEL org.opencontainers.image.title="RAGTune Governance" \
       org.opencontainers.image.description="Finite publication-safe RAG policy governance job" \
-      org.opencontainers.image.licenses="MIT"
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.source="https://github.com/AIM-RAGTune/rag-tuning-governance"
 
 WORKDIR /app
 
-# RAGTune runs as a finite governance job: read configs, write /outputs,
-# emit promotion_decision.json, validate claim boundaries, then exit.
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-ENV PIP_DISABLE_PIP_VERSION_CHECK=1
-ENV PIP_NO_CACHE_DIR=1
-ENV RAGTUNE_CONTAINER=1
-ENV RAGTUNE_OUTPUT_ROOT=/outputs
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    RAGTUNE_CONTAINER=1 \
+    RAGTUNE_REPO_ROOT=/app \
+    RAGTUNE_INPUT_DIR=/inputs \
+    RAGTUNE_OUTPUT_DIR=/outputs \
+    RAGTUNE_OUTPUT_ROOT=/outputs
 
-COPY pyproject.toml requirements.txt README.md LICENSE CITATION.cff Makefile .gitattributes Dockerfile .dockerignore docker-compose.yml ./
-COPY src ./src
-COPY scripts ./scripts
+COPY requirements-runtime.lock ./
+RUN python -m pip install --upgrade pip \
+    && python -m pip install --require-hashes -r requirements-runtime.lock
+
+COPY --from=builder /wheelhouse/*.whl /tmp/wheelhouse/
+RUN python -m pip install --no-deps /tmp/wheelhouse/*.whl \
+    && rm -rf /tmp/wheelhouse
+
 COPY configs ./configs
-COPY docs ./docs
-COPY data ./data
-COPY results ./results
-COPY artifacts ./artifacts
-COPY docker ./docker
-COPY deploy ./deploy
-COPY deployment_review ./deployment_review
 COPY schemas ./schemas
-COPY paper ./paper
-COPY tests ./tests
+COPY README.md LICENSE CITATION.cff ./
 
-RUN pip install --no-cache-dir -r requirements.txt \
-    && pip install --no-cache-dir -e . \
-    && groupadd --system --gid 10001 ragtune \
+RUN groupadd --system --gid 10001 ragtune \
     && useradd --system --uid 10001 --gid ragtune --create-home --home-dir /home/ragtune --shell /usr/sbin/nologin ragtune \
-    && mkdir -p /outputs /inputs /configs /data \
-    && chown -R ragtune:ragtune /outputs /inputs /configs /data /app
+    && mkdir -p /inputs /outputs \
+    && chown -R ragtune:ragtune /outputs /home/ragtune
 
-USER ragtune
+USER 10001:10001
 
-HEALTHCHECK --interval=5m --timeout=30s --start-period=30s --retries=1 CMD ["ragtune", "inspect-environment"]
 STOPSIGNAL SIGTERM
 
 ENTRYPOINT ["ragtune"]

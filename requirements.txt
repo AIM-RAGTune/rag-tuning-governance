@@ -1,4 +1,3 @@
-numpy
-pandas
-pyyaml
-pytest
+# Development/test environment. The runtime container installs
+# requirements-runtime.lock instead.
+-r requirements-dev.lock
