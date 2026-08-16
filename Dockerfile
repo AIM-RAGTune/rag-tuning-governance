@@ -51,6 +51,7 @@ RUN groupadd --system --gid 10001 ragtune \
     && mkdir -p /inputs /outputs \
     && chown -R ragtune:ragtune /outputs /home/ragtune
 
+# The named USER ragtune is represented by the fixed numeric UID:GID below.
 USER 10001:10001
 
 STOPSIGNAL SIGTERM
