@@ -49,10 +49,22 @@ Docker caches into `/app`.
 The publication workflow publishes same-repository candidate images to:
 
 ```text
-ghcr.io/aim-ragtune/ragtune-governance
+ghcr.io/aim-ragtune/rag-tuning-governance
 ```
 
 GitHub packages may require a one-time visibility change to make anonymous cloud
 pulls work. If the package is not public, operators can configure a registry
 pull secret or mirror the digest into their native cloud registry. No personal
 access token is required by repository automation.
+
+## Digest Record
+
+`deploy/IMAGE_DIGEST` is the repository record for the publishable container
+reference. Before the first successful GHCR workflow, it intentionally contains
+`PENDING_FIRST_WORKFLOW_RUN`. Deployment templates and runbooks must treat that
+sentinel as not deployable.
+
+The GitHub workflow in `.github/workflows/publish-container.yml` builds
+`linux/amd64` and `linux/arm64`, requests BuildKit provenance and SBOM
+generation, signs the published digest with keyless cosign, and uploads a digest
+record artifact. It does not use a `latest` tag.
