@@ -1,7 +1,7 @@
 .PHONY: setup test reproduce-crag reproduce-multihop reproduce-public-mini tables figures validate-publication validate-deployment-readiness docker-build docker-validate docker-run-public-mini docker-compose-public-mini docker-run-external-evaluator-demo clean
 
 setup:
-	pip install -r requirements.txt
+	pip install --require-hashes -r requirements-dev.lock
 	pip install -e .
 
 test:

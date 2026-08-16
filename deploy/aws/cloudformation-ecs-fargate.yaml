@@ -3,7 +3,7 @@ Description: Example RAGTune ECS Fargate task definition
 Parameters:
   ContainerImage:
     Type: String
-    Default: ghcr.io/example/ragtune-governance:latest
+    Default: ghcr.io/aim-ragtune/rag-tuning-governance@sha256:PENDING_FIRST_WORKFLOW_RUN
 Resources:
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
@@ -20,8 +20,16 @@ Resources:
           Command:
             - run-governance-job
             - --config
-            - configs/jobs/public_mini_governance_job.yaml
+            - /inputs/public_mini_governance_job.yaml
             - --output-root
             - /outputs
             - --decision-out
             - /outputs/promotion_decision.json
+          Environment:
+            - Name: RAGTUNE_STORAGE_MODE
+              Value: local
+            - Name: RAGTUNE_INPUT_DIR
+              Value: /inputs
+            - Name: RAGTUNE_OUTPUT_DIR
+              Value: /outputs
+          ReadonlyRootFilesystem: true

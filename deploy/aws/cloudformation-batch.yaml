@@ -3,7 +3,7 @@ Description: Example RAGTune AWS Batch job definition
 Parameters:
   ContainerImage:
     Type: String
-    Default: ghcr.io/example/ragtune-governance:latest
+    Default: ghcr.io/aim-ragtune/rag-tuning-governance@sha256:PENDING_FIRST_WORKFLOW_RUN
 Resources:
   JobDefinition:
     Type: AWS::Batch::JobDefinition
@@ -17,7 +17,7 @@ Resources:
         Command:
           - run-governance-job
           - --config
-          - configs/jobs/public_mini_governance_job.yaml
+          - /inputs/public_mini_governance_job.yaml
           - --output-root
           - /outputs
           - --decision-out
@@ -27,3 +27,11 @@ Resources:
             Value: "1"
           - Type: MEMORY
             Value: "2048"
+        Environment:
+          - Name: RAGTUNE_STORAGE_MODE
+            Value: local
+          - Name: RAGTUNE_INPUT_DIR
+            Value: /inputs
+          - Name: RAGTUNE_OUTPUT_DIR
+            Value: /outputs
+        ReadonlyRootFilesystem: true

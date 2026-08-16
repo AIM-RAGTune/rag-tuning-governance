@@ -13,6 +13,10 @@ dependencies = [
   "numpy",
   "pandas",
   "pyyaml",
+]
+
+[project.optional-dependencies]
+dev = [
   "pytest",
 ]
 

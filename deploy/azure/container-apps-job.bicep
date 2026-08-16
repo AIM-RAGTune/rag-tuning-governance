@@ -1,7 +1,7 @@
 param location string = resourceGroup().location
 param containerAppEnvironmentName string = 'ragtune-env'
 param jobName string = 'ragtune-governance-job'
-param image string = 'ghcr.io/example/ragtune-governance:latest'
+param image string = 'ghcr.io/aim-ragtune/rag-tuning-governance@sha256:PENDING_FIRST_WORKFLOW_RUN'
 
 resource env 'Microsoft.App/managedEnvironments@2023-05-01' = {
   name: containerAppEnvironmentName
@@ -26,7 +26,7 @@ resource job 'Microsoft.App/jobs@2023-05-01' = {
           args: [
             'run-governance-job'
             '--config'
-            'configs/jobs/public_mini_governance_job.yaml'
+            '/inputs/public_mini_governance_job.yaml'
             '--output-root'
             '/outputs'
             '--decision-out'
@@ -36,6 +36,14 @@ resource job 'Microsoft.App/jobs@2023-05-01' = {
             {
               name: 'RAGTUNE_STORAGE_MODE'
               value: 'local'
+            }
+            {
+              name: 'RAGTUNE_INPUT_DIR'
+              value: '/inputs'
+            }
+            {
+              name: 'RAGTUNE_OUTPUT_DIR'
+              value: '/outputs'
             }
           ]
         }
