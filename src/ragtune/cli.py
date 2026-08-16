@@ -11,6 +11,7 @@ from typing import Callable
 
 from ragtune.external_evaluator_adapter_demo import run_external_evaluator_adapter_demo
 from ragtune.generative_validation_common import write_json, write_md
+from ragtune.mounted_job_contract import check_mounted_job_contract
 from ragtune.open_source_arxiv_readiness_synthesis import run_open_source_arxiv_readiness_synthesis
 from ragtune.promotion_decision import build_promotion_decision, write_promotion_decision
 from ragtune.public_mini_reproduction import run_public_mini_reproduction
@@ -239,6 +240,13 @@ def cmd_run_governance_job(args: argparse.Namespace) -> int:
     return 0 if validator_rc == 0 else EXIT_VALIDATION_GATE_FAILURE
 
 
+def cmd_check_mounted_contract(args: argparse.Namespace) -> int:
+    output_root = _resolve_output_root(args.output_root, "artifacts/mounted_job_contract")
+    status, report = check_mounted_job_contract(write_probe=args.force, output_root=output_root)
+    print(json.dumps(report, indent=2, sort_keys=True))
+    return status
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="ragtune", description="RAGTune governance and promotion-control engine")
     sub = parser.add_subparsers(dest="command", required=False)
@@ -253,6 +261,7 @@ def build_parser() -> argparse.ArgumentParser:
         "export-decision": cmd_export_decision,
         "inspect-environment": cmd_inspect_environment,
         "verify-run": cmd_verify_run,
+        "check-mounted-contract": cmd_check_mounted_contract,
     }
     for name, func in commands.items():
         child = sub.add_parser(name)
