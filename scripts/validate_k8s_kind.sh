@@ -2,7 +2,7 @@
 set -euo pipefail
 
 report_root="${1:-/tmp/ragtune-k8s-kind-validation}"
-mkdir -p "$report_root"
+/bin/mkdir -p "$report_root"
 report_json="$report_root/k8s_kind_validation_report.json"
 report_md="$report_root/k8s_kind_validation_report.md"
 

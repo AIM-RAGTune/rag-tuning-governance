@@ -64,7 +64,9 @@ def test_kubernetes_manifests_are_non_root_and_read_only() -> None:
 
 def test_k8s_kind_validator_reports_fallback_without_tools(tmp_path: Path) -> None:
     env = os.environ.copy()
-    env["PATH"] = "/usr/bin:/bin"
+    empty_bin = tmp_path / "empty-bin"
+    empty_bin.mkdir()
+    env["PATH"] = str(empty_bin)
     result = subprocess.run(
         ["/bin/bash", "scripts/validate_k8s_kind.sh", str(tmp_path / "report")],
         cwd=ROOT,
