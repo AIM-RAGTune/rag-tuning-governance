@@ -1,6 +1,6 @@
 variable "project_id" {
   type    = string
-  default = "example-project"
+  default = "<gcp-project-id>"
 }
 
 variable "region" {
@@ -10,7 +10,7 @@ variable "region" {
 
 variable "image" {
   type    = string
-  default = "us-docker.pkg.dev/example-project/example-repo/ragtune-governance:latest"
+  default = "ghcr.io/aim-ragtune/rag-tuning-governance@sha256:PENDING_FIRST_WORKFLOW_RUN"
 }
 
 resource "google_cloud_run_v2_job" "ragtune" {
@@ -25,12 +25,24 @@ resource "google_cloud_run_v2_job" "ragtune" {
         args = [
           "run-governance-job",
           "--config",
-          "configs/jobs/public_mini_governance_job.yaml",
+          "/inputs/public_mini_governance_job.yaml",
           "--output-root",
           "/outputs",
           "--decision-out",
           "/outputs/promotion_decision.json",
         ]
+        env {
+          name  = "RAGTUNE_STORAGE_MODE"
+          value = "local"
+        }
+        env {
+          name  = "RAGTUNE_INPUT_DIR"
+          value = "/inputs"
+        }
+        env {
+          name  = "RAGTUNE_OUTPUT_DIR"
+          value = "/outputs"
+        }
       }
       max_retries = 0
     }

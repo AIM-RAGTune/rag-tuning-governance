@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+"$(dirname "$0")/../load-image-reference.sh" >/dev/null
 : "${RAGTUNE_AWS_CLUSTER:?set RAGTUNE_AWS_CLUSTER}"
 : "${RAGTUNE_AWS_SUBNET:?set RAGTUNE_AWS_SUBNET}"
 : "${RAGTUNE_AWS_SECURITY_GROUP:?set RAGTUNE_AWS_SECURITY_GROUP}"
