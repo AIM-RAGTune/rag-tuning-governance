@@ -1,0 +1,58 @@
+name: storage-staging-validation
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  emulator-storage-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install project with storage emulator extras
+        run: |
+          python -m pip install --upgrade pip
+          pip install --require-hashes -r requirements-storage-emulators.lock
+          pip install -e . --no-deps
+
+      - name: Run shared emulator-backed storage validation
+        run: scripts/run_storage_emulator_tests.sh
+
+      - name: Require storage emulator success
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path("artifacts/storage-emulator-validation/storage_emulator_validation_report.json").read_text(encoding="utf-8"))
+          assert report["result_class"] == "STORAGE_EMULATOR_VALIDATION_PASSED", report
+          assert report["emulators"]["minio"] == "protocol_tested"
+          assert report["emulators"]["azurite"] == "protocol_tested"
+          assert report["emulators"]["fake_gcs_server"] == "protocol_tested"
+          PY
+
+      - name: Summarize storage validation
+        if: always()
+        run: |
+          {
+            echo "## storage-staging-validation"
+            if test -f artifacts/storage-emulator-validation/storage_emulator_validation_report.md; then
+              cat artifacts/storage-emulator-validation/storage_emulator_validation_report.md
+            else
+              echo "No report generated."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload storage validation reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: storage-staging-validation-reports
+          path: artifacts/storage-emulator-validation
