@@ -8,7 +8,7 @@ configMapGenerator:
       - public_mini_governance_job.yaml=public_mini_governance_job.yaml
 
 images:
-  - name: ghcr.io/aim-ragtune/rag-tuning-governance
+  - name: RAGTUNE_IMAGE_REFERENCE_PLACEHOLDER
     newName: ragtune-governance
     newTag: kind-validation
 

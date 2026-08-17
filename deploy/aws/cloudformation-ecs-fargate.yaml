@@ -3,7 +3,7 @@ Description: Example RAGTune ECS Fargate task definition
 Parameters:
   ContainerImage:
     Type: String
-    Default: ghcr.io/aim-ragtune/rag-tuning-governance@sha256:PENDING_FIRST_WORKFLOW_RUN
+    Default: RAGTUNE_IMAGE_REFERENCE_PLACEHOLDER
 Resources:
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition

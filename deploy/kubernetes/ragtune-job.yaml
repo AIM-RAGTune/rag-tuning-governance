@@ -9,7 +9,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: ragtune
-          image: ghcr.io/aim-ragtune/rag-tuning-governance@sha256:PENDING_FIRST_WORKFLOW_RUN
+          image: RAGTUNE_IMAGE_REFERENCE_PLACEHOLDER
           imagePullPolicy: Always
           args:
             - run-governance-job

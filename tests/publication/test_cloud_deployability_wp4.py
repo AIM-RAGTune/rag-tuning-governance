@@ -35,7 +35,7 @@ def test_digest_helper_fails_closed_when_digest_pending() -> None:
         check=False,
     )
     assert result.returncode == 2
-    assert "Image digest is pending" in result.stderr
+    assert "No verified published image digest is recorded" in result.stderr
 
 
 def test_cloud_scripts_preflight_with_digest_helper() -> None:

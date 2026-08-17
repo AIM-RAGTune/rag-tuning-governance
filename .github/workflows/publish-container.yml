@@ -3,13 +3,14 @@ name: Publish Container
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
+    tags:
+      - "v*"
 
 permissions:
-  contents: read
+  contents: write
   packages: write
   id-token: write
+  pull-requests: write
 
 env:
   IMAGE_NAME: ghcr.io/aim-ragtune/rag-tuning-governance
@@ -59,18 +60,53 @@ jobs:
           DIGEST: ${{ steps.build.outputs.digest }}
         run: cosign sign --yes "${IMAGE_NAME}@${DIGEST}"
 
-      - name: Record digest artifact
+      - name: Verify published manifest platforms
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          set -euo pipefail
+          [[ "$DIGEST" =~ ^sha256:[0-9a-f]{64}$ ]]
+          docker buildx imagetools inspect "${IMAGE_NAME}@${DIGEST}" > manifest-inspect.txt
+          grep -q "linux/amd64" manifest-inspect.txt
+          grep -q "linux/arm64" manifest-inspect.txt
+
+      - name: Record digest file
         run: |
           python3 scripts/record_image_digest.py \
             --digest "${{ steps.build.outputs.digest }}" \
             --candidate-tag "${{ github.sha }}" \
             --source-commit "${{ github.sha }}" \
             --build-input-sha256 "${{ steps.input_hash.outputs.value }}" \
-            --output IMAGE_DIGEST
+            --output deploy/IMAGE_DIGEST
 
       - name: Upload digest record
         uses: actions/upload-artifact@v4
         with:
           name: ragtune-image-digest
-          path: IMAGE_DIGEST
+          path: |
+            deploy/IMAGE_DIGEST
+            manifest-inspect.txt
 
+      - name: Open digest-record pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          branch="digest-record/${GITHUB_RUN_ID}"
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            base="main"
+          else
+            base="${GITHUB_REF_NAME}"
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$branch"
+          git add deploy/IMAGE_DIGEST
+          git diff --cached --quiet && exit 0
+          git commit -m "Record published RAGTune image digest"
+          git push -u origin "$branch"
+          gh pr create \
+            --base "$base" \
+            --head "$branch" \
+            --title "Record published RAGTune image digest" \
+            --body "Records the GHCR multi-architecture image digest produced by workflow run ${GITHUB_RUN_ID}. A human should review this PR before merge."

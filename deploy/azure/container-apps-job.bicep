@@ -1,7 +1,7 @@
 param location string = resourceGroup().location
 param containerAppEnvironmentName string = 'ragtune-env'
 param jobName string = 'ragtune-governance-job'
-param image string = 'ghcr.io/aim-ragtune/rag-tuning-governance@sha256:PENDING_FIRST_WORKFLOW_RUN'
+param image string = 'RAGTUNE_IMAGE_REFERENCE_PLACEHOLDER'
 
 resource env 'Microsoft.App/managedEnvironments@2023-05-01' = {
   name: containerAppEnvironmentName
