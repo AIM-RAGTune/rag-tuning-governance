@@ -1,0 +1,27 @@
+resources:
+  - ../kubernetes
+
+configMapGenerator:
+  - name: ragtune-job-config
+    behavior: replace
+    files:
+      - public_mini_governance_job.yaml=public_mini_governance_job.yaml
+
+images:
+  - name: RAGTUNE_IMAGE_REFERENCE_PLACEHOLDER
+    newName: ragtune-governance
+    newTag: kind-validation
+
+patches:
+  - path: patch-job-image-pull-policy.yaml
+    target:
+      group: batch
+      version: v1
+      kind: Job
+      name: ragtune-governance-job
+  - path: patch-cronjob-image-pull-policy.yaml
+    target:
+      group: batch
+      version: v1
+      kind: CronJob
+      name: ragtune-governance-cronjob

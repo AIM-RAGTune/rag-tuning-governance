@@ -151,6 +151,17 @@ EXPORT_REQUIRED = [
     "validation_reports/secret_scan_report.json",
 ]
 
+ALLOWED_PUBLIC_REPOSITORY_REMOTES = {
+    "https://github.com/AIM-RAGTune/rag-tuning-governance",
+    "https://github.com/AIM-RAGTune/rag-tuning-governance.git",
+    "git@github.com:AIM-RAGTune/rag-tuning-governance",
+    "git@github.com:AIM-RAGTune/rag-tuning-governance.git",
+    "https://github.com/AIM-RAGTune/rag-tuning-governance-public",
+    "https://github.com/AIM-RAGTune/rag-tuning-governance-public.git",
+    "git@github.com:AIM-RAGTune/rag-tuning-governance-public",
+    "git@github.com:AIM-RAGTune/rag-tuning-governance-public.git",
+}
+
 SECRET_PATTERNS = {
     "openai_key": re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
     "github_token": re.compile(r"\b(?:ghp|github_pat|gho)_[A-Za-z0-9_]{20,}"),
@@ -253,19 +264,13 @@ def public_repository_remote_allowed(remotes: str) -> bool:
         return False
     if mode not in {"deployed_public_repo", "github_actions_public_repo"}:
         return False
-    allowed_remotes = {
-        "https://github.com/AIM-RAGTune/rag-tuning-governance",
-        "https://github.com/AIM-RAGTune/rag-tuning-governance.git",
-        "git@github.com:AIM-RAGTune/rag-tuning-governance",
-        "git@github.com:AIM-RAGTune/rag-tuning-governance.git",
-    }
     remote_lines = [normalize_remote_line(line) for line in remotes.splitlines() if line.strip()]
     if not remote_lines:
         return False
     public_note = ROOT / "docs" / "public_repository_note.md"
     if not public_note.exists():
         return False
-    return all(line in allowed_remotes for line in remote_lines)
+    return all(line in ALLOWED_PUBLIC_REPOSITORY_REMOTES for line in remote_lines)
 
 
 def validate_no_crag_raw_text_fields() -> None:

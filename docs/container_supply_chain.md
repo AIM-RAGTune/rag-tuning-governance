@@ -68,3 +68,20 @@ The GitHub workflow in `.github/workflows/publish-container.yml` builds
 `linux/amd64` and `linux/arm64`, requests BuildKit provenance and SBOM
 generation, signs the published digest with keyless cosign, and uploads a digest
 record artifact. It does not use a `latest` tag.
+
+The release workflow record is the authoritative digest source. Do not infer a
+real digest from a stale checkout or from a tag name. Tag-event digests may
+differ from an earlier PR-candidate digest, so operators must verify the release
+digest against the corresponding workflow run.
+
+Human release sequence:
+
+1. Trigger the publish workflow with `workflow_dispatch` or create the
+   authorized release tag.
+2. Review and merge the generated digest-record pull request.
+3. Set the GHCR package visibility to public, if it is not already public.
+
+If repository settings prevent GitHub Actions from opening the digest-record
+pull request, use the workflow artifact containing `deploy/IMAGE_DIGEST` as the
+review input and create the digest-record PR manually. Do not commit a digest
+that did not come from a successful publish workflow run.

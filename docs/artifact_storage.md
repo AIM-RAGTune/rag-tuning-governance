@@ -27,4 +27,14 @@ RAGTUNE_GCS_PREFIX=<prefix>
 
 `local` mode works without cloud SDKs or credentials. Cloud modes fail closed if optional SDKs or required configuration are unavailable. RAGTune writes a local copy of `promotion_decision.json` before any optional upload attempt.
 
+## Emulator Validation
+
+Object-storage staging is protocol-tested against local emulators through:
+
+```bash
+scripts/run_storage_emulator_tests.sh
+```
+
+The runner starts MinIO, Azurite, and fake-gcs-server containers pinned by digest, runs the public-mini governance job through the storage staging wrapper, verifies `promotion_decision.json` in each emulated object store, and confirms wrapped process failure exit codes are preserved. These tests require Docker and optional storage SDK dependencies. They do not execute real AWS, Azure, or GCP deployments and do not claim platform-native cloud validation.
+
 Storage sinks must not log secrets. Public artifacts should contain only metrics, hashes, IDs, sanitized summaries, and claim-boundary metadata.

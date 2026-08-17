@@ -10,7 +10,7 @@ variable "region" {
 
 variable "image" {
   type    = string
-  default = "ghcr.io/aim-ragtune/rag-tuning-governance@sha256:PENDING_FIRST_WORKFLOW_RUN"
+  default = "RAGTUNE_IMAGE_REFERENCE_PLACEHOLDER"
 }
 
 resource "google_cloud_run_v2_job" "ragtune" {

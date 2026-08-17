@@ -40,7 +40,11 @@ The decision file includes the result class, selected policy, baseline policy, d
 
 ## Storage staging
 
-The publication repository includes local staging and fail-closed object-storage adapters. Local staging is executable for smoke tests. S3, Azure Blob, and GCS modes require optional SDKs and caller-provided credentials outside this repository; when unavailable, they return explicit `FALLBACK_*_UNAVAILABLE` statuses.
+The publication repository includes local staging and object-storage adapters for S3-compatible storage, Azure Blob, and GCS-compatible storage. Local staging is executable for smoke tests. Object-storage modes require optional SDKs and endpoint configuration outside the base runtime image.
+
+`scripts/run_storage_emulator_tests.sh` runs the shared emulator-backed validation path against MinIO, Azurite, and fake-gcs-server using pinned image digests. The same script is used by the `storage-staging-validation` GitHub Actions workflow. Emulator credentials are local, non-secret test credentials. Passing emulator validation does not claim live AWS, Azure, GCP, platform-native benchmark, or production evidence.
+
+When optional SDKs, endpoint configuration, or local emulators are unavailable, local checks still fail closed with explicit `FALLBACK_*_UNAVAILABLE` statuses instead of pretending object-storage staging succeeded.
 
 No real cloud deployment is performed by the repository tests or runbooks. Cloud templates are digest-pinned examples that require operator review and externally supplied cloud configuration.
 
@@ -62,4 +66,3 @@ docker run --rm \
 ```
 
 The container command writes sanitized outputs under the mounted `/outputs` directory.
-

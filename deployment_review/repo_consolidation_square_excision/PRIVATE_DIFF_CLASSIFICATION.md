@@ -8,4 +8,4 @@ The private repository was inspected through file-level inventory only. No priva
 - obsolete_removed_simulation_or_legacy_lineage: 365
 
 Imported paths: none.
-See `PRIVATE_DIFF_CLASSIFICATION.csv` and `SKIP_REPORT.json` for sanitized path hashes and classifications.
+See `deployment_review/repo_consolidation_square_excision/PRIVATE_DIFF_CLASSIFICATION.csv` and `deployment_review/repo_consolidation_square_excision/SKIP_REPORT.json` for sanitized path hashes and classifications.

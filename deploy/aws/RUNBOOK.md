@@ -17,7 +17,7 @@ deploy/load-image-reference.sh
 python3 scripts/validate_publication_bundle.py
 ```
 
-If `deploy/load-image-reference.sh` reports `PENDING_FIRST_WORKFLOW_RUN`, run the GHCR publish workflow first and update `deploy/IMAGE_DIGEST` from the workflow artifact.
+If `deploy/load-image-reference.sh` reports that no verified published digest is recorded, run the GHCR publish workflow first and merge the generated digest-record pull request.
 
 ## Deploy
 

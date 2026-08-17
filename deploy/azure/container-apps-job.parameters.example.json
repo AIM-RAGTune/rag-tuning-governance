@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "image": {
-      "value": "ghcr.io/aim-ragtune/rag-tuning-governance@sha256:PENDING_FIRST_WORKFLOW_RUN"
+      "value": "RAGTUNE_IMAGE_REFERENCE_PLACEHOLDER"
     }
   }
 }

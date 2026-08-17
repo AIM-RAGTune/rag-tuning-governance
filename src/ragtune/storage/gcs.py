@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import os
 
 from ragtune.storage.base import ArtifactSink, StorageUnavailable, StoredArtifact
 
@@ -12,11 +13,23 @@ class GCSArtifactSink(ArtifactSink):
         if not bucket:
             raise StorageUnavailable("RAGTUNE_GCS_BUCKET is required")
         try:
-            import google.cloud.storage  # noqa: F401
+            from google.api_core.exceptions import Conflict
+            from google.cloud import storage
         except Exception as exc:
             raise StorageUnavailable("google-cloud-storage optional dependency is not installed") from exc
         self.bucket = bucket
         self.prefix = prefix.strip("/")
+        if os.environ.get("STORAGE_EMULATOR_HOST"):
+            self.client = storage.Client.create_anonymous_client()
+        else:
+            self.client = storage.Client(project=os.environ.get("RAGTUNE_GCS_PROJECT", "ragtune-publication-test"))
+        try:
+            self.bucket_obj = self.client.create_bucket(self.bucket)
+        except Conflict:
+            self.bucket_obj = self.client.bucket(self.bucket)
 
     def put_file(self, local_path: Path, artifact_name: str) -> StoredArtifact:
-        raise StorageUnavailable("GCS upload is disabled in the publication test harness")
+        blob_name = "/".join(part for part in (self.prefix, artifact_name) if part)
+        blob = self.bucket_obj.blob(blob_name)
+        blob.upload_from_filename(str(local_path))
+        return StoredArtifact(uri=f"gs://{self.bucket}/{blob_name}", local_path=artifact_name)

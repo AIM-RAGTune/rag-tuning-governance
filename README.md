@@ -2,6 +2,12 @@
 
 RAGTune is a governance framework for RAG policy promotion. RAG Compass is a candidate optimizer within the framework. Current evidence supports RAGTune governance value more strongly than RAG Compass optimizer superiority.
 
+Canonical repository:
+https://github.com/AIM-RAGTune/rag-tuning-governance
+
+Legacy public name:
+https://github.com/AIM-RAGTune/rag-tuning-governance-public
+(legacy name, redirects to the canonical repository)
 
 ## Current Strongest Result
 
@@ -58,10 +64,12 @@ The CRAG stability comparison is now `CRAG_GEN_LLM_LATENCY_RESULT_MIXED_ACROSS_R
 ## Installation
 
 ```bash
-python -m venv .venv
+git clone https://github.com/AIM-RAGTune/rag-tuning-governance.git
+cd rag-tuning-governance
+python3 -m venv .venv
 . .venv/bin/activate
-pip install -r requirements.txt
-pip install -e .
+python -m pip install --upgrade pip
+python -m pip install -e .
 ```
 
 ## Quickstart
@@ -190,6 +198,13 @@ Latest packaged status from the source repository:
 - Full repository tests: 530 passed, 1 skipped, 4 warnings
 - Lint: passed
 - Strict Git provenance: passed
+
+Workflow definitions:
+
+- CI: `.github/workflows/ci.yml`
+- Publication Check: `.github/workflows/publication-check.yml`
+- k8s-kind-validation: `.github/workflows/k8s-kind-validation.yml`
+- storage-staging-validation: `.github/workflows/storage-staging-validation.yml`
 
 ## Docker Status
 

@@ -19,6 +19,20 @@ dependencies = [
 dev = [
   "pytest",
 ]
+s3 = [
+  "boto3==1.35.99",
+]
+azure = [
+  "azure-storage-blob==12.24.0",
+]
+gcs = [
+  "google-cloud-storage==2.19.0",
+]
+storage-emulators = [
+  "boto3==1.35.99",
+  "azure-storage-blob==12.24.0",
+  "google-cloud-storage==2.19.0",
+]
 
 [project.scripts]
 ragtune = "ragtune.cli:main"
@@ -29,3 +43,6 @@ where = ["src"]
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests/publication"]
+markers = [
+  "storage_emulator: integration tests that require Docker-backed object-storage emulators",
+]

@@ -1,0 +1,70 @@
+name: k8s-kind-validation
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  KIND_VERSION: v0.24.0
+  KUBECTL_VERSION: v1.31.0
+  KIND_CLUSTER_NAME: ragtune-validate
+  RAGTUNE_KIND_REPORT_DIR: artifacts/k8s-kind-validation
+
+jobs:
+  execute-kind-job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kind with published checksum
+        run: |
+          set -euo pipefail
+          curl -fsSLo kind-linux-amd64 "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
+          curl -fsSLo kind.sha256 "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64.sha256sum"
+          sha256sum -c kind.sha256
+          chmod +x kind-linux-amd64
+          sudo mv kind-linux-amd64 /usr/local/bin/kind
+
+      - name: Install kubectl with published checksum
+        run: |
+          set -euo pipefail
+          curl -fsSLo kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+          curl -fsSLo kubectl.sha256 "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl.sha256"
+          echo "$(cat kubectl.sha256)  kubectl" | sha256sum -c -
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/kubectl
+
+      - name: Run shipped Job through kind
+        run: scripts/validate_k8s_kind.sh --full
+
+      - name: Require executable result class
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path("artifacts/k8s-kind-validation/k8s_kind_validation_report.json").read_text(encoding="utf-8"))
+          assert report["result_class"] == "K8S_KIND_EXECUTION_PASSED", report
+          PY
+
+      - name: Summarize Kubernetes validation
+        if: always()
+        run: |
+          {
+            echo "## k8s-kind-validation"
+            if test -f artifacts/k8s-kind-validation/k8s_kind_validation_report.md; then
+              cat artifacts/k8s-kind-validation/k8s_kind_validation_report.md
+            else
+              echo "No report generated."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload validation reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k8s-kind-validation-reports
+          path: artifacts/k8s-kind-validation
