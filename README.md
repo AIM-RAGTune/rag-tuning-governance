@@ -203,6 +203,13 @@ This bundle was created locally because external GitHub upload was blocked by te
 
 This public repository was created as a fresh one-commit sanitized tree with no prior private Git history. See `docs/public_repository_note.md`.
 
+Canonical repository:
+https://github.com/AIM-RAGTune/rag-tuning-governance
+
+Legacy public name:
+https://github.com/AIM-RAGTune/rag-tuning-governance-public
+(legacy name, redirects to the canonical repository)
+
 ## Citation
 
 See `CITATION.cff`.
