@@ -16,6 +16,7 @@ RENDERED_MANIFEST="$REPORT_DIR/rendered_manifest.yaml"
 POD_SPEC_JSON="$REPORT_DIR/sanitized_pod_spec.json"
 JOB_STATUS_JSON="$REPORT_DIR/sanitized_job_status.json"
 OUTPUT_COPY="$REPORT_DIR/job_outputs"
+COPY_POD_NAME="${CLUSTER_NAME}-output-copy"
 CLUSTER_CREATED=0
 
 usage() {
@@ -167,6 +168,38 @@ if decision.get("decision") != "BLOCK":
 PY
 }
 
+copy_job_outputs_from_pvc() {
+  /bin/rm -rf "$OUTPUT_COPY"
+  /bin/mkdir -p "$OUTPUT_COPY"
+  kubectl delete pod "$COPY_POD_NAME" --ignore-not-found=true >/dev/null
+  kubectl apply -f - >/dev/null <<YAML
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ${COPY_POD_NAME}
+  labels:
+    app.kubernetes.io/name: ragtune
+    app.kubernetes.io/component: output-copy
+spec:
+  restartPolicy: Never
+  containers:
+    - name: copy
+      image: ${IMAGE_NAME}
+      imagePullPolicy: IfNotPresent
+      command: ["/bin/sh", "-c", "sleep 300"]
+      volumeMounts:
+        - name: outputs
+          mountPath: /outputs
+  volumes:
+    - name: outputs
+      persistentVolumeClaim:
+        claimName: ragtune-outputs
+YAML
+  kubectl wait --for=condition=Ready "pod/$COPY_POD_NAME" --timeout="$TIMEOUT"
+  kubectl cp "${COPY_POD_NAME}:/outputs/." "$OUTPUT_COPY"
+  kubectl delete pod "$COPY_POD_NAME" --ignore-not-found=true >/dev/null
+}
+
 run_dry_run() {
   if ! have kubectl; then
     write_report "FALLBACK_KUBECTL_UNAVAILABLE" "kubectl is required to render Kustomize manifests."
@@ -233,9 +266,7 @@ if state.get("exitCode") != 0:
 if state.get("reason") not in {"Completed", None}:
     raise SystemExit(f"unexpected termination reason: {state.get('reason')}")
 PY
-/bin/rm -rf "$OUTPUT_COPY"
-/bin/mkdir -p "$OUTPUT_COPY"
-kubectl cp "${pod_name}:/outputs/." "$OUTPUT_COPY"
+copy_job_outputs_from_pvc
 test -f "$OUTPUT_COPY/promotion_decision.json"
 validate_decision
 if [[ -d "$OUTPUT_COPY/public_mini_reproduction" ]]; then
