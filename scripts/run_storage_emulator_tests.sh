@@ -3,9 +3,10 @@ set -euo pipefail
 
 ROOT="$(cd "$(/usr/bin/dirname "${BASH_SOURCE[0]}")/.." && /bin/pwd)"
 REPORT_DIR="${RAGTUNE_STORAGE_EMULATOR_REPORT_DIR:-$ROOT/artifacts/storage-emulator-validation}"
-MINIO_IMAGE="minio/minio@sha256:cb688c06c3135c6d496e2edecd85a91b43e53b6ef17cb2072b0c1832c141d1d2"
+MINIO_IMAGE="minio/minio@sha256:a1a8bd4ac40ad7881a245bab97323e18f971e4d4cba2c2007ec1bedd21cbaba2"
 AZURITE_IMAGE="mcr.microsoft.com/azure-storage/azurite@sha256:3ba0e7a70bdcc3ab1004d0d5b2cd25534a81b2785a2d0394e993dc1758512c40"
 FAKE_GCS_IMAGE="fsouza/fake-gcs-server@sha256:dacee68e65c2a52cb8c4244eb2c497e956953f4981bddc5898752963d62cde35"
+EMULATOR_PLATFORM="${RAGTUNE_STORAGE_EMULATOR_PLATFORM:-linux/amd64}"
 
 MINIO_NAME="ragtune-minio-test"
 AZURITE_NAME="ragtune-azurite-test"
@@ -36,18 +37,18 @@ fi
 
 docker rm -f "$MINIO_NAME" "$AZURITE_NAME" "$FAKE_GCS_NAME" >/dev/null 2>&1 || true
 
-docker run -d --name "$MINIO_NAME" \
+docker run -d --platform "$EMULATOR_PLATFORM" --name "$MINIO_NAME" \
   -e MINIO_ROOT_USER=emulator-access-key \
   -e MINIO_ROOT_PASSWORD=emulator-secret-key \
   -p "127.0.0.1:${MINIO_PORT}:9000" \
   "$MINIO_IMAGE" server /data >/dev/null
 
-docker run -d --name "$AZURITE_NAME" \
+docker run -d --platform "$EMULATOR_PLATFORM" --name "$AZURITE_NAME" \
   -e "AZURITE_ACCOUNTS=devstoreaccount1:${AZURITE_TEST_KEY}" \
   -p "127.0.0.1:${AZURITE_PORT}:10000" \
   "$AZURITE_IMAGE" azurite-blob --blobHost 0.0.0.0 >/dev/null
 
-docker run -d --name "$FAKE_GCS_NAME" \
+docker run -d --platform "$EMULATOR_PLATFORM" --name "$FAKE_GCS_NAME" \
   -p "127.0.0.1:${FAKE_GCS_PORT}:4443" \
   "$FAKE_GCS_IMAGE" -scheme http -host 0.0.0.0 -port 4443 -backend memory >/dev/null
 
