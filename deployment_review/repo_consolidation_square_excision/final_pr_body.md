@@ -26,7 +26,7 @@ The public repository history remains immutable. No private git history was merg
 - Candidate paths reviewed/classified: 1370.
 - Imported paths: 0.
 - Excluded paths: 1370.
-- See `SKIP_REPORT.md` for sanitized display paths, hashes, and reasons.
+- See `deployment_review/repo_consolidation_square_excision/SKIP_REPORT.md` for sanitized display paths, hashes, and reasons.
 
 ## Canonical Repository URL Cleanup
 

@@ -44,6 +44,8 @@ The publication repository includes local staging and object-storage adapters fo
 
 `scripts/run_storage_emulator_tests.sh` runs the shared emulator-backed validation path against MinIO, Azurite, and fake-gcs-server using pinned image digests. The same script is used by the `storage-staging-validation` GitHub Actions workflow. Emulator credentials are local, non-secret test credentials. Passing emulator validation does not claim live AWS, Azure, GCP, platform-native benchmark, or production evidence.
 
+When optional SDKs, endpoint configuration, or local emulators are unavailable, local checks still fail closed with explicit `FALLBACK_*_UNAVAILABLE` statuses instead of pretending object-storage staging succeeded.
+
 No real cloud deployment is performed by the repository tests or runbooks. Cloud templates are digest-pinned examples that require operator review and externally supplied cloud configuration.
 
 ## Verification
