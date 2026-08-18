@@ -2,6 +2,10 @@
 
 RAGTune is a governance framework for RAG policy promotion. RAG Compass is a candidate optimizer within the framework. Current evidence supports RAGTune governance value more strongly than RAG Compass optimizer superiority.
 
+## What RAGTune is — and is not
+
+RAGTune is a promotion-governance controller that decides whether measured evidence justifies promoting a change to a RAG policy. It is not a hyperparameter tuner, an optimizer, or an evaluation library. It sits behind existing tuning and evaluation tools and adjudicates their outputs through explicit quality, risk, cost, latency, and evidence gates.
+
 Canonical repository:
 https://github.com/AIM-RAGTune/rag-tuning-governance
 
@@ -217,6 +221,16 @@ This bundle was created locally because external GitHub upload was blocked by te
 ## Public Repository Status
 
 This public repository was created as a fresh one-commit sanitized tree with no prior private Git history. See `docs/public_repository_note.md`.
+
+## Planned: v0.2
+
+- Native evidence-ingestion adapters for LangChain, LlamaIndex, and Haystack.
+- Direct ingestion of evaluator-platform exports, replacing the current synthetic-shaped adapter demonstrations with real exported evidence.
+- PyPI publication and installation through a versioned package release.
+- Group-sequential and adaptive noninferiority-margin designs with prespecified spending functions.
+- A completed blinded human-adjudication study, prioritized as the highest-leverage next validation for healthcare and other high-consequence settings.
+
+These items are planned work, not capabilities or evidence claimed by the current release.
 
 ## Citation
 
