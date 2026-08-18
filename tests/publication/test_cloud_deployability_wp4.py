@@ -26,10 +26,21 @@ def test_deploy_templates_do_not_use_latest_or_example_registries() -> None:
     assert offenders == []
 
 
-def test_digest_helper_fails_closed_when_digest_pending() -> None:
+def test_digest_helper_fails_closed_when_digest_pending(tmp_path: Path) -> None:
+    pending_digest = tmp_path / "IMAGE_DIGEST"
+    pending_digest.write_text(
+        "IMAGE=ghcr.io/aim-ragtune/rag-tuning-governance\n"
+        "REFERENCE=PENDING_FIRST_WORKFLOW_RUN\n"
+        "DIGEST=PENDING_FIRST_WORKFLOW_RUN\n"
+        "PLATFORMS=linux/amd64,linux/arm64\n",
+        encoding="utf-8",
+    )
+    env = os.environ.copy()
+    env["RAGTUNE_IMAGE_DIGEST_FILE"] = str(pending_digest)
     result = subprocess.run(
         ["bash", "deploy/load-image-reference.sh"],
         cwd=ROOT,
+        env=env,
         text=True,
         capture_output=True,
         check=False,
