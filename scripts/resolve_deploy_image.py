@@ -63,7 +63,7 @@ def verify_registry_manifest(reference: str, *, platforms: str) -> None:
 
 
 def resolve_image(digest_file: Path, *, image_override: str | None = None, verify_registry: bool = False) -> str:
-    if image_override:
+    if image_override is not None:
         validate_reference(image_override)
         if verify_registry:
             verify_registry_manifest(image_override, platforms="")
