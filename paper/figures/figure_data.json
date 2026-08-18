@@ -1,0 +1,71 @@
+{
+  "selector_ablation": [
+    {
+      "blocked_rate": "0.0",
+      "promotion_rate": "1.0",
+      "quality_loss_rate": "0.0",
+      "result_class": "SELECTOR_BASELINE_AVAILABLE",
+      "selector": "quality_only"
+    },
+    {
+      "blocked_rate": "1.0",
+      "promotion_rate": "0.0",
+      "quality_loss_rate": "1.0",
+      "result_class": "SELECTOR_BLOCKED_QUALITY_LOSS",
+      "selector": "cost_only"
+    },
+    {
+      "blocked_rate": "0.75",
+      "promotion_rate": "0.0",
+      "quality_loss_rate": "0.75",
+      "result_class": "SELECTOR_MIXED_HELDOUT_QUALITY_LOSS",
+      "selector": "latency_only"
+    },
+    {
+      "blocked_rate": "0.0",
+      "promotion_rate": "1.0",
+      "quality_loss_rate": "0.0",
+      "result_class": "SELECTOR_BASELINE_AVAILABLE",
+      "selector": "random_eligible"
+    },
+    {
+      "blocked_rate": "0.0",
+      "promotion_rate": "1.0",
+      "quality_loss_rate": "0.0",
+      "result_class": "SELECTOR_BASELINE_AVAILABLE",
+      "selector": "static_default"
+    },
+    {
+      "blocked_rate": "0.0",
+      "promotion_rate": "1.0",
+      "quality_loss_rate": "0.0",
+      "result_class": "SELECTOR_BASELINE_AVAILABLE",
+      "selector": "rag_compass_optional"
+    },
+    {
+      "blocked_rate": "0.0",
+      "promotion_rate": "1.0",
+      "quality_loss_rate": "0.0",
+      "result_class": "PUBLIC_MINI_REPRODUCTION_FAIL_CLOSED",
+      "selector": "governed_noninferiority_selector"
+    },
+    {
+      "blocked_rate": "0.75",
+      "promotion_rate": "0.0",
+      "quality_loss_rate": "0.75",
+      "result_class": "CRAG_GEN_LLM_QUALITY_RISK_GUARDRAIL_V2_BLOCKED_HELDOUT_QUALITY_LOSS",
+      "selector": "risk_guarded_selector"
+    },
+    {
+      "blocked_rate": "0.0",
+      "promotion_rate": "1.0",
+      "quality_loss_rate": "0.0",
+      "result_class": "ORACLE_CEILING_NOT_DEPLOYABLE",
+      "selector": "oracle_ceiling"
+    }
+  ],
+  "source_artifacts": {
+    "selector_ablation_results": "artifacts/selector_ablation_matrix/selector_ablation_results.csv",
+    "selector_ablation_summary": "artifacts/selector_ablation_matrix/selector_ablation_summary.csv"
+  }
+}
